@@ -20,7 +20,7 @@ typedef list_compareCallback_t hashTable_compareCallback_t;
 typedef list_destroyCallback_t hashTable_destroyCallback_t;
 typedef size_t (*hashTable_hashCallback_t)(const void * const Data);
 
-/*** Type Definition ***/
+/*** Structure ***/
 typedef struct hashTable_hashTable_s
 {
     size_t buckets;

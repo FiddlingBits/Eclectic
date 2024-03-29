@@ -34,6 +34,9 @@ eclectic_status_t list_destroy(list_list_t * const list)
             list->destroyCallback(data);
     }
     
+    /* Reinitialize */
+    (void)list_init(list, list->compareCallback, list->destroyCallback);
+    
     return ECLECTIC_STATUS_SUCCESS;
 }
 
@@ -429,7 +432,7 @@ static list_node_t *list_createNode(void * const data)
     
     /*** Create Node ***/
     /* Allocate Memory */
-    node = eclectic_malloc(sizeof(*node));
+    node = eclectic_malloc(sizeof(list_node_t));
     
     /* Error Check */
     if(node != NULL)

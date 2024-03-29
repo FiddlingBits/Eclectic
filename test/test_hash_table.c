@@ -105,7 +105,7 @@ void tearDown(void)
 void test_destroy_error(void)
 {
     /*** Destroy ***/
-    /* Destroy (NULL Pointer Error) */
+    /* NULL Pointer Error */
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_ERROR_NULL_POINTER, hashTable_destroy(NULL));
 }
 
@@ -134,6 +134,8 @@ void test_destroy_success(void)
     /* Variable */
     hashTable_hashTable_t hashTable;
     size_t i;
+    list_list_t *listMemory;
+    list_node_t *listNodeMemory;
     hashTableTest_data_t testData[HASH_TABLE_TEST_LIST_COUNT];
     
     /* Set Up */
@@ -144,47 +146,65 @@ void test_destroy_success(void)
     }
     
     /*** Destroy ***/
+    /* Malloc */
+    listMemory = malloc(Buckets * sizeof(list_list_t));
+    listNodeMemory = malloc(HASH_TABLE_TEST_LIST_COUNT * sizeof(list_node_t));
+    
     /* Initialize */
-    eclectic_malloc_ExpectAndReturn((Buckets * sizeof(*hashTable.list)), malloc((Buckets * sizeof(*hashTable.list)))); // Mock
+    eclectic_malloc_ExpectAndReturn((Buckets * sizeof(list_list_t)), listMemory);
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_SUCCESS, hashTable_init(&hashTable, Buckets, hashTableTest_compareCallback, NULL, hashTableTest_hashCallback));
     
     /* Insert */
     for(i = 0; i < HASH_TABLE_TEST_LIST_COUNT; i++)
     {
-        eclectic_malloc_ExpectAndReturn(sizeof(*(hashTable.list->head)), malloc(sizeof(*(hashTable.list->head)))); // Mock
+        eclectic_malloc_ExpectAndReturn(sizeof(list_node_t), &listNodeMemory[i]);
         TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_SUCCESS, hashTable_insert(&hashTable, &testData[i]));
     }
     
     /* Destroy */
-    eclectic_free_ExpectAnyArgs(); // Mock
+    eclectic_free_ExpectAnyArgs();
     for(i = 0; i < HASH_TABLE_TEST_LIST_COUNT; i++)
-        eclectic_free_ExpectAnyArgs(); // Mock
+        eclectic_free_ExpectAnyArgs();
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_SUCCESS, hashTable_destroy(&hashTable));
+    
+    /* Free */
+    free(listMemory);
+    free(listNodeMemory);
 }
 
 /*** Find ***/
 void test_find_error(void)
 {
     /*** Test Data ***/
+    /* Test Data */
+    const size_t Buckets = 1;
+    
     /* Variable */
     void *data;
     hashTable_hashTable_t hashTable;
+    list_list_t *listMemory;
     
     /*** Find ***/
-    /* Find (NULL Pointer Error) */
+    /* NULL Pointer Error */
     TEST_ASSERT_FALSE(hashTable_find(NULL, data));
     
+    /* Malloc */
+    listMemory = malloc(Buckets * sizeof(list_list_t));
+    
     /* Initialize */
-    eclectic_malloc_ExpectAndReturn((1 * sizeof(*hashTable.list)), malloc((1 * sizeof(*hashTable.list)))); // Mock
+    eclectic_malloc_ExpectAndReturn((Buckets * sizeof(list_list_t)), listMemory);
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_SUCCESS, hashTable_init(&hashTable, 1, hashTableTest_compareCallback, free, hashTableTest_hashCallback));
     
-    /* Find (Not Initialized Error) */
+    /* Not Initialized Error */
     hashTable.hashCallback = NULL;
     TEST_ASSERT_FALSE(hashTable_find(&hashTable, data));
     
     /* Destroy */
-    eclectic_free_ExpectAnyArgs(); // Mock
+    eclectic_free_ExpectAnyArgs();
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_SUCCESS, hashTable_destroy(&hashTable));
+    
+    /* Free */
+    free(listMemory);
 }
 
 void test_find_success(void)
@@ -220,6 +240,8 @@ void test_find_success(void)
     /* Variable */
     hashTable_hashTable_t hashTable;
     size_t i;
+    list_list_t *listMemory;
+    list_node_t *listNodeMemory;
     hashTableTest_data_t testData[HASH_TABLE_TEST_LIST_COUNT];
     
     /* Set Up */
@@ -229,15 +251,19 @@ void test_find_success(void)
         testData[i].id = IdList[i];
     }
     
+    /* Malloc */
+    listMemory = malloc(Buckets * sizeof(list_list_t));
+    listNodeMemory = malloc(HASH_TABLE_TEST_LIST_COUNT * sizeof(list_node_t));
+    
     /*** Find ***/
     /* Initialize */
-    eclectic_malloc_ExpectAndReturn((Buckets * sizeof(*hashTable.list)), malloc((Buckets * sizeof(*hashTable.list)))); // Mock
+    eclectic_malloc_ExpectAndReturn((Buckets * sizeof(list_list_t)), listMemory);
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_SUCCESS, hashTable_init(&hashTable, Buckets, hashTableTest_compareCallback, NULL, hashTableTest_hashCallback));
     
     /* Insert */
     for(i = 0; i < HASH_TABLE_TEST_LIST_COUNT; i++)
     {
-        eclectic_malloc_ExpectAndReturn(sizeof(*(hashTable.list->head)), malloc(sizeof(*(hashTable.list->head)))); // Mock
+        eclectic_malloc_ExpectAndReturn(sizeof(list_node_t), &listNodeMemory[i]);
         TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_SUCCESS, hashTable_insert(&hashTable, &testData[i]));
     }
     
@@ -250,10 +276,14 @@ void test_find_success(void)
         TEST_ASSERT_FALSE(hashTable_find(&hashTable, &FindIdList[i]));
     
     /* Destroy */
-    eclectic_free_ExpectAnyArgs(); // Mock
+    eclectic_free_ExpectAnyArgs();
     for(i = 0; i < HASH_TABLE_TEST_LIST_COUNT; i++)
-        eclectic_free_ExpectAnyArgs(); // Mock
+        eclectic_free_ExpectAnyArgs();
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_SUCCESS, hashTable_destroy(&hashTable));
+    
+    /* Free */
+    free(listMemory);
+    free(listNodeMemory);
 }
 
 /*** Initialize ***/
@@ -264,20 +294,20 @@ void test_init_error(void)
     hashTable_hashTable_t hashTable;
     
     /*** Initialize ***/
-    /* Initialize (NULL Pointer Error) */
+    /* NULL Pointer Error */
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_ERROR_NULL_POINTER, hashTable_init(NULL, 1, hashTableTest_compareCallback, free, hashTableTest_hashCallback));
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_ERROR_NULL_POINTER, hashTable_init(&hashTable, 1, NULL, free, hashTableTest_hashCallback));
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_ERROR_NULL_POINTER, hashTable_init(&hashTable, 1, hashTableTest_compareCallback, free, NULL));
     
-    /* Initialize (Length Error) */
+    /* Length Error */
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_ERROR_LENGTH, hashTable_init(&hashTable, 0, hashTableTest_compareCallback, free, hashTableTest_hashCallback));
     
-    /* Initialize (Memory Allocation Error) */
-    eclectic_malloc_ExpectAndReturn((1 * sizeof(*hashTable.list)), NULL); // Mock
+    /* Memory Allocation Error */
+    eclectic_malloc_ExpectAndReturn(sizeof(list_list_t), NULL);
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_ERROR_MEMORY_ALLOCATION, hashTable_init(&hashTable, 1, hashTableTest_compareCallback, free, hashTableTest_hashCallback));
     
     /* Destroy */
-    eclectic_free_ExpectAnyArgs(); // Mock
+    eclectic_free_ExpectAnyArgs();
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_SUCCESS, hashTable_destroy(&hashTable)); // Isn't Necessary As hashTable_init Failed, But Shouldn't Cause Any Problems To Call Anyway
 }
 
@@ -294,8 +324,8 @@ void test_init_success(void)
     
     /*** Initialize ***/
     /* Initialize */
-    memory = malloc(Buckets * sizeof(*hashTable.list));
-    eclectic_malloc_ExpectAndReturn((Buckets * sizeof(*hashTable.list)), memory); // Mock
+    memory = malloc(Buckets * sizeof(list_list_t));
+    eclectic_malloc_ExpectAndReturn((Buckets * sizeof(list_list_t)), memory);
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_SUCCESS, hashTable_init(&hashTable, Buckets, hashTableTest_compareCallback, NULL, hashTableTest_hashCallback));
     
     /* Verify */
@@ -304,8 +334,11 @@ void test_init_success(void)
     TEST_ASSERT_EQUAL_PTR(memory, hashTable.list);
     
     /* Destroy */
-    eclectic_free_ExpectAnyArgs(); // Mock
+    eclectic_free_ExpectAnyArgs();
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_SUCCESS, hashTable_destroy(&hashTable));
+    
+    /* Free */
+    free(memory);
 }
 
 /*** Insert ***/
@@ -319,71 +352,93 @@ void test_insert_error(void)
     /* Variable */
     int data[2];
     hashTable_hashTable_t hashTable;
+    uint8_t i;
+    list_list_t *listMemory;
+    list_node_t *listNodeMemory;
     
     /* Set Up */
     data[0] = TestData;
     data[1] = TestData;
     
     /*** Insert ***/
-    /* Insert (NULL Pointer Error) */
+    /* NULL Pointer Error */
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_ERROR_NULL_POINTER, hashTable_insert(NULL, &data[0]));
     
+    /* Malloc */
+    listMemory = malloc(Buckets * sizeof(list_list_t));
+    
     /* Initialize */
-    eclectic_malloc_ExpectAndReturn((Buckets * sizeof(*hashTable.list)), malloc((Buckets * sizeof(*hashTable.list)))); // Mock
+    eclectic_malloc_ExpectAndReturn((Buckets * sizeof(list_list_t)), listMemory);
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_SUCCESS, hashTable_init(&hashTable, Buckets, hashTableTest_compareCallback, NULL, hashTableTest_hashCallback));
     
-    /* Insert (Not Initialized Error) */
+    /* Not Initialized Error */
     hashTable.hashCallback = NULL;
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_ERROR_NOT_INITIALIZED, hashTable_insert(&hashTable, &data[0]));
     
     /* Destroy */
-    eclectic_free_ExpectAnyArgs(); // Mock
+    eclectic_free_ExpectAnyArgs();
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_SUCCESS, hashTable_destroy(&hashTable));
     
     /* Initialize */
-    eclectic_malloc_ExpectAndReturn((Buckets * sizeof(*hashTable.list)), malloc((Buckets * sizeof(*hashTable.list)))); // Mock
+    eclectic_malloc_ExpectAndReturn((Buckets * sizeof(list_list_t)), listMemory);
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_SUCCESS, hashTable_init(&hashTable, Buckets, hashTableTest_compareCallback, NULL, hashTableTest_hashCallback));
     
-    /* Insert (Duplicate Error) */
-    eclectic_malloc_ExpectAndReturn(sizeof(*(hashTable.list->head)), malloc(sizeof(*(hashTable.list->head)))); // Mock
+    /* Malloc */
+    listNodeMemory = malloc(sizeof(list_node_t));
+    
+    /* Duplicate Error */
+    eclectic_malloc_ExpectAndReturn(sizeof(list_node_t), listNodeMemory);
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_SUCCESS, hashTable_insert(&hashTable, &data[0]));
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_ERROR_DUPLICATE, hashTable_insert(&hashTable, &data[1]));
     
     /* Destroy */
-    eclectic_free_ExpectAnyArgs(); // Mock
-    eclectic_free_ExpectAnyArgs(); // Mock
+    for(i = 0; i < 2; i++)
+        eclectic_free_ExpectAnyArgs();
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_SUCCESS, hashTable_destroy(&hashTable));
     
     /* Initialize */
-    eclectic_malloc_ExpectAndReturn((Buckets * sizeof(*hashTable.list)), malloc((Buckets * sizeof(*hashTable.list)))); // Mock
+    eclectic_malloc_ExpectAndReturn((Buckets * sizeof(list_list_t)), listMemory);
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_SUCCESS, hashTable_init(&hashTable, Buckets, hashTableTest_compareCallback, NULL, hashTableTest_hashCallback));
     
-    /* Insert (Memory Allocation Error) */
-    eclectic_malloc_ExpectAndReturn(sizeof(*(hashTable.list->head)), NULL); // Mock
+    /* Memory Allocation Error */
+    eclectic_malloc_ExpectAndReturn(sizeof(list_node_t), NULL);
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_ERROR_MEMORY_ALLOCATION, hashTable_insert(&hashTable, &data[0]));
     
     /* Destroy */
-    eclectic_free_ExpectAnyArgs(); // Mock
+    eclectic_free_ExpectAnyArgs();
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_SUCCESS, hashTable_destroy(&hashTable));
+    
+    /* Free */
+    free(listMemory);
+    free(listNodeMemory);
 }
 
 void test_insert_success(void)
 {
     /*** Test Data ***/
     /* Test Data */
+    const size_t Buckets = 1;
     const int TestData = 1234;
     
     /* Variable */
     int data, *dataPointer;
     hashTable_hashTable_t hashTable;
+    list_list_t *listMemory;
+    list_node_t *listNodeMemory;
     
     /*** Remove ***/
+    /* Malloc */
+    listMemory = malloc(Buckets * sizeof(list_list_t));
+    
     /* Initialize */
-    eclectic_malloc_ExpectAndReturn((1 * sizeof(*hashTable.list)), malloc((1 * sizeof(*hashTable.list)))); // Mock
+    eclectic_malloc_ExpectAndReturn((Buckets * sizeof(list_list_t)), listMemory);
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_SUCCESS, hashTable_init(&hashTable, 1, hashTableTest_compareCallback, NULL, hashTableTest_hashCallback));
     
+    /* Malloc */
+    listNodeMemory = malloc(sizeof(list_node_t));
+    
     /* Insert */
-    eclectic_malloc_ExpectAndReturn(sizeof(*(hashTable.list->head)), malloc(sizeof(*(hashTable.list->head)))); // Mock
+    eclectic_malloc_ExpectAndReturn(sizeof(list_node_t), listNodeMemory);
     data = TestData;
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_SUCCESS, hashTable_insert(&hashTable, &data));
     
@@ -391,7 +446,7 @@ void test_insert_success(void)
     TEST_ASSERT_EQUAL_UINT(1, hashTable_size(&hashTable));
     
     /* Remove */
-    eclectic_free_ExpectAnyArgs(); // Mock
+    eclectic_free_ExpectAnyArgs();
     dataPointer = &data;
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_SUCCESS, hashTable_remove(&hashTable, (void **)&dataPointer));
     TEST_ASSERT_EQUAL_UINT(0, hashTable_size(&hashTable));
@@ -399,8 +454,12 @@ void test_insert_success(void)
     TEST_ASSERT_EQUAL_INT(TestData, *dataPointer);
     
     /* Destroy */
-    eclectic_free_ExpectAnyArgs(); // Mock
+    eclectic_free_ExpectAnyArgs();
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_SUCCESS, hashTable_destroy(&hashTable));
+    
+    /* Free */
+    free(listMemory);
+    free(listNodeMemory);
 }
 
 /*** Remove ***/
@@ -408,66 +467,86 @@ void test_remove_error(void)
 {
     /*** Test Data ***/
     /* Test Data */
+    const size_t Buckets = 1;
     const int TestData = 1234;
     
     /* Variable */
     int data[2], *dataPointer;
     hashTable_hashTable_t hashTable;
+    list_list_t *listMemory;
+    list_node_t *listNodeMemory;
     
     /*** Remove ***/
-    /* Remove (NULL Pointer Error) */
+    /* NULL Pointer Error */
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_ERROR_NULL_POINTER, hashTable_remove(NULL, (void **)&dataPointer));
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_ERROR_NULL_POINTER, hashTable_remove(&hashTable, NULL));
     
+    /* Malloc */
+    listMemory = malloc(Buckets * sizeof(list_list_t));
+    
     /* Initialize */
-    eclectic_malloc_ExpectAndReturn((1 * sizeof(*hashTable.list)), malloc((1 * sizeof(*hashTable.list)))); // Mock
+    eclectic_malloc_ExpectAndReturn((Buckets * sizeof(list_list_t)), listMemory);
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_SUCCESS, hashTable_init(&hashTable, 1, hashTableTest_compareCallback, NULL, hashTableTest_hashCallback));
     
     /* Remove (Not Initialized) */
     hashTable.hashCallback = NULL;
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_ERROR_NOT_INITIALIZED, hashTable_remove(&hashTable, (void **)&dataPointer));
-    eclectic_free_ExpectAnyArgs(); // Mock
+    eclectic_free_ExpectAnyArgs();
     
     /* Destroy */
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_SUCCESS, hashTable_destroy(&hashTable));
     
     /* Initialize */
-    eclectic_malloc_ExpectAndReturn((1 * sizeof(*hashTable.list)), malloc((1 * sizeof(*hashTable.list)))); // Mock
+    eclectic_malloc_ExpectAndReturn((Buckets * sizeof(list_list_t)), listMemory);
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_SUCCESS, hashTable_init(&hashTable, 1, hashTableTest_compareCallback, NULL, hashTableTest_hashCallback));
-    eclectic_malloc_ExpectAndReturn(sizeof(*(hashTable.list->head)), malloc(sizeof(*(hashTable.list->head)))); // Mock
+    listNodeMemory = malloc(sizeof(list_node_t));
+    eclectic_malloc_ExpectAndReturn(sizeof(list_node_t), listNodeMemory);
     
     /* Insert */
     data[0] = TestData;
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_SUCCESS, hashTable_insert(&hashTable, &data[0]));
     
-    /* Remove (Not Found Error) */
+    /* Not Found Error */
     data[1] = TestData + 1;
     dataPointer = &data[1];
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_ERROR_NOT_FOUND, hashTable_remove(&hashTable, (void **)&dataPointer));
     
     /* Destroy */
-    eclectic_free_ExpectAnyArgs(); // Mock
-    eclectic_free_ExpectAnyArgs(); // Mock
+    eclectic_free_ExpectAnyArgs();
+    eclectic_free_ExpectAnyArgs();
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_SUCCESS, hashTable_destroy(&hashTable));
+    
+    /* Free */
+    free(listMemory);
+    free(listNodeMemory);
 }
 
 void test_remove_success(void)
 {
     /*** Test Data ***/
     /* Test Data */
+    const size_t Buckets = 1;
     const int TestData = 1234;
     
     /* Variable */
     int data, *dataPointer;
     hashTable_hashTable_t hashTable;
+    list_list_t *listMemory;
+    list_node_t *listNodeMemory;
     
     /*** Remove ***/
+    /* Malloc */
+    listMemory = malloc(Buckets * sizeof(list_list_t));
+    
     /* Initialize */
-    eclectic_malloc_ExpectAndReturn((1 * sizeof(*hashTable.list)), malloc((1 * sizeof(*hashTable.list)))); // Mock
+    eclectic_malloc_ExpectAndReturn((Buckets * sizeof(list_list_t)), listMemory);
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_SUCCESS, hashTable_init(&hashTable, 1, hashTableTest_compareCallback, NULL, hashTableTest_hashCallback));
     
+    /* Malloc */
+    listNodeMemory = malloc(sizeof(list_node_t));
+    
     /* Insert */
-    eclectic_malloc_ExpectAndReturn(sizeof(*(hashTable.list->head)), malloc(sizeof(*(hashTable.list->head)))); // Mock
+    eclectic_malloc_ExpectAndReturn(sizeof(list_node_t), listNodeMemory);
     data = TestData;
     dataPointer = &data;
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_SUCCESS, hashTable_insert(&hashTable, &data));
@@ -476,22 +555,26 @@ void test_remove_success(void)
     TEST_ASSERT_EQUAL_UINT(1, hashTable_size(&hashTable));
     
     /* Remove */
-    eclectic_free_ExpectAnyArgs(); // Mock
+    eclectic_free_ExpectAnyArgs();
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_SUCCESS, hashTable_remove(&hashTable, (void **)&dataPointer));
     TEST_ASSERT_EQUAL_UINT(0, hashTable_size(&hashTable));
     TEST_ASSERT_EQUAL_PTR(&data, dataPointer);
     TEST_ASSERT_EQUAL_INT(TestData, *dataPointer);
     
     /* Destroy */
-    eclectic_free_ExpectAnyArgs(); // Mock
+    eclectic_free_ExpectAnyArgs();
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_SUCCESS, hashTable_destroy(&hashTable));
+    
+    /* Free */
+    free(listMemory);
+    free(listNodeMemory);
 }
 
 /*** Size ***/
 void test_size_error(void)
 {
     /*** Size ***/
-    /* Size (NULL Pointer Error) */
+    /* NULL Pointer Error */
     TEST_ASSERT_EQUAL_UINT(0, hashTable_size(NULL));
 }
 
@@ -520,6 +603,8 @@ void test_size_success(void)
     /* Variable */
     hashTable_hashTable_t hashTable;
     size_t i;
+    list_list_t *listMemory;
+    list_node_t *listNodeMemory;
     hashTableTest_data_t testData[HASH_TABLE_TEST_LIST_COUNT];
     
     /* Set Up */
@@ -529,16 +614,20 @@ void test_size_success(void)
         testData[i].id = IdList[i];
     }
     
+    /* Malloc */
+    listMemory = malloc(Buckets * sizeof(list_list_t));
+    listNodeMemory = malloc(HASH_TABLE_TEST_LIST_COUNT * sizeof(list_node_t));
+    
     /*** Size ***/
     /* Initialize */
-    eclectic_malloc_ExpectAndReturn((Buckets * sizeof(*hashTable.list)), malloc((Buckets * sizeof(*hashTable.list)))); // Mock
+    eclectic_malloc_ExpectAndReturn((Buckets * sizeof(list_list_t)), listMemory);
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_SUCCESS, hashTable_init(&hashTable, Buckets, hashTableTest_compareCallback, NULL, hashTableTest_hashCallback));
     
     /* Insert */
     for(i = 0; i < HASH_TABLE_TEST_LIST_COUNT; i++)
     {
         /* Insert */
-        eclectic_malloc_ExpectAndReturn(sizeof(*(hashTable.list->head)), malloc(sizeof(*(hashTable.list->head)))); // Mock
+        eclectic_malloc_ExpectAndReturn(sizeof(list_node_t), &listNodeMemory[i]);
         TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_SUCCESS, hashTable_insert(&hashTable, &testData[i]));
         
         /* Size */
@@ -547,8 +636,12 @@ void test_size_success(void)
     TEST_ASSERT_EQUAL_UINT(HASH_TABLE_TEST_LIST_COUNT, hashTable_size(&hashTable)); // Already Tested Above, But Added So Final Count Is Explicit
     
     /* Destroy */
-    eclectic_free_ExpectAnyArgs(); // Mock
+    eclectic_free_ExpectAnyArgs();
     for(i = 0; i < HASH_TABLE_TEST_LIST_COUNT; i++)
-        eclectic_free_ExpectAnyArgs(); // Mock
+        eclectic_free_ExpectAnyArgs();
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_SUCCESS, hashTable_destroy(&hashTable));
+    
+    /* Free */
+    free(listMemory);
+    free(listNodeMemory);
 }

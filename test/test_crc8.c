@@ -38,7 +38,7 @@ void test_calculate_error(void)
     uint8_t data[1];
     
     /*** Calculate ***/
-    /* Calculate (NULL Pointer Error) */
+    /* NULL Pointer Error */
     TEST_ASSERT_EQUAL_HEX8(CRC_CONFIG_CRC8_ERROR_CRC, crc8_calculate(NULL, data, sizeof(data)));
     TEST_ASSERT_EQUAL_HEX8(CRC_CONFIG_CRC8_ERROR_CRC, crc8_calculate(&configuration, NULL, sizeof(data)));
 }
@@ -54,18 +54,22 @@ void test_calculate_success(void)
     /*** Calculate ***/
     for(algorithm = CRC8_ALGORITHM_CRC8; algorithm < CRC8_ALGORITHM_CRC8_COUNT; algorithm++)
     {        
-        /* Initialize */
-        TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_SUCCESS, crc8_init(algorithm, &configuration, NULL, 0)); // Loop
+        /* Initialize (Loop) */
+        TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_SUCCESS, crc8_init(algorithm, &configuration, NULL, 0));
         
         /* Calculate */
         crc = crc8_calculate(&configuration, crc8Test_TestData, crc8Test_TestDataCount);
+        
+        /* Verify */
         TEST_ASSERT_EQUAL_HEX8(configuration.check, crc);
         
-        /* Initialize */
-        TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_SUCCESS, crc8_init(algorithm, &configuration, lookupTableMemory, sizeof(lookupTableMemory))); // Lookup Table
+        /* Initialize (Lookup Table) */
+        TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_SUCCESS, crc8_init(algorithm, &configuration, lookupTableMemory, sizeof(lookupTableMemory)));
         
         /* Calculate */
         crc = crc8_calculate(&configuration, crc8Test_TestData, crc8Test_TestDataCount);
+        
+        /* Verify */
         TEST_ASSERT_EQUAL_HEX8(configuration.check, crc);
     }
 }
@@ -79,7 +83,7 @@ void test_calculatePartial_error(void)
     uint8_t data[1];
     
     /*** Calculate Partial ***/
-    /* Calculate Partial (NULL Pointer Error) */
+    /* NULL Pointer Error */
     TEST_ASSERT_EQUAL_HEX8(CRC_CONFIG_CRC8_ERROR_CRC, crc8_calculatePartial(NULL, 0x00, 0x00, false));
 }
 
@@ -94,22 +98,26 @@ void test_calculatePartial_success(void)
     /*** Calculate Partial ***/
     for(algorithm = CRC8_ALGORITHM_CRC8; algorithm < CRC8_ALGORITHM_CRC8_COUNT; algorithm++)
     {        
-        /* Initialize */
-        TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_SUCCESS, crc8_init(algorithm, &configuration, NULL, 0)); // Loop
+        /* Initialize (Loop) */
+        TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_SUCCESS, crc8_init(algorithm, &configuration, NULL, 0));
         
         /* Calculate */
         crc = configuration.initial;
         for(i = 0; i < crc8Test_TestDataCount; i++)
             crc = crc8_calculatePartial(&configuration, crc, crc8Test_TestData[i], (i == (crc8Test_TestDataCount - 1)));
+        
+        /* Verify */
         TEST_ASSERT_EQUAL_HEX8(configuration.check, crc);
         
-        /* Initialize */
-        TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_SUCCESS, crc8_init(algorithm, &configuration, lookupTableMemory, sizeof(lookupTableMemory))); // Lookup Table
+        /* Initialize (Lookup Table) */
+        TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_SUCCESS, crc8_init(algorithm, &configuration, lookupTableMemory, sizeof(lookupTableMemory)));
         
         /* Calculate */
         crc = configuration.initial;
         for(i = 0; i < crc8Test_TestDataCount; i++)
             crc = crc8_calculatePartial(&configuration, crc, crc8Test_TestData[i], (i == (crc8Test_TestDataCount - 1)));
+        
+        /* Verify */
         TEST_ASSERT_EQUAL_HEX8(configuration.check, crc);
     }
 }
@@ -123,13 +131,13 @@ void test_init_error(void)
     uint8_t lookupTableMemory[256];
     
     /*** Initialize ***/
-    /* Initialize (NULL Pointer Error) */
+    /* NULL Pointer Error */
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_ERROR_NULL_POINTER, crc8_init(CRC8_ALGORITHM_CRC8, NULL, lookupTableMemory, sizeof(lookupTableMemory)));
     
-    /* Initialize (Invalid Error) */
+    /* Invalid Error */
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_ERROR_INVALID, crc8_init(CRC8_ALGORITHM_CRC8_COUNT, &configuration, lookupTableMemory, sizeof(lookupTableMemory)));
     
-    /* Initialize (Length Error) */
+    /* Length Error */
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_ERROR_LENGTH, crc8_init(CRC8_ALGORITHM_CRC8, &configuration, lookupTableMemory, (sizeof(lookupTableMemory) - 1)));
 }
 

@@ -18,7 +18,7 @@
 /*** Function Pointer ***/
 typedef list_destroyCallback_t stack_destroyCallback_t;
 
-/*** Type Definition ***/
+/*** Structure ***/
 typedef list_list_t stack_stack_t;
 
 /****************************************************************************************************

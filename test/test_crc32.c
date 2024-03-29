@@ -39,7 +39,7 @@ void test_calculate_error(void)
     uint8_t data[1];
     
     /*** Calculate ***/
-    /* Calculate (NULL Pointer Error) */
+    /* NULL Pointer Error */
     TEST_ASSERT_EQUAL_HEX32(CRC_CONFIG_CRC32_ERROR_CRC, crc32_calculate(NULL, data, sizeof(data)));
     TEST_ASSERT_EQUAL_HEX32(CRC_CONFIG_CRC32_ERROR_CRC, crc32_calculate(&configuration, NULL, sizeof(data)));
 }
@@ -55,18 +55,22 @@ void test_calculate_success(void)
     /*** Calculate ***/
     for(algorithm = CRC32_ALGORITHM_CRC32; algorithm < CRC32_ALGORITHM_CRC32_COUNT; algorithm++)
     {        
-        /* Initialize */
-        TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_SUCCESS, crc32_init(algorithm, &configuration, NULL, 0)); // Loop
+        /* Initialize (Loop) */
+        TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_SUCCESS, crc32_init(algorithm, &configuration, NULL, 0));
         
         /* Calculate */
         crc = crc32_calculate(&configuration, crc8Test_TestData, crc8Test_TestDataCount);
+        
+        /* Verify */
         TEST_ASSERT_EQUAL_HEX32(configuration.check, crc);
         
-        /* Initialize */
-        TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_SUCCESS, crc32_init(algorithm, &configuration, lookupTableMemory, sizeof(lookupTableMemory))); // Lookup Table
+        /* Initialize (Lookup Table) */
+        TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_SUCCESS, crc32_init(algorithm, &configuration, lookupTableMemory, sizeof(lookupTableMemory)));
         
         /* Calculate */
         crc = crc32_calculate(&configuration, crc8Test_TestData, crc8Test_TestDataCount);
+        
+        /* Verify */
         TEST_ASSERT_EQUAL_HEX32(configuration.check, crc);
     }
 }
@@ -80,7 +84,7 @@ void test_calculatePartial_error(void)
     uint8_t data[1];
     
     /*** Calculate Partial ***/
-    /* Calculate Partial (NULL Pointer Error) */
+    /* NULL Pointer Error */
     TEST_ASSERT_EQUAL_HEX32(CRC_CONFIG_CRC32_ERROR_CRC, crc32_calculatePartial(NULL, 0x00, 0x00, false, false));
 }
 
@@ -96,22 +100,26 @@ void test_calculatePartial_success(void)
     /*** Calculate Partial ***/
     for(algorithm = CRC32_ALGORITHM_CRC32; algorithm < CRC32_ALGORITHM_CRC32_COUNT; algorithm++)
     {        
-        /* Initialize */
-        TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_SUCCESS, crc32_init(algorithm, &configuration, NULL, 0)); // Loop
+        /* Initialize (Loop) */
+        TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_SUCCESS, crc32_init(algorithm, &configuration, NULL, 0));
         
         /* Calculate */
         crc = configuration.initial;
         for(i = 0; i < crc8Test_TestDataCount; i++)
             crc = crc32_calculatePartial(&configuration, crc, crc8Test_TestData[i], (i == 0), (i == (crc8Test_TestDataCount - 1)));
+        
+        /* Verify */
         TEST_ASSERT_EQUAL_HEX32(configuration.check, crc);
         
-        /* Initialize */
-        TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_SUCCESS, crc32_init(algorithm, &configuration, lookupTableMemory, sizeof(lookupTableMemory))); // Lookup Table
+        /* Initialize (Lookup Table) */
+        TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_SUCCESS, crc32_init(algorithm, &configuration, lookupTableMemory, sizeof(lookupTableMemory)));
         
         /* Calculate */
         crc = configuration.initial;
         for(i = 0; i < crc8Test_TestDataCount; i++)
             crc = crc32_calculatePartial(&configuration, crc, crc8Test_TestData[i], (i == 0), (i == (crc8Test_TestDataCount - 1)));
+        
+        /* Verify */
         TEST_ASSERT_EQUAL_HEX32(configuration.check, crc);
     }
 }
@@ -125,13 +133,13 @@ void test_init_error(void)
     uint32_t lookupTableMemory[256];
     
     /*** Initialize ***/
-    /* Initialize (NULL Pointer Error) */
+    /* NULL Pointer Error */
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_ERROR_NULL_POINTER, crc32_init(CRC32_ALGORITHM_CRC32, NULL, lookupTableMemory, sizeof(lookupTableMemory)));
     
-    /* Initialize (Invalid Error) */
+    /* Invalid Error */
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_ERROR_INVALID, crc32_init(CRC32_ALGORITHM_CRC32_COUNT, &configuration, lookupTableMemory, sizeof(lookupTableMemory)));
     
-    /* Initialize (Length Error) */
+    /* Length Error */
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_ERROR_LENGTH, crc32_init(CRC32_ALGORITHM_CRC32, &configuration, lookupTableMemory, (sizeof(lookupTableMemory) - 1)));
 }
 

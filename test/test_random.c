@@ -19,7 +19,7 @@ extern random_getRandomUnsigned32BitIntegerCallback_t random_getRandomUnsigned32
  ****************************************************************************************************/
 
 /*** Get Random Seed ***/
-unsigned int randomTest_getRandomSeed(void)
+static unsigned int randomTest_getRandomSeed(void)
 {
     static unsigned int seed = 0;
 
@@ -28,14 +28,14 @@ unsigned int randomTest_getRandomSeed(void)
 }
 
 /*** Get Random Unsigned 32-Bit Integer Callback ***/
-uint32_t randomTest_getRandomUnsigned32BitIntegerCallback(void)
+static uint32_t randomTest_getRandomUnsigned32BitIntegerCallback(void)
 {
     /*** Get Random Unsigned 32-Bit Integer Callback ***/
     return (uint32_t)(((rand() & 0xFFFF) << 16) | (rand() & 0xFFFF));
 }
 
 /*** Set Random Seed ***/
-void randomTest_setRandomSeed(const unsigned int Seed)
+static void randomTest_setRandomSeed(const unsigned int Seed)
 {
     /*** Set Random Seed ***/
     srand(Seed);
@@ -47,6 +47,7 @@ void randomTest_setRandomSeed(const unsigned int Seed)
 
 void setUp(void)
 {
+    /*** Set Up ***/
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_SUCCESS, random_init(randomTest_getRandomUnsigned32BitIntegerCallback));
 }
 
@@ -62,7 +63,7 @@ void tearDown(void)
 void test_getRandomSigned32BitInteger_error(void)
 {    
     /*** Get Random Signed 32-Bit Integer ***/
-    /* Get Random Signed 32-Bit Integer (Not Initialized Error) */
+    /* Not Initialized Error */
     random_getRandomUnsigned32BitIntegerCallback = NULL;
     TEST_ASSERT_EQUAL_INT32(RANDOM_CONFIG_ERROR_VALUE, random_getRandomSigned32BitInteger());
 }
@@ -87,7 +88,10 @@ void test_getRandomSigned32BitInteger_success(void)
     randomTest_setRandomSeed(Seed);
     for(i = 0; i < ListLength; i++)
     {
+        /* Get Random Signed 32-Bit Integer */
         actualInteger = random_getRandomSigned32BitInteger();
+        
+        /* Verify */
         TEST_ASSERT_EQUAL_INT32(expectedIntegerList[i], actualInteger);
     }
 }
@@ -96,11 +100,11 @@ void test_getRandomSigned32BitInteger_success(void)
 void test_getRandomSigned32BitIntegerWithinRange_error(void)
 {
     /*** Get Random Signed 32-Bit Integer Within Range (Inclusive) ***/
-    /* Get Random Signed 32-Bit Integer Within Range (Inclusive) (Not Initialized Error) */
+    /* Not Initialized Error */
     random_getRandomUnsigned32BitIntegerCallback = NULL;
     TEST_ASSERT_EQUAL_INT32(RANDOM_CONFIG_ERROR_VALUE, random_getRandomSigned32BitIntegerWithinRange(-3, -1));
 
-    /* Get Random Signed 32-Bit Integer Within Range (Inclusive) (Invalid Error) */
+    /* Invalid Error */
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_SUCCESS, random_init(randomTest_getRandomUnsigned32BitIntegerCallback));
     TEST_ASSERT_EQUAL_INT32(RANDOM_CONFIG_ERROR_VALUE, random_getRandomSigned32BitIntegerWithinRange(-1, -3));
 }
@@ -126,7 +130,10 @@ void test_getRandomSigned32BitIntegerWithinRange_success(void)
     randomTest_setRandomSeed(Seed);
     for(i = 0; i < ListLength; i++)
     {
+        /* Get Random Signed 32-Bit Integer Within Range (Inclusive) */
         actualInteger = random_getRandomSigned32BitIntegerWithinRange(MinimumInteger, MaximumInteger);
+        
+        /* Verify */
         TEST_ASSERT_EQUAL_UINT32(expectedIntegerList[i], actualInteger);
     }
 }
@@ -135,7 +142,7 @@ void test_getRandomSigned32BitIntegerWithinRange_success(void)
 void test_getRandomUnsigned32BitInteger_error(void)
 {
     /*** Get Random Unsigned 32-Bit Integer ***/
-    /* Get Random Unsigned 32-Bit Integer (Not Initialized Error) */
+    /* Not Initialized Error */
     random_getRandomUnsigned32BitIntegerCallback = NULL;
     TEST_ASSERT_EQUAL_UINT32(RANDOM_CONFIG_ERROR_VALUE, random_getRandomUnsigned32BitInteger());
 }
@@ -160,7 +167,10 @@ void test_getRandomUnsigned32BitInteger_success(void)
     randomTest_setRandomSeed(Seed);
     for(i = 0; i < ListLength; i++)
     {
+        /* Get Random Unsigned 32-Bit Integer */
         actualInteger = random_getRandomUnsigned32BitInteger();
+        
+        /* Verify */
         TEST_ASSERT_EQUAL_UINT32(expectedIntegerList[i], actualInteger);
     }
 }
@@ -169,11 +179,11 @@ void test_getRandomUnsigned32BitInteger_success(void)
 void test_getRandomUnsigned32BitIntegerWithinRange_error(void)
 {
     /*** Get Random Unsigned 32-Bit Integer Within Range (Inclusive) ***/
-    /* Get Random Unsigned 32-Bit Integer Within Range (Inclusive) (Not Initialized Error) */
+    /* Not Initialized Error */
     random_getRandomUnsigned32BitIntegerCallback = NULL;
     TEST_ASSERT_EQUAL_UINT32(RANDOM_CONFIG_ERROR_VALUE, random_getRandomUnsigned32BitIntegerWithinRange(1, 3));
 
-    /* Get Random Unsigned 32-Bit Integer Within Range (Inclusive) (Invalid Error) */
+    /* Invalid Error */
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_SUCCESS, random_init(randomTest_getRandomUnsigned32BitIntegerCallback));
     TEST_ASSERT_EQUAL_UINT32(RANDOM_CONFIG_ERROR_VALUE, random_getRandomUnsigned32BitIntegerWithinRange(3, 1));
 }
@@ -199,7 +209,10 @@ void test_getRandomUnsigned32BitIntegerWithinRange_success(void)
     randomTest_setRandomSeed(Seed);
     for(i = 0; i < ListLength; i++)
     {
+        /* Get Random Unsigned 32-Bit Integer Within Range (Inclusive) */
         actualInteger = random_getRandomUnsigned32BitIntegerWithinRange(MinimumInteger, MaximumInteger);
+        
+        /* Verify */
         TEST_ASSERT_EQUAL_UINT32(expectedIntegerList[i], actualInteger);
     }
 }
@@ -208,7 +221,7 @@ void test_getRandomUnsigned32BitIntegerWithinRange_success(void)
 void test_init_error(void)
 {
     /*** Initialize ***/
-    /* Initialize (NULL Pointer Error) */
+    /* NULL Pointer Error */
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_ERROR_NULL_POINTER, random_init(NULL));
 }
 
@@ -229,15 +242,15 @@ void test_setBuffer_error(void)
     uint8_t buffer[BufferLength];
 
     /*** Set Buffer ***/
-    /* Set Buffer (Not Initialized Error) */
+    /* Not Initialized Error */
     random_getRandomUnsigned32BitIntegerCallback = NULL;
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_ERROR_NOT_INITIALIZED, random_setBuffer(buffer, sizeof(buffer)));
 
-    /* Set Buffer (NULL Pointer Error) */
+    /* NULL Pointer Error */
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_SUCCESS, random_init(randomTest_getRandomUnsigned32BitIntegerCallback));
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_ERROR_NULL_POINTER, random_setBuffer(NULL, sizeof(buffer)));
 
-    /* Set Buffer (Length Error) */
+    /* Length Error */
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_ERROR_LENGTH, random_setBuffer(buffer, 0));
 }
 
@@ -258,7 +271,12 @@ void test_setBuffer_success(void)
         expectedBuffer[i] = (uint8_t)randomTest_getRandomUnsigned32BitIntegerCallback();
 
     /*** Set Buffer ***/
+    /* Set Random Seed */
     randomTest_setRandomSeed(Seed);
+    
+    /* Set Buffer */
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_SUCCESS, random_setBuffer(actualBuffer, sizeof(actualBuffer)));
+    
+    /* Verify */
     TEST_ASSERT_EQUAL_UINT8_ARRAY(expectedBuffer, actualBuffer, BufferLength);
 }

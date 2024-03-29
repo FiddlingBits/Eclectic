@@ -20,6 +20,7 @@
  * Type Definition
  ****************************************************************************************************/
 
+/*** Structure ***/
 typedef struct cliHelper_optionArgumentPair_s
 {
     const char *option;

@@ -11,3 +11,4 @@ According to Merriam-Webster: Composed Of Elements Drawn From Various Sources
     * Set
     * Stack
 * Random
+* Tree

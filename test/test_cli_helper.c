@@ -36,12 +36,12 @@ void test_getCommaSeparatedValueList_error(void)
     uint8_t listCount;
 
     /*** Get Comma Separated Value List ***/
-    /* Get Comma Separated Value List (NULL Pointer Error) */
+    /* NULL Pointer Error */
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_ERROR_NULL_POINTER, cliHelper_getCommaSeparatedValueList(NULL, CLI_HELPER_TEST_LIST_COUNT, list, &listCount));
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_ERROR_NULL_POINTER, cliHelper_getCommaSeparatedValueList("0,1,2", CLI_HELPER_TEST_LIST_COUNT, NULL, &listCount));
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_ERROR_NULL_POINTER, cliHelper_getCommaSeparatedValueList("0,1,2", CLI_HELPER_TEST_LIST_COUNT, list, NULL));
 
-    /* Get Comma Separated Value List (Length Error) */
+    /* Length Error */
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_ERROR_LENGTH, cliHelper_getCommaSeparatedValueList("", CLI_HELPER_TEST_LIST_COUNT, list, &listCount));
 }
 
@@ -78,6 +78,8 @@ void test_getCommaSeparatedValueList_success(void)
 
         /* Get Comma Separated Value List */
         TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_SUCCESS, cliHelper_getCommaSeparatedValueList(input, CLI_HELPER_TEST_LIST_COUNT, actualList, &actualListCount));
+        
+        /* Verify */
         TEST_ASSERT_EQUAL_UINT8(TestData[i].ExpectedListCount, actualListCount);
         for(j = 0; j < CLI_HELPER_TEST_LIST_COUNT; j++)
             TEST_ASSERT_EQUAL_STRING(TestData[i].ExpectedList[j], actualList[j]);
@@ -92,11 +94,11 @@ void test_getDouble_error_preconversion(void)
     double d;
 
     /*** Get Double ***/
-    /* Get Double (NULL Pointer Error) */
+    /* NULL Pointer Error */
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_ERROR_NULL_POINTER, cliHelper_getDouble(NULL, &d));
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_ERROR_NULL_POINTER, cliHelper_getDouble("3.14", NULL));
 
-    /* Get Double (Length Error) */
+    /* Length Error */
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_ERROR_LENGTH, cliHelper_getDouble("", &d));
 }
 
@@ -129,6 +131,8 @@ void test_getDouble_error_postconversion(void)
     {
         /* Get Double */
         TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_ERROR_INVALID, cliHelper_getDouble(TestData[i].Input, &actualDouble));
+        
+        /* Verify */
         TEST_ASSERT_EQUAL_DOUBLE(TestData[i].ExpectedDouble, actualDouble);
     }
 }
@@ -166,6 +170,8 @@ void test_getDouble_success(void)
     {
         /* Get Double */
         TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_SUCCESS, cliHelper_getDouble(TestData[i].Input, &actualDouble));
+        
+        /* Verify */
         TEST_ASSERT_EQUAL_DOUBLE(TestData[i].ExpectedDouble, actualDouble);
     }
 }
@@ -178,11 +184,11 @@ void test_getFloat_error_preconversion(void)
     float f;
 
     /*** Get Float ***/
-    /* Get Float (NULL Pointer Error) */
+    /* NULL Pointer Error */
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_ERROR_NULL_POINTER, cliHelper_getFloat(NULL, &f));
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_ERROR_NULL_POINTER, cliHelper_getFloat("3.14", NULL));
 
-    /* Get Float (Length Error) */
+    /* Length Error */
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_ERROR_LENGTH, cliHelper_getFloat("", &f));
 }
 
@@ -215,6 +221,8 @@ void test_getFloat_error_postconversion(void)
     {
         /* Get Float */
         TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_ERROR_INVALID, cliHelper_getFloat(TestData[i].Input, &actualFloat));
+        
+        /* Verify */
         TEST_ASSERT_EQUAL_FLOAT(TestData[i].ExpectedFloat, actualFloat);
     }
 }
@@ -252,6 +260,8 @@ void test_getFloat_success(void)
     {
         /* Get Float */
         TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_SUCCESS, cliHelper_getFloat(TestData[i].Input, &actualFloat));
+        
+        /* Verify */
         TEST_ASSERT_EQUAL_FLOAT(TestData[i].ExpectedFloat, actualFloat);
     }
 }
@@ -264,11 +274,11 @@ void test_getOptionArgumentPair_error_preconversion(void)
     cliHelper_optionArgumentPair_t optionArgumentPair;
     
     /*** Get Option/Argument Pair ***/
-    /* Get Option/Argument Pair (NULL Pointer Error) */
+    /* NULL Pointer Error */
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_ERROR_NULL_POINTER, cliHelper_getOptionArgumentPair(NULL, &optionArgumentPair));
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_ERROR_NULL_POINTER, cliHelper_getOptionArgumentPair("--help", NULL));
     
-    /* Get Option/Argument Pair (Length Error) */
+    /* Length Error */
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_ERROR_LENGTH, cliHelper_getOptionArgumentPair("", &optionArgumentPair));
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_ERROR_LENGTH, cliHelper_getOptionArgumentPair("-", &optionArgumentPair));
 }
@@ -308,6 +318,8 @@ void test_getOptionArgumentPair_error_postconversion(void)
         
         /* Get Option/Argument Pair */
         TEST_ASSERT_EQUAL_INT(TestData[i].ExpectedStatus, cliHelper_getOptionArgumentPair(input, &actualOptionArgumentPair));
+        
+        /* Verify */
         TEST_ASSERT_EQUAL_STRING(TestData[i].ExpectedOptionArgumentPair.option, actualOptionArgumentPair.option);
     }
 }
@@ -357,6 +369,8 @@ void test_getOptionArgumentPair_success(void)
         
         /* Get Option/Argument Pair */
         TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_SUCCESS, cliHelper_getOptionArgumentPair(input, &actualOptionArgumentPair));
+        
+        /* Verify */
         TEST_ASSERT_EQUAL_STRING(TestData[i].ExpectedOptionArgumentPair.option, actualOptionArgumentPair.option);
     }
 }
@@ -369,11 +383,11 @@ void test_getSigned32BitInteger_error_preconversion(void)
     int32_t s32;
     
     /*** Get Signed 32-Bit Integer ***/
-    /* Get Signed 32-Bit Integer (NULL Pointer Error) */
+    /* NULL Pointer Error */
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_ERROR_NULL_POINTER, cliHelper_getSigned32BitInteger(NULL, &s32));
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_ERROR_NULL_POINTER, cliHelper_getSigned32BitInteger("0", NULL));
     
-    /* Get Signed 32-Bit Integer (Length Error) */
+    /* Length Error */
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_ERROR_LENGTH, cliHelper_getSigned32BitInteger("", &s32));
 }
 
@@ -406,6 +420,8 @@ void test_getSigned32BitInteger_error_postconversion(void)
     {
         /* Get Signed 32-Bit Integer */
         TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_ERROR_INVALID, cliHelper_getSigned32BitInteger(TestData[i].Input, &actualSigned32BitInteger));
+        
+        /* Verify */
         TEST_ASSERT_EQUAL_INT32(TestData[i].ExpectedSigned32BitInteger, actualSigned32BitInteger);
     }
 }
@@ -447,6 +463,8 @@ void test_getSigned32BitInteger_success(void)
     {
         /* Get Signed 32-Bit Integer */
         TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_SUCCESS, cliHelper_getSigned32BitInteger(TestData[i].Input, &actualSigned32BitInteger));
+        
+        /* Verify */
         TEST_ASSERT_EQUAL_INT32(TestData[i].ExpectedSigned32BitInteger, actualSigned32BitInteger);
     }
 }
@@ -459,11 +477,11 @@ void test_getUnsigned32BitInteger_error_preconversion(void)
     uint32_t u32;
     
     /*** Get Unsigned 32-Bit Integer ***/
-    /* Get Unsigned 32-Bit Integer (NULL Pointer Error) */
+    /* NULL Pointer Error */
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_ERROR_NULL_POINTER, cliHelper_getUnsigned32BitInteger(NULL, &u32));
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_ERROR_NULL_POINTER, cliHelper_getUnsigned32BitInteger("0", NULL));
     
-    /* Get Unsigned 32-Bit Integer (Length Error) */
+    /* Length Error */
     TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_ERROR_LENGTH, cliHelper_getUnsigned32BitInteger("", &u32));
 }
 
@@ -494,6 +512,8 @@ void test_getUnsigned32BitInteger_error_postconversion(void)
     {
         /* Get Unsigned 32-Bit Integer */
         TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_ERROR_INVALID, cliHelper_getUnsigned32BitInteger(TestData[i].Input, &actualUnsigned32BitInteger));
+        
+        /* Verify */
         TEST_ASSERT_EQUAL_INT32(TestData[i].ExpectedUnsigned32BitInteger, actualUnsigned32BitInteger);
     }
 }
@@ -541,6 +561,8 @@ void test_getUnsigned32BitInteger_success(void)
     {
         /* Get Unsigned 32-Bit Integer */
         TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_SUCCESS, cliHelper_getUnsigned32BitInteger(TestData[i].Input, &actualUnsigned32BitInteger));
+        
+        /* Verify */
         TEST_ASSERT_EQUAL_INT32(TestData[i].ExpectedUnsigned32BitInteger, actualUnsigned32BitInteger);
     }
 }

@@ -41,7 +41,7 @@ void test_free_error(void)
     /* Initialize */
     eclectic_init(NULL, malloc);
     
-    /* Free (NULL Pointer Error) */
+    /* NULL Pointer Error */
     eclectic_free(NULL);
     eclectic_free((void **)&data); // eclectic_freeCallback Is NULL
 }
@@ -88,14 +88,14 @@ void test_malloc_error(void)
     /* Initialize */
     eclectic_init(free, NULL);
     
-    /* Malloc (NULL Pointer Error) */
+    /* NULL Pointer Error */
     data = eclectic_malloc(1); // eclectic_mallocCallback_t Is NULL
     TEST_ASSERT_NULL(data);
     
     /* Initialize */
     eclectic_init(free, malloc);
     
-    /* Malloc (Length Error) */
+    /* Length Error */
     data = eclectic_malloc(0);
     TEST_ASSERT_NULL(data);
 }

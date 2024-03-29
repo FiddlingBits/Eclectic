@@ -22,7 +22,7 @@
  ****************************************************************************************************/
 
 /*** Compare Callback ***/
-int listDerivedTest_compareCallback(const void * const Data1, const void * const Data2)
+static int listDerivedTest_compareCallback(const void * const Data1, const void * const Data2)
 {    
     /*** Compare Callback ***/
     return *(const int *)Data1 - *(const int *)Data2;
@@ -77,6 +77,7 @@ void test_compareCallback_success(void)
 
 void setUp(void)
 {
+    /*** Set Up ***/
     eclectic_init(free, malloc);
 }
 
@@ -146,33 +147,45 @@ void test_queue(void)
         /* Enqueue */
         for(j = 0; j < LIST_DERIVED_TEST_LIST_COUNT; j++)
         {
+            /* Malloc */
             data = malloc(sizeof(*data));
             *data = TestData[i].EnqueueIntegerList[j];
+            
+            /* Enqueue */
             TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_SUCCESS, queue_enqueue(&queue, data));
             TEST_ASSERT_EQUAL_UINT((j + 1), queue_size(&queue));
         }
+        TEST_ASSERT_EQUAL_UINT(LIST_DERIVED_TEST_LIST_COUNT, queue_size(&queue));
 
-        /* Destroy */
+        /* Destroy When Full */
         TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_SUCCESS, queue_destroy(&queue));
         TEST_ASSERT_EQUAL_UINT(0, queue_size(&queue));
 
         /* Enqueue */
         for(j = 0; j < LIST_DERIVED_TEST_LIST_COUNT; j++)
         {
+            /* Malloc */
             data = malloc(sizeof(*data));
             *data = TestData[i].EnqueueIntegerList[j];
+            
+            /* Enqueue */
             TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_SUCCESS, queue_enqueue(&queue, data));
             TEST_ASSERT_EQUAL_UINT((j + 1), queue_size(&queue));
         }
+        TEST_ASSERT_EQUAL_UINT(LIST_DERIVED_TEST_LIST_COUNT, queue_size(&queue));
 
         /* Dequeue */
         for(j = 0; j < LIST_DERIVED_TEST_LIST_COUNT; j++)
         {
+            /* Dequeue */
             data = queue_dequeue(&queue);
             TEST_ASSERT_EQUAL_INT(TestData[i].ExpectedIntegerList[j], *data);
+            
+            /* Free */
+            free(data);
         }
 
-        /* Destroy */
+        /* Destroy When Empty */
         TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_SUCCESS, queue_destroy(&queue));
     }
 }
@@ -279,22 +292,32 @@ void test_set(void)
         /* Insert */
         for(j = 0; j < LIST_DERIVED_TEST_LIST_COUNT; j++)
         {
+            /* Malloc */
             data = malloc(sizeof(*data));
             *data = TestData[i].InsertIntegerList[j];
+            
+            /* Insert */
             TEST_ASSERT_EQUAL_INT(TestData[i].ExpectedState[j], set_insert(&set, data));
+            if(TestData[i].ExpectedState[j] == ECLECTIC_STATUS_ERROR_DUPLICATE)
+                free(data);
         }
         TEST_ASSERT_EQUAL_UINT(TestData[i].ExpectedIntegerListCount, set_size(&set));
 
-        /* Destroy */
+        /* Destroy When Full */
         TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_SUCCESS, set_destroy(&set));
         TEST_ASSERT_EQUAL_UINT(0, set_size(&set));
 
         /* Insert */
         for(j = 0; j < LIST_DERIVED_TEST_LIST_COUNT; j++)
         {
+            /* Malloc */
             data = malloc(sizeof(*data));
             *data = TestData[i].InsertIntegerList[j];
+            
+            /* Insert */
             TEST_ASSERT_EQUAL_INT(TestData[i].ExpectedState[j], set_insert(&set, data));
+            if(TestData[i].ExpectedState[j] == ECLECTIC_STATUS_ERROR_DUPLICATE)
+                free(data);
         }
         TEST_ASSERT_EQUAL_UINT(TestData[i].ExpectedIntegerListCount, set_size(&set));
 
@@ -311,9 +334,12 @@ void test_set(void)
             data = set_remove(&set);
             TEST_ASSERT_EQUAL_INT(TestData[i].ExpectedIntegerList[j], *data);
             TEST_ASSERT_EQUAL_UINT(--expectedSize, set_size(&set));
+            
+            /* Free */
+            free(data);
         }
 
-        /* Destroy */
+        /* Destroy When Empty */
         TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_SUCCESS, set_destroy(&set));
     }
 }
@@ -376,21 +402,27 @@ void test_stack(void)
         /* Push */
         for(j = 0; j < LIST_DERIVED_TEST_LIST_COUNT; j++)
         {
+            /* Malloc */
             data = malloc(sizeof(*data));
             *data = TestData[i].PushIntegerList[j];
+            
+            /* Push */
             TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_SUCCESS, stack_push(&stack, data));
             TEST_ASSERT_EQUAL_UINT((j + 1), stack_size(&stack));
         }
 
-        /* Destroy */
+        /* Destroy When Full */
         TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_SUCCESS, stack_destroy(&stack));
         TEST_ASSERT_EQUAL_UINT(0, stack_size(&stack));
 
         /* Push */
         for(j = 0; j < LIST_DERIVED_TEST_LIST_COUNT; j++)
         {
+            /* Malloc */
             data = malloc(sizeof(*data));
             *data = TestData[i].PushIntegerList[j];
+            
+            /* Push */
             TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_SUCCESS, stack_push(&stack, data));
             TEST_ASSERT_EQUAL_UINT((j + 1), stack_size(&stack));
         }
@@ -398,11 +430,15 @@ void test_stack(void)
         /* Pop */
         for(j = 0; j < LIST_DERIVED_TEST_LIST_COUNT; j++)
         {
+            /* Pop */
             data = stack_pop(&stack);
             TEST_ASSERT_EQUAL_INT(TestData[i].ExpectedIntegerList[j], *data);
+            
+            /* Free */
+            free(data);
         }
 
-        /* Destroy */
+        /* Destroy When Empty */
         TEST_ASSERT_EQUAL_INT(ECLECTIC_STATUS_SUCCESS, stack_destroy(&stack));
     }
 }

@@ -19,7 +19,7 @@
 typedef list_compareCallback_t set_compareCallback_t;
 typedef list_destroyCallback_t set_destroyCallback_t;
 
-/*** Type Definition ***/
+/*** Structure ***/
 typedef list_list_t set_set_t;
 
 /****************************************************************************************************
