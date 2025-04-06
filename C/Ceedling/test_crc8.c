@@ -400,7 +400,7 @@ void test_init_4(void)
     crc8_init("CRC-8/AUTOSAR", &actualConfiguration, true); // true (Lookup Table)
 
     /* Verify */
-    TEST_ASSERT_EQUAL_UINT8(ExpectedConfiguration.aliasCount, actualConfiguration.aliasCount);
+    TEST_ASSERT_EQUAL_UINT(ExpectedConfiguration.aliasCount, actualConfiguration.aliasCount);
     for(size_t j = 0; j < ExpectedConfiguration.aliasCount; j++)
         TEST_ASSERT_EQUAL_STRING(ExpectedConfiguration.alias[j], actualConfiguration.alias[j]);
     TEST_ASSERT_EQUAL_HEX8(ExpectedConfiguration.check, actualConfiguration.check);
@@ -466,7 +466,7 @@ void test_init_5(void)
         crc8_init(TestData[i].name, &actualConfiguration, false); // false (Loop)
 
         /* Verify */
-        TEST_ASSERT_EQUAL_UINT8(TestData[i].expectedConfiguration.aliasCount, actualConfiguration.aliasCount);
+        TEST_ASSERT_EQUAL_UINT(TestData[i].expectedConfiguration.aliasCount, actualConfiguration.aliasCount);
         for(size_t j = 0; j < TestData[i].expectedConfiguration.aliasCount; j++)
         	TEST_ASSERT_EQUAL_STRING(TestData[i].expectedConfiguration.alias[j], actualConfiguration.alias[j]);
         TEST_ASSERT_EQUAL_HEX8(TestData[i].expectedConfiguration.check, actualConfiguration.check);
@@ -540,13 +540,13 @@ void test_init_6(void)
         crc8_init(TestData[i].name, &actualConfiguration, true); // true (Lookup Table)
 
         /* Verify */
-        TEST_ASSERT_EQUAL_UINT8(TestData[i].expectedConfiguration.aliasCount, actualConfiguration.aliasCount);
+        TEST_ASSERT_EQUAL_UINT(TestData[i].expectedConfiguration.aliasCount, actualConfiguration.aliasCount);
         for(size_t j = 0; j < TestData[i].expectedConfiguration.aliasCount; j++)
         	TEST_ASSERT_EQUAL_STRING(TestData[i].expectedConfiguration.alias[j], actualConfiguration.alias[j]);
         TEST_ASSERT_EQUAL_HEX8(TestData[i].expectedConfiguration.check, actualConfiguration.check);
         TEST_ASSERT_EQUAL_HEX8(TestData[i].expectedConfiguration.initial, actualConfiguration.initial);
         TEST_ASSERT_NOT_NULL(actualConfiguration.lookupTable);
-        TEST_ASSERT_EQUAL_HEX8_ARRAY(TestData[i].expectedConfiguration.lookupTable, actualConfiguration.lookupTable, CRC8_LOOKUP_TABLE_MEMORY_SIZE);
+        TEST_ASSERT_EQUAL_HEX8_ARRAY(TestData[i].expectedConfiguration.lookupTable, actualConfiguration.lookupTable, CRC8_LOOKUP_TABLE_COUNT);
         TEST_ASSERT_EQUAL_STRING(TestData[i].expectedConfiguration.name, actualConfiguration.name);
         TEST_ASSERT_EQUAL_HEX8(TestData[i].expectedConfiguration.polynomial, actualConfiguration.polynomial);
         TEST_ASSERT_EQUAL_INT(TestData[i].expectedConfiguration.reflectIn, actualConfiguration.reflectIn);

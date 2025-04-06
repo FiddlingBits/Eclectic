@@ -18,6 +18,8 @@ def collect_crc_data(bit_width):
     # Set Up
     if bit_width == 8:
         url = "https://reveng.sourceforge.io/crc-catalogue/1-15.htm#crc.cat-bits.8"
+    elif bit_width == 16:
+        url = "https://reveng.sourceforge.io/crc-catalogue/16.htm#crc.cat-bits.16"
     else:
         return
 
@@ -74,7 +76,7 @@ def generate_crc_data(crc_list, bit_width):
     replacement = 0
     for crc in crc_list:
         replacement = max(replacement, len(crc["alias"]))
-    header = template.replace("##### REPLACEMENT #####", f"{replacement}")
+    header = template.replace("##### REPLACE #####", f"{replacement}")
 
     # Header
     with open(f"../../../C/Eclectic/crc{bit_width}.h", "w") as file:
@@ -87,9 +89,9 @@ def generate_crc_data(crc_list, bit_width):
     # Replacement
     replacement = ""
     for crc in crc_list:
-        replacement += f"{get_crc_data_string(4, crc, False)},\n"
+        replacement += f"    {get_crc_data_string(bit_width, crc, False)},\n"
     replacement = replacement[:-2] # Remove Last ",\n"
-    source = template.replace("##### REPLACEMENT #####", replacement)
+    source = template.replace("##### REPLACE #####", replacement)
 
     # Source
     with open(f"../../../C/Eclectic/crc{bit_width}.c", "w") as file:
@@ -108,56 +110,66 @@ def generate_crc_data(crc_list, bit_width):
             crc_data_list.append(f"{alias}")
     crc_data_list.sort()
     string += f"{{{', '.join(crc_data_list)}}}"
-    template = template.replace("##### REPLACEMENT 1 #####", string)
+    template = template.replace("##### REPLACE 1 #####", string)
 
     # Replacement 2
-    template = template.replace("##### REPLACEMENT 2 #####", crc_list[0]["check"])
+    if bit_width == 8:
+        check = crc_list[0]["check"]
+    elif bit_width == 16:
+        check = [crc_list[0]['check'][2:4], crc_list[0]['check'][4:]]
+        if crc_list[0]["refout"]:
+            check = f"0x{check[1]}, 0x{check[0]}"
+        else:
+            check = f"0x{check[0]}, 0x{check[1]}"
+    else:
+        return
+    template = template.replace("##### REPLACE 2 #####", check)
 
     # Replacement 3
-    template = template.replace("##### REPLACEMENT 3 #####", crc_list[0]["name"])
+    template = template.replace("##### REPLACE 3 #####", crc_list[0]["name"])
 
     # Replacement 4
-    template = template.replace("##### REPLACEMENT 4 #####", get_crc_data_string(0, crc_list[0], False))
+    template = template.replace("##### REPLACE 4 #####", get_crc_data_string(bit_width, crc_list[0], False))
 
     # Replacement 5
     crc_data_list = []
     indentation = " " * 8
     for crc in crc_list:
-        crc_data_list.append(f"{indentation}{{{crc['name']}, {get_crc_data_string(0, crc, False)}}}")
+        crc_data_list.append(f"{indentation}{{{crc['name']}, {get_crc_data_string(bit_width, crc, False)}}}")
         for alias in crc['alias']:
-            crc_data_list.append(f"{indentation}{{{alias}, {get_crc_data_string(0, crc, False)}}}")
+            crc_data_list.append(f"{indentation}{{{alias}, {get_crc_data_string(bit_width, crc, False)}}}")
     crc_data_list.sort()
     string = ",\n".join(crc_data_list)
-    template = template.replace("##### REPLACEMENT 5 #####", string)
+    template = template.replace("##### REPLACE 5 #####", string)
 
     # Replacement 6
     crc_data_list = []
     indentation = " " * 8
     for crc in crc_list:
-        crc_data_list.append(f"{indentation}{{{crc['name']}, {get_crc_data_string(0, crc, True)}}}")
+        crc_data_list.append(f"{indentation}{{{crc['name']}, {get_crc_data_string(bit_width, crc, True)}}}")
         for alias in crc['alias']:
-            crc_data_list.append(f"{indentation}{{{alias}, {get_crc_data_string(0, crc, True)}}}")
+            crc_data_list.append(f"{indentation}{{{alias}, {get_crc_data_string(bit_width, crc, True)}}}")
     crc_data_list.sort()
     string = ",\n".join(crc_data_list)
-    test = template.replace("##### REPLACEMENT 6 #####", string)
+    test = template.replace("##### REPLACE 6 #####", string)
 
     # Test
     with open(f"../../../C/Ceedling/test_crc{bit_width}.c", "w") as file:
         file.write(test)
 
-def get_crc_data_string(indentation, crc, lookup_table):
+def get_crc_data_string(bit_width, crc, lookup_table):
     alias_list = ""
     for alias in crc['alias']:
         alias_list += f"{alias}, "
     if len(alias_list) > 0:
         alias_list = alias_list[:-2]  # Remove Last ",\n"
-    string = " " * indentation
+    string = ""
     string += f"{{{{{alias_list}}}, "
     string += f"{len(crc['alias'])}, "
     string += f"{crc['check']}, "
     string += f"{crc['init']}, "
     if lookup_table:
-        string += f"(uint8_t []){{{', '.join(crc['lookup_table'])}}}, "
+        string += f"(uint{bit_width}_t []){{{', '.join(crc['lookup_table'])}}}, "
     else:
         string += "NULL, "
     string += f"{crc['name']}, "
