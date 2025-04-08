@@ -92,7 +92,7 @@ uint8_t crc8_calculatePartial(const crc8_configuration_t * const Configuration, 
                 crc ^= Data;
 
             /* Calculate */
-            for(uint8_t bit = 0; bit < 8; bit++)
+            for(size_t bit = 0; bit < 8; bit++)
             {
                 if((crc & 0x80) == 0x80)
                     crc = (crc << 1) ^ Configuration->polynomial;

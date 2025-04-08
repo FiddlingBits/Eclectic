@@ -10,7 +10,7 @@
 
 #define CRC16_LOOKUP_TABLE_COUNT       (256)
 #define CRC16_LOOKUP_TABLE_MEMORY_SIZE (CRC16_LOOKUP_TABLE_COUNT * sizeof(uint16_t))
-#define CRC16_MAXIMUM_ALIAS_COUNT      (##### REPLACE #####)
+#define CRC16_MAXIMUM_ALIAS_COUNT      (##### REPLACEMENT #####)
 
 /****************************************************************************************************
  * Include
