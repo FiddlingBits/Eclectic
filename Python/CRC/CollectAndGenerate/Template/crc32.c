@@ -182,7 +182,7 @@ void crc32_init(const char * const Name, crc32_configuration_t * const configura
                 if((lookupTable = memory_malloc(CRC32_LOOKUP_TABLE_MEMORY_SIZE)) != NULL)
                 {
                     for(i = 0; i < 256; i++)
-                        lookupTable[i] = crc32_calculatePartial(configuration, 0x0000, (uint8_t)i, true, true) ^ configuration->xorOut;
+                        lookupTable[i] = crc32_calculatePartial(configuration, 0x00000000, (uint8_t)i, true, true) ^ configuration->xorOut;
                     configuration->lookupTable = lookupTable;
                 }
             }
