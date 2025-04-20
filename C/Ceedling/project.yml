@@ -1,6 +1,8 @@
 :cmock:
   :enforce_strict_ordering: TRUE
   :mock_prefix: mock_
+  :plugins:
+    - :expect_any_args
   :treat_externs: :include
   :when_no_prototypes: :error
 
