@@ -8,7 +8,8 @@
  * Define
  ****************************************************************************************************/
 
-#define CRC8_LOOKUP_TABLE_MEMORY_SIZE (256 * sizeof(uint8_t))
+#define CRC8_LOOKUP_TABLE_COUNT       (256)
+#define CRC8_LOOKUP_TABLE_MEMORY_SIZE (CRC8_LOOKUP_TABLE_COUNT * sizeof(uint8_t))
 #define CRC8_MAXIMUM_ALIAS_COUNT      (2)
 
 /****************************************************************************************************
