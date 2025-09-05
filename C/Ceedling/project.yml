@@ -1,0 +1,49 @@
+:cmock:
+  :enforce_strict_ordering: TRUE
+  :mock_prefix: mock_
+  :treat_externs: :include
+  :when_no_prototypes: :error
+
+:defines:
+  :test:
+    - CEEDLING
+
+:extension:
+  :executable: .exe
+
+:gcov:
+  :gcovr:
+    :report_include:
+      - ../Eclectic/
+    :report_root: ../
+  :reports:
+    - Cobertura
+    - HtmlDetailed
+  :utilities:
+    - gcovr
+
+:paths:
+  :include:
+    - ../
+    - ../Eclectic/**
+  :source:
+    - ../Eclectic/**
+  :test:
+    - ./
+
+:plugins:
+  :enabled:
+    - gcov
+    - report_build_warnings_log
+    - report_tests_log_factory
+    - report_tests_pretty_stdout
+
+:project:
+  :build_root: ../Build/Ceedling/
+  :ceedling_version: 0.31.1
+  :test_file_prefix: test_
+  :which_ceedling: gem
+
+:report_tests_log_factory:
+  :reports:
+    - junit

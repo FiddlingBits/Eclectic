@@ -1,0 +1,6 @@
+# Directory
+.idea/
+Build/
+
+# File
+.clang-format
