@@ -103,7 +103,7 @@ uint16_t crc16_calculatePartial(const crc16_configuration_t * const Configuratio
                 crc ^= (Data << 8);
 
             /* Calculate */
-            for(uint8_t bit = 0; bit < 8; bit++)
+            for(size_t bit = 0; bit < 8; bit++)
             {
                 if((crc & 0x8000) == 0x8000)
                     crc = (crc << 1) ^ Configuration->polynomial;

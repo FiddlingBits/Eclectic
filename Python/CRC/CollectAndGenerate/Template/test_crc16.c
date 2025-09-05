@@ -71,7 +71,7 @@ void test_calculate_3(void)
 {
     /*** Calculate (Loop) ***/
     /* Constant */
-    const char *CrcName[] = ##### REPLACE 1 #####;
+    const char *CrcName[] = ##### REPLACEMENT 1 #####;
     const size_t CrcNameCount = sizeof(CrcName) / sizeof(CrcName[0]);
 
     /* Variable */
@@ -96,7 +96,7 @@ void test_calculate_4(void)
 {
     /*** Calculate (Lookup Table) ***/
     /* Constant */
-    const char *CrcName[] = ##### REPLACE 1 #####;
+    const char *CrcName[] = ##### REPLACEMENT 1 #####;
     const size_t CrcNameCount = sizeof(CrcName) / sizeof(CrcName[0]);
 
     /* Variable */
@@ -164,7 +164,7 @@ void test_calculateAndAppend_4(void)
 {
     /*** Calculate And Append (Loop) ***/
     /* Constant */
-    const uint8_t ExpectedBuffer[sizeof(test_CheckData) + sizeof(uint16_t)] = {'1', '2', '3', '4', '5', '6', '7', '8', '9', ##### REPLACE 2 #####};
+    const uint8_t ExpectedBuffer[sizeof(test_CheckData) + sizeof(uint16_t)] = {'1', '2', '3', '4', '5', '6', '7', '8', '9', ##### REPLACEMENT 2 #####};
 
     /* Variable */
     uint8_t actualBuffer[sizeof(test_CheckData) + sizeof(uint16_t)];
@@ -174,7 +174,7 @@ void test_calculateAndAppend_4(void)
     (void)memcpy(actualBuffer, test_CheckData, sizeof(test_CheckData));
 
     /* Calculate And Append */
-    crc16_init(##### REPLACE 3 #####, &configuration, false); // false (Loop)
+    crc16_init(##### REPLACEMENT 3 #####, &configuration, false); // false (Loop)
     crc16_calculateAndAppend(&configuration, actualBuffer, sizeof(actualBuffer), sizeof(actualBuffer) - sizeof(uint16_t));
 
     /* Verify */
@@ -185,7 +185,7 @@ void test_calculateAndAppend_5(void)
 {
     /*** Calculate And Append (Lookup Table) ***/
     /* Constant */
-    const uint8_t ExpectedBuffer[sizeof(test_CheckData) + sizeof(uint16_t)] = {'1', '2', '3', '4', '5', '6', '7', '8', '9', ##### REPLACE 2 #####};
+    const uint8_t ExpectedBuffer[sizeof(test_CheckData) + sizeof(uint16_t)] = {'1', '2', '3', '4', '5', '6', '7', '8', '9', ##### REPLACEMENT 2 #####};
 
     /* Variable */
     uint8_t actualBuffer[sizeof(test_CheckData) + sizeof(uint16_t)];
@@ -200,7 +200,7 @@ void test_calculateAndAppend_5(void)
     memory_malloc_ExpectAndReturn(CRC16_LOOKUP_TABLE_MEMORY_SIZE, memory);
 
     /* Calculate And Append */
-    crc16_init(##### REPLACE 3 #####, &configuration, true); // true (Lookup Table)
+    crc16_init(##### REPLACEMENT 3 #####, &configuration, true); // true (Lookup Table)
     crc16_calculateAndAppend(&configuration, actualBuffer, sizeof(actualBuffer), sizeof(actualBuffer) - sizeof(uint16_t));
 
     /* Verify */
@@ -228,7 +228,7 @@ void test_calculatePartial_2(void)
 {
     /*** Calculate Partial (Loop) ***/
     /* Constant */
-    const char *CrcName[] = ##### REPLACE 1 #####;
+    const char *CrcName[] = ##### REPLACEMENT 1 #####;
     const size_t CrcNameCount = sizeof(CrcName) / sizeof(CrcName[0]);
 
     /* Variable */
@@ -255,7 +255,7 @@ void test_calculatePartial_3(void)
 {
     /*** Calculate Partial (Lookup Table) ***/
     /* Constant */
-    const char *CrcName[] = ##### REPLACE 1 #####;
+    const char *CrcName[] = ##### REPLACEMENT 1 #####;
     const size_t CrcNameCount = sizeof(CrcName) / sizeof(CrcName[0]);
 
     /* Variable */
@@ -306,7 +306,7 @@ void test_deinit_2(void)
     memory_free_Expect((void **)&configuration.lookupTable);
 
     /* Set Up */
-    crc16_init(##### REPLACE 3 #####, &configuration, false); // false (Loop)
+    crc16_init(##### REPLACEMENT 3 #####, &configuration, false); // false (Loop)
 
     /* Initialize */
     crc16_deinit(&configuration);
@@ -337,7 +337,7 @@ void test_deinit_3(void)
     memory_free_Expect((void **)&configuration.lookupTable);
 
     /* Set Up */
-    crc16_init(##### REPLACE 3 #####, &configuration, true); // true (Lookup Table)
+    crc16_init(##### REPLACEMENT 3 #####, &configuration, true); // true (Lookup Table)
 
     /* Initialize */
     crc16_deinit(&configuration);
@@ -371,7 +371,7 @@ void test_init_2(void)
 {
     /*** Initialize (Configuration NULL) ***/
     /* Initialize */
-    crc16_init(##### REPLACE 3 #####, NULL, false);
+    crc16_init(##### REPLACEMENT 3 #####, NULL, false);
 }
 
 void test_init_3(void)
@@ -388,7 +388,7 @@ void test_init_4(void)
 {
     /*** Initialize (Memory Allocation Failure) ***/
     /* Constant */
-    const crc16_configuration_t ExpectedConfiguration = ##### REPLACE 4 #####;
+    const crc16_configuration_t ExpectedConfiguration = ##### REPLACEMENT 4 #####;
 
     /* Variable */
     crc16_configuration_t actualConfiguration;
@@ -397,7 +397,7 @@ void test_init_4(void)
     memory_malloc_ExpectAndReturn(CRC16_LOOKUP_TABLE_MEMORY_SIZE, NULL);
 
     /* Initialize */
-    crc16_init(##### REPLACE 3 #####, &actualConfiguration, true); // true (Lookup Table)
+    crc16_init(##### REPLACEMENT 3 #####, &actualConfiguration, true); // true (Lookup Table)
 
     /* Verify */
     TEST_ASSERT_EQUAL_UINT(ExpectedConfiguration.aliasCount, actualConfiguration.aliasCount);
@@ -427,7 +427,7 @@ void test_init_5(void)
     /* Test Data */
     const testData_t TestData[] =
     {
-##### REPLACE 5 #####
+##### REPLACEMENT 5 #####
     };
     const size_t TestDataCount = sizeof(TestData) / sizeof(TestData[0]);
 
@@ -469,7 +469,7 @@ void test_init_6(void)
     /* Test Data */
     const testData_t TestData[] =
     {
-##### REPLACE 6 #####
+##### REPLACEMENT 6 #####
     };
     const size_t TestDataCount = sizeof(TestData) / sizeof(TestData[0]);
 
@@ -535,12 +535,12 @@ void test_verify_3(void)
 {
     /*** Verify (Loop) ***/
     /* Constant */
-    const char *CrcName[] = ##### REPLACE 1 #####;
+    const char *CrcName[] = ##### REPLACEMENT 1 #####;
     const size_t CrcNameCount = sizeof(CrcName) / sizeof(CrcName[0]);
 
     /* Variable */
     crc16_configuration_t configuration;
-    uint16_t buffer[128 + sizeof(uint16_t)];
+    uint8_t buffer[128 + sizeof(uint16_t)];
 
     /* Calculate */
     for(size_t i = 0; i < CrcNameCount; i++)
@@ -559,7 +559,7 @@ void test_verify_4(void)
 {
     /*** Verify (Lookup Table) ***/
     /* Constant */
-    const char *CrcName[] = ##### REPLACE 1 #####;
+    const char *CrcName[] = ##### REPLACEMENT 1 #####;
     const size_t CrcNameCount = sizeof(CrcName) / sizeof(CrcName[0]);
 
     /* Variable */

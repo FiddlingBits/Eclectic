@@ -8,9 +8,9 @@
  * Define
  ****************************************************************************************************/
 
-#define CRC8_LOOKUP_TABLE_COUNT       (256)
-#define CRC8_LOOKUP_TABLE_MEMORY_SIZE (CRC8_LOOKUP_TABLE_COUNT * sizeof(uint8_t))
-#define CRC8_MAXIMUM_ALIAS_COUNT      (##### REPLACEMENT #####)
+#define CRC32_LOOKUP_TABLE_COUNT       (256)
+#define CRC32_LOOKUP_TABLE_MEMORY_SIZE (CRC32_LOOKUP_TABLE_COUNT * sizeof(uint32_t))
+#define CRC32_MAXIMUM_ALIAS_COUNT      (5)
 
 /****************************************************************************************************
  * Include
@@ -25,28 +25,28 @@
  ****************************************************************************************************/
 
 /*** Structure ***/
-typedef struct crc8_configuration_s
+typedef struct crc32_configuration_s
 {
-    char *alias[CRC8_MAXIMUM_ALIAS_COUNT];
+    char *alias[CRC32_MAXIMUM_ALIAS_COUNT];
     size_t aliasCount;
-    uint8_t check;
-    uint8_t initial;
-    uint8_t *lookupTable;
+    uint32_t check;
+    uint32_t initial;
+    uint32_t *lookupTable;
     char *name;
-    uint8_t polynomial;
+    uint32_t polynomial;
     bool reflectIn;
     bool reflectOut;
-    uint8_t residue;
-    uint8_t xorOut;
-} crc8_configuration_t;
+    uint32_t residue;
+    uint32_t xorOut;
+} crc32_configuration_t;
 
 /****************************************************************************************************
  * Function Prototype
  ****************************************************************************************************/
 
-extern uint8_t crc8_calculate(const crc8_configuration_t * const Configuration, const uint8_t *Data, const size_t DataLength);
-extern void crc8_calculateAndAppend(const crc8_configuration_t * const Configuration, uint8_t *const buffer, const size_t BufferLength, const size_t DataLength);
-extern uint8_t crc8_calculatePartial(const crc8_configuration_t * const Configuration, uint8_t crc, const uint8_t Data, const bool Last);
-extern void crc8_deinit(crc8_configuration_t * const configuration);
-extern void crc8_init(const char * const Name, crc8_configuration_t * const configuration, const bool CreateLookupTable);
-extern bool crc8_verify(const crc8_configuration_t * const Configuration, const uint8_t *Buffer, const size_t BufferLength);
+extern uint32_t crc32_calculate(const crc32_configuration_t * const Configuration, const uint8_t *Data, const size_t DataLength);
+extern void crc32_calculateAndAppend(const crc32_configuration_t * const Configuration, uint8_t *const buffer, const size_t BufferLength, const size_t DataLength);
+extern uint32_t crc32_calculatePartial(const crc32_configuration_t * const Configuration, uint32_t crc, const uint8_t Data, const bool First, const bool Last);
+extern void crc32_deinit(crc32_configuration_t * const configuration);
+extern void crc32_init(const char * const Name, crc32_configuration_t * const configuration, const bool CreateLookupTable);
+extern bool crc32_verify(const crc32_configuration_t * const Configuration, const uint8_t *Buffer, const size_t BufferLength);

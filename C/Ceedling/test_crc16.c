@@ -670,7 +670,7 @@ void test_verify_3(void)
 
     /* Variable */
     crc16_configuration_t configuration;
-    uint16_t buffer[128 + sizeof(uint16_t)];
+    uint8_t buffer[128 + sizeof(uint16_t)];
 
     /* Calculate */
     for(size_t i = 0; i < CrcNameCount; i++)
