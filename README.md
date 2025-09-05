@@ -6,4 +6,7 @@ Composed Of Elements Drawn From Various Sources
     * CRC-16
     * CRC-32
     * CRC-64
-* Random
+* Data Structure
+    * List
+* Miscellaneous
+    * Random

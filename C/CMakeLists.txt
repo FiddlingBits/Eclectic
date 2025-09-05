@@ -3,6 +3,7 @@ add_executable(Eclectic
     Eclectic/crc8.c
     Eclectic/crc16.c
     Eclectic/crc32.c
+    Eclectic/list.c
     Eclectic/memory.c
     Eclectic/misc.c
     Eclectic/random.c
