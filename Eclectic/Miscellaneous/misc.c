@@ -2,7 +2,7 @@
 * Include
  ****************************************************************************************************/
 
-#include "Eclectic/misc.h"
+#include "Eclectic/Miscellaneous/misc.h"
 #include <stddef.h>
 #include <stdint.h>
 

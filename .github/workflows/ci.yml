@@ -19,16 +19,16 @@ jobs:
           pip install gcovr
           chmod +x ceedling
           ./ceedling
-        working-directory: ./C/Ceedling/
+        working-directory: ./Ceedling/
       - name: Test Report
+        if: always()
         uses: mikepenz/action-junit-report@v4
         with:
           include_passed: true
-          report_paths: C/Build/Ceedling/artifacts/gcov/junit_tests_report.xml
-        if: always()
+          report_paths: ./Ceedling/Build/artifacts/gcov/junit_tests_report.xml
       - name: Coverage
         uses: 5monkeys/cobertura-action@master
         with:
           minimum_coverage: 90
-          path: C/Build/Ceedling/artifacts/gcov/gcovr/GcovCoverageCobertura.xml
+          path: ./Ceedling/Build/artifacts/gcov/gcovr/GcovCoverageCobertura.xml
           skip_covered: false

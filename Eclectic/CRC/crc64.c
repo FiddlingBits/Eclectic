@@ -2,9 +2,9 @@
  * Include
  ****************************************************************************************************/
 
-#include "Eclectic/crc16.h"
-#include "Eclectic/memory.h"
-#include "Eclectic/misc.h"
+#include "Eclectic/CRC/crc64.h"
+#include "Eclectic/Miscellaneous/memory.h"
+#include "Eclectic/Miscellaneous/misc.h"
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
@@ -13,20 +13,26 @@
  * Constant
  ****************************************************************************************************/
 
-const crc16_configuration_t crc16_Configuration[] =
+const crc64_configuration_t crc64_Configuration[] =
 {
-##### REPLACEMENT #####
+    {{"CRC-64"}, 1, 0x6C40DF5F0B497347, 0x0000000000000000, NULL, "CRC-64/ECMA-182", 0x42F0E1EBA9EA3693, false, false, 0x0000000000000000, 0x0000000000000000},
+    {{}, 0, 0xB90956C775A41001, 0xFFFFFFFFFFFFFFFF, NULL, "CRC-64/GO-ISO", 0x000000000000001B, true, true, 0x5300000000000000, 0xFFFFFFFFFFFFFFFF},
+    {{}, 0, 0x75D4B74F024ECEEA, 0xFFFFFFFFFFFFFFFF, NULL, "CRC-64/MS", 0x259C84CBA6426349, true, true, 0x0000000000000000, 0x0000000000000000},
+    {{}, 0, 0xAE8B14860A799888, 0xFFFFFFFFFFFFFFFF, NULL, "CRC-64/NVME", 0xAD93D23594C93659, true, true, 0xF310303B2B6F6E42, 0xFFFFFFFFFFFFFFFF},
+    {{}, 0, 0xE9C6D914C4B8D9CA, 0x0000000000000000, NULL, "CRC-64/REDIS", 0xAD93D23594C935A9, true, true, 0x0000000000000000, 0x0000000000000000},
+    {{}, 0, 0x62EC59E3F1A4F00A, 0xFFFFFFFFFFFFFFFF, NULL, "CRC-64/WE", 0x42F0E1EBA9EA3693, false, false, 0xFCACBEBD5931A992, 0xFFFFFFFFFFFFFFFF},
+    {{"CRC-64/GO-ECMA"}, 1, 0x995DC9BBDF1939FA, 0xFFFFFFFFFFFFFFFF, NULL, "CRC-64/XZ", 0x42F0E1EBA9EA3693, true, true, 0x49958C9ABD7D353F, 0xFFFFFFFFFFFFFFFF}
 };
-const size_t crc16_ConfigurationCount = sizeof(crc16_Configuration) / sizeof(crc16_Configuration[0]);
+const size_t crc64_ConfigurationCount = sizeof(crc64_Configuration) / sizeof(crc64_Configuration[0]);
 
 /****************************************************************************************************
  * Function Definition (Public)
  ****************************************************************************************************/
 
 /*** Calculate ***/
-uint16_t crc16_calculate(const crc16_configuration_t * const Configuration, const uint8_t *Data, const size_t DataLength)
+uint64_t crc64_calculate(const crc64_configuration_t * const Configuration, const uint8_t *Data, const size_t DataLength)
 {
-    uint16_t crc = 0x0000;
+    uint64_t crc = 0x0000000000000000;
 
     /*** Calculate ***/
     /* Error Check */
@@ -37,27 +43,27 @@ uint16_t crc16_calculate(const crc16_configuration_t * const Configuration, cons
 
         /* Calculate */
         for(size_t i = 0; i < DataLength; i++)
-            crc = crc16_calculatePartial(Configuration, crc, Data[i], (i == 0), (i == (DataLength - 1)));
+            crc = crc64_calculatePartial(Configuration, crc, Data[i], (i == 0), (i == (DataLength - 1)));
     }
 
     return crc;
 }
 
 /*** Calculate And Append ***/
-void crc16_calculateAndAppend(const crc16_configuration_t * const Configuration, uint8_t *const buffer, const size_t BufferLength, const size_t DataLength)
+void crc64_calculateAndAppend(const crc64_configuration_t * const Configuration, uint8_t *const buffer, const size_t BufferLength, const size_t DataLength)
 {
-    uint16_t crc = 0x0000;
+    uint64_t crc = 0x0000000000000000;
 
     /*** Calculate And Append ***/
     if((Configuration != NULL) && (buffer != NULL) && (BufferLength >= (DataLength + sizeof(crc))))
     {
-        crc = crc16_calculate(Configuration, buffer, DataLength);
-        misc_insert16(buffer + DataLength, BufferLength - DataLength, crc, !Configuration->reflectOut);
+        crc = crc64_calculate(Configuration, buffer, DataLength);
+        misc_insert64(buffer + DataLength, BufferLength - DataLength, crc, !Configuration->reflectOut);
     }
 }
 
 /*** Calculate Partial ***/
-uint16_t crc16_calculatePartial(const crc16_configuration_t * const Configuration, uint16_t crc, const uint8_t Data, const bool First, const bool Last)
+uint64_t crc64_calculatePartial(const crc64_configuration_t * const Configuration, uint64_t crc, const uint8_t Data, const bool First, const bool Last)
 {
     /*** Calculate Partial ***/
     /* Error Check */
@@ -68,14 +74,14 @@ uint16_t crc16_calculatePartial(const crc16_configuration_t * const Configuratio
         {
             /* Reflect */
             if(Configuration->reflectIn)
-                crc ^= (misc_reflect8(Data) << 8);
+                crc ^= ((uint64_t)misc_reflect8(Data) << 56);
             else
-                crc ^= (Data << 8);
+                crc ^= ((uint64_t)Data << 56);
 
             /* Calculate */
             for(size_t bit = 0; bit < 8; bit++)
             {
-                if((crc & 0x8000) == 0x8000)
+                if((crc & 0x8000000000000000) == 0x8000000000000000)
                     crc = (crc << 1) ^ Configuration->polynomial;
                 else
                     crc <<= 1;
@@ -86,7 +92,7 @@ uint16_t crc16_calculatePartial(const crc16_configuration_t * const Configuratio
             {
                 crc ^= Configuration->xorOut;
                 if(Configuration->reflectOut)
-                    crc = misc_reflect16(crc);
+                    crc = misc_reflect64(crc);
             }
         }
         else
@@ -96,7 +102,7 @@ uint16_t crc16_calculatePartial(const crc16_configuration_t * const Configuratio
             {
                 /* Reflect */
                 if(First)
-                    crc = misc_reflect16(crc);
+                    crc = misc_reflect64(crc);
 
                 /* Lookup Table */
                 crc = (crc >> 8) ^ Configuration->lookupTable[(crc ^ Data) % 256];
@@ -104,7 +110,7 @@ uint16_t crc16_calculatePartial(const crc16_configuration_t * const Configuratio
             else
             {
                 /* Lookup Table */
-                crc = (crc << 8) ^ Configuration->lookupTable[(crc >> 8) ^ Data];
+                crc = (crc << 8) ^ Configuration->lookupTable[(crc >> 56) ^ Data];
             }
 
             /* Last */
@@ -117,7 +123,7 @@ uint16_t crc16_calculatePartial(const crc16_configuration_t * const Configuratio
 }
 
 /*** Deinitialize ***/
-void crc16_deinit(crc16_configuration_t * const configuration)
+void crc64_deinit(crc64_configuration_t * const configuration)
 {
     /*** Deinitialize ***/
     /* Error Check */
@@ -130,7 +136,7 @@ void crc16_deinit(crc16_configuration_t * const configuration)
 }
 
 /*** Initialize ***/
-void crc16_init(const char * const Name, crc16_configuration_t * const configuration, const bool CreateLookupTable)
+void crc64_init(const char * const Name, crc64_configuration_t * const configuration, const bool CreateLookupTable)
 {
     /*** Initialize ***/
     /* Error Check */
@@ -140,10 +146,10 @@ void crc16_init(const char * const Name, crc16_configuration_t * const configura
         size_t i;
 
         /* Algorithm */
-        for(i = 0; i < crc16_ConfigurationCount; i++)
+        for(i = 0; i < crc64_ConfigurationCount; i++)
         {
             /* Name */
-            if(strcmp(Name, crc16_Configuration[i].name) == 0)
+            if(strcmp(Name, crc64_Configuration[i].name) == 0)
             {
                 /* Found */
                 found = true;
@@ -152,9 +158,9 @@ void crc16_init(const char * const Name, crc16_configuration_t * const configura
             else
             {
                 /* Alias */
-                for(size_t j = 0; j < crc16_Configuration[i].aliasCount; j++)
+                for(size_t j = 0; j < crc64_Configuration[i].aliasCount; j++)
                 {
-                    if(strcmp(Name, crc16_Configuration[i].alias[j]) == 0)
+                    if(strcmp(Name, crc64_Configuration[i].alias[j]) == 0)
                     {
                         /* Found */
                         found = true;
@@ -172,17 +178,17 @@ void crc16_init(const char * const Name, crc16_configuration_t * const configura
         if(found)
         {
             /* Copy */
-            (void)memcpy(configuration, &crc16_Configuration[i], sizeof(crc16_Configuration[i]));
+            (void)memcpy(configuration, &crc64_Configuration[i], sizeof(crc64_Configuration[i]));
 
             /* Generate Lookup Table */
             if(CreateLookupTable)
             {
-                uint16_t *lookupTable;
+                uint64_t *lookupTable;
 
-                if((lookupTable = memory_malloc(CRC16_LOOKUP_TABLE_MEMORY_SIZE)) != NULL)
+                if((lookupTable = memory_malloc(CRC64_LOOKUP_TABLE_MEMORY_SIZE)) != NULL)
                 {
                     for(i = 0; i < 256; i++)
-                        lookupTable[i] = crc16_calculatePartial(configuration, 0x0000, (uint8_t)i, true, true) ^ configuration->xorOut;
+                        lookupTable[i] = crc64_calculatePartial(configuration, 0x0000000000000000, (uint8_t)i, true, true) ^ configuration->xorOut;
                     configuration->lookupTable = lookupTable;
                 }
             }
@@ -195,7 +201,7 @@ void crc16_init(const char * const Name, crc16_configuration_t * const configura
 }
 
 /*** Verify ***/
-bool crc16_verify(const crc16_configuration_t * const Configuration, const uint8_t *Buffer, const size_t BufferLength)
+bool crc64_verify(const crc64_configuration_t * const Configuration, const uint8_t *Buffer, const size_t BufferLength)
 {
     bool verified = false;
 
@@ -203,7 +209,7 @@ bool crc16_verify(const crc16_configuration_t * const Configuration, const uint8
     /* Error Check */
     if((Configuration != NULL) && (Buffer != NULL))
     {
-        const uint16_t Crc = crc16_calculate(Configuration, Buffer, BufferLength);
+        const uint64_t Crc = crc64_calculate(Configuration, Buffer, BufferLength);
         verified = ((Crc ^ Configuration->xorOut) == Configuration->residue);
     }
 

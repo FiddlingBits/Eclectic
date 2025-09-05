@@ -2,8 +2,8 @@
  * Include
  ****************************************************************************************************/
 
-#include "Eclectic/project.h"
-#include "Eclectic/random.h"
+#include "Eclectic/Miscellaneous/project.h"
+#include "Eclectic/Miscellaneous/random.h"
 #include <stdint.h>
 #include <string.h>
 

@@ -2,8 +2,8 @@
 * Include
  ****************************************************************************************************/
 
-#include "Eclectic/project.h"
-#include "Eclectic/memory.h"
+#include "Eclectic/Miscellaneous/project.h"
+#include "Eclectic/Miscellaneous/memory.h"
 
 /****************************************************************************************************
  * Variable

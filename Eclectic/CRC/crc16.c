@@ -2,9 +2,9 @@
  * Include
  ****************************************************************************************************/
 
-#include "Eclectic/crc16.h"
-#include "Eclectic/memory.h"
-#include "Eclectic/misc.h"
+#include "Eclectic/CRC/crc16.h"
+#include "Eclectic/Miscellaneous/memory.h"
+#include "Eclectic/Miscellaneous/misc.h"
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>

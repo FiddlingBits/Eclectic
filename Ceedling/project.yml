@@ -14,10 +14,13 @@
   :executable: .exe
 
 :gcov:
+  :html_report_type: detailed
   :gcovr:
+    :report_root: ./
     :report_include:
-      - ../Eclectic/
-    :report_root: ../
+      - ../Eclectic/CRC/
+      - ../Eclectic/Data/
+      - ../Eclectic/Miscellaneous/
   :reports:
     - Cobertura
     - HtmlDetailed
@@ -25,13 +28,17 @@
     - gcovr
 
 :paths:
+  :test:
+    - +:./**
+  :source:
+    - ../Eclectic/CRC
+    - ../Eclectic/Data
+    - ../Eclectic/Miscellaneous
   :include:
     - ../
-    - ../Eclectic/**
-  :source:
-    - ../Eclectic/**
-  :test:
-    - ./
+    - ../Eclectic/CRC
+    - ../Eclectic/Data
+    - ../Eclectic/Miscellaneous
 
 :plugins:
   :enabled:
@@ -41,7 +48,7 @@
     - report_tests_pretty_stdout
 
 :project:
-  :build_root: ../Build/Ceedling/
+  :build_root: ./Build/
   :ceedling_version: 0.31.1
   :test_file_prefix: test_
   :which_ceedling: gem

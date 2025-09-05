@@ -2,8 +2,8 @@
  * Include
  ****************************************************************************************************/
 
-#include "Eclectic/list.h"
-#include "Eclectic/memory.h"
+#include "Eclectic/Data/list.h"
+#include "Eclectic/Miscellaneous/memory.h"
 #include <stdbool.h>
 #include <stddef.h>
 #include <string.h>
