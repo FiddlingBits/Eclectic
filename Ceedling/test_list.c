@@ -14,15 +14,15 @@
  * Helper
  ****************************************************************************************************/
 
+ /*** Compare ***/
 static int test_compareCallback(const void * const Data1, const void * const Data2)
 {
-    /*** Compare ***/
     return strcmp((const char *)Data1, (const char *)Data2);
 }
 
+/*** Verify List Deinitialized ***/
 static void test_verifyListDeinitialized(const list_list_t * const List)
 {
-    /*** Verify List Deinitialized ***/
     TEST_ASSERT_NULL(List->compareCallback);
     TEST_ASSERT_NULL(List->destroyCallback);
     TEST_ASSERT_NULL(List->head);

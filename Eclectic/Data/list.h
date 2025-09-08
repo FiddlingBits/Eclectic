@@ -23,11 +23,9 @@
  * Type Definition
  ****************************************************************************************************/
 
-/*** Function Pointer ***/
 typedef int (*list_compareCallback_t)(const void * const Data1, const void * const Data2);
 typedef void (*list_destroyCallback_t)(void *data);
 
-/*** Structure ***/
 typedef struct list_node_s
 {
 	void *data;

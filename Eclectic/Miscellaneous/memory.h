@@ -14,7 +14,6 @@
  * Type Definition
  ****************************************************************************************************/
 
-/*** Callback ***/
 typedef void (*memory_freeCallback_t)(void *memory);
 typedef void *(*memory_mallocCallback_t)(size_t size);
 

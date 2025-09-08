@@ -20,8 +20,10 @@ PROJECT_STATIC(memory_mallocCallback_t memory_mallocCallback);
 void memory_free(void **memory)
 {
     /*** Free ***/
+    /* Error Check */
     if((memory_freeCallback != NULL) && (memory != NULL))
     {
+        /* Free */
         memory_freeCallback(*memory);
         *memory = NULL;
     }
@@ -39,8 +41,9 @@ void memory_init(const memory_freeCallback_t FreeCallback, const memory_mallocCa
 void *memory_malloc(const size_t Size)
 {
     /*** Malloc ***/
+    /* Error Check */
     if(memory_mallocCallback != NULL)
-        return memory_mallocCallback(Size);
+        return memory_mallocCallback(Size); // Malloc
     else
-        return NULL;
+        return NULL; // Error
 }

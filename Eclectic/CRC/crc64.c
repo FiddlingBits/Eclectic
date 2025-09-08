@@ -32,9 +32,13 @@ const size_t crc64_ConfigurationCount = sizeof(crc64_Configuration) / sizeof(crc
 /*** Calculate ***/
 uint64_t crc64_calculate(const crc64_configuration_t * const Configuration, const uint8_t *Data, const size_t DataLength)
 {
-    uint64_t crc = 0x0000000000000000;
-
     /*** Calculate ***/
+    /* Variable */
+    uint64_t crc;
+    
+    /* Set Up */
+    crc = 0x0000000000000000;
+    
     /* Error Check */
     if((Configuration != NULL) && (Data != NULL))
     {
@@ -46,17 +50,24 @@ uint64_t crc64_calculate(const crc64_configuration_t * const Configuration, cons
             crc = crc64_calculatePartial(Configuration, crc, Data[i], (i == 0), (i == (DataLength - 1)));
     }
 
+    /* Exit */
     return crc;
 }
 
 /*** Calculate And Append ***/
 void crc64_calculateAndAppend(const crc64_configuration_t * const Configuration, uint8_t *const buffer, const size_t BufferLength, const size_t DataLength)
 {
-    uint64_t crc = 0x0000000000000000;
-
     /*** Calculate And Append ***/
+    /* Variable */
+    uint64_t crc;
+    
+    /* Set Up */
+    crc = 0x0000000000000000;
+    
+    /* Error Check */
     if((Configuration != NULL) && (buffer != NULL) && (BufferLength >= (DataLength + sizeof(crc))))
     {
+        /* Calculate And Append */
         crc = crc64_calculate(Configuration, buffer, DataLength);
         misc_insert64(buffer + DataLength, BufferLength - DataLength, crc, !Configuration->reflectOut);
     }
@@ -119,6 +130,7 @@ uint64_t crc64_calculatePartial(const crc64_configuration_t * const Configuratio
         }
     }
 
+    /* Exit */
     return crc;
 }
 
@@ -139,17 +151,21 @@ void crc64_deinit(crc64_configuration_t * const configuration)
 void crc64_init(const char * const Name, crc64_configuration_t * const configuration, const bool CreateLookupTable)
 {
     /*** Initialize ***/
+    /* Variable */
+    bool found;
+    size_t i;
+    
+    /* Set Up */
+    found = false;
+    
     /* Error Check */
     if((Name != NULL) && (configuration != NULL))
     {
-        bool found = false;
-        size_t i;
-
         /* Algorithm */
         for(i = 0; i < crc64_ConfigurationCount; i++)
         {
             /* Name */
-            if(strcmp(Name, crc64_Configuration[i].name) == 0)
+            if(strcmp(Name, crc64_Configuration[i].Name) == 0)
             {
                 /* Found */
                 found = true;
@@ -160,7 +176,7 @@ void crc64_init(const char * const Name, crc64_configuration_t * const configura
                 /* Alias */
                 for(size_t j = 0; j < crc64_Configuration[i].aliasCount; j++)
                 {
-                    if(strcmp(Name, crc64_Configuration[i].alias[j]) == 0)
+                    if(strcmp(Name, crc64_Configuration[i].Alias[j]) == 0)
                     {
                         /* Found */
                         found = true;
@@ -195,6 +211,7 @@ void crc64_init(const char * const Name, crc64_configuration_t * const configura
         }
         else
         {
+            /* Not Found */
             memset(configuration, 0, sizeof(*configuration));
         }
     }
@@ -203,15 +220,22 @@ void crc64_init(const char * const Name, crc64_configuration_t * const configura
 /*** Verify ***/
 bool crc64_verify(const crc64_configuration_t * const Configuration, const uint8_t *Buffer, const size_t BufferLength)
 {
-    bool verified = false;
-
     /*** Verify ***/
+    /* Variable */
+    uint64_t crc;
+    bool verified;
+    
+    /* Set Up */
+    verified = false;
+    
     /* Error Check */
     if((Configuration != NULL) && (Buffer != NULL))
     {
-        const uint64_t Crc = crc64_calculate(Configuration, Buffer, BufferLength);
-        verified = ((Crc ^ Configuration->xorOut) == Configuration->residue);
+        /* Verify */
+        crc = crc64_calculate(Configuration, Buffer, BufferLength);
+        verified = ((crc ^ Configuration->xorOut) == Configuration->residue);
     }
 
+    /* Exit */
     return verified;
 }

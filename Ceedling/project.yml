@@ -9,23 +9,28 @@
 :defines:
   :test:
     - CEEDLING
+    - UNITY_INCLUDE_DOUBLE
 
 :extension:
   :executable: .exe
 
 :gcov:
-  :html_report_type: detailed
   :gcovr:
     :report_root: ./
     :report_include:
       - ../Eclectic/CRC/
       - ../Eclectic/Data/
       - ../Eclectic/Miscellaneous/
+  :html_report_type: detailed
   :reports:
     - Cobertura
     - HtmlDetailed
   :utilities:
     - gcovr
+
+:libraries:
+  :system:
+    - m
 
 :paths:
   :test:

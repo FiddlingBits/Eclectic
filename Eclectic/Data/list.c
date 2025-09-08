@@ -23,13 +23,16 @@ static list_node_t *list_createNode(void * const data);
 void list_deinit(list_list_t * const list)
 {
     /*** Deinitialize ***/
+    /* Variable */
+    void *data;
+    
     /* Error Check */
     if(list != NULL)
     {
         /* Pop Until Empty */
         while(list->size > 0)
         {
-            void *data = list_popHead(list);
+            data = list_popHead(list);
             if(list->destroyCallback != NULL)
                 list->destroyCallback(data);
         }
@@ -42,14 +45,19 @@ void list_deinit(list_list_t * const list)
 /*** Find ***/
 size_t list_find(const list_list_t * const List, const void * const Data)
 {
-    size_t foundIndex = LIST_FIND_NOT_FOUND_INDEX;
-
     /*** Find ***/
+    /* Variable */
+    size_t foundIndex;
+    const list_node_t *Node;
+    
+    /* Set Up */
+    foundIndex = LIST_FIND_NOT_FOUND_INDEX;
+    
     /* Error Check */
     if((List != NULL) && (List->compareCallback != NULL))
     {
         /* Find */
-        const list_node_t *Node = List->head;
+        Node = List->head;
         for(size_t i = 0; i < List->size; i++)
         {
             /* Compare */
@@ -64,6 +72,7 @@ size_t list_find(const list_list_t * const List, const void * const Data)
         }
     }
 
+    /* Exit */
     return foundIndex;
 }
 
@@ -85,28 +94,39 @@ void list_init(list_list_t * const list, const list_compareCallback_t CompareCal
 /*** Peek At ***/
 void *list_peekAt(const list_list_t * const List, const size_t Index)
 {
-    void *data = NULL;
-
     /*** Peek At ***/
+    /* Variable */
+    void *data;
+    const list_node_t *Node;
+    
+    /* Set Up */
+    data = NULL;
+    
     /* Error Check */
     if((List != NULL) && (Index < List->size))
     {
         /* Peek At */
-        const list_node_t *Node = List->head;
+        Node = List->head;
         for(size_t i = 0; i < Index; i++)
             Node = Node->next;
         data = Node->data;
     }
 
+    /* Exit */
     return data;
 }
 
 /*** Pop At ***/
 void *list_popAt(list_list_t * const list, const size_t Index)
 {
-    void *data = NULL;
-
     /*** Pop At ***/
+    /* Variable */
+    void *data;
+    list_node_t *node;
+    
+    /* Set Up */
+    data = NULL;
+    
     /* Error Check */
     if((list != NULL) && (Index < list->size))
     {
@@ -124,7 +144,7 @@ void *list_popAt(list_list_t * const list, const size_t Index)
         else
         {
             /* Find */
-            list_node_t *node = list->head;
+            node = list->head;
             for(size_t i = 0; i < Index; i++)
                 node = node->next;
             data = node->data;
@@ -141,20 +161,26 @@ void *list_popAt(list_list_t * const list, const size_t Index)
         }
     }
 
+    /* Exit */
     return data;
 }
 
 /*** Pop Head ***/
 void *list_popHead(list_list_t * const list)
 {
-    void *data = NULL;
-
     /*** Pop Head ***/
+    /* Variable */
+    void *data;
+    list_node_t *oldHead;
+    
+    /* Set Up */
+    data = NULL;
+    
     /* Error Check */
     if((list != NULL) && (list->size > 0))
     {
         /* Pop Head */
-        list_node_t *oldHead = list->head;
+        oldHead = list->head;
         data = oldHead->data;
 
         /* Decrement Size */
@@ -177,20 +203,26 @@ void *list_popHead(list_list_t * const list)
         memory_free((void **)&oldHead);
     }
 
+    /* Exit */
     return data;
 }
 
 /*** Pop Tail ***/
 void *list_popTail(list_list_t * const list)
 {
-    void *data = NULL;
-
     /*** Pop Tail ***/
+    /* Variable */
+    void *data;
+    list_node_t *oldTail;
+    
+    /* Set Up */
+    data = NULL;
+    
     /* Error Check */
     if((list != NULL) && (list->size > 0))
     {
         /* Pop Tail*/
-        list_node_t *oldTail = list->tail;
+        oldTail = list->tail;
         data = oldTail->data;
 
         /* Decrement Size */
@@ -213,6 +245,7 @@ void *list_popTail(list_list_t * const list)
         memory_free((void **)&oldTail);
     }
 
+    /* Exit */
     return data;
 }
 
@@ -262,11 +295,13 @@ void list_pushAt(list_list_t * const list, void * const data, const size_t Index
 void list_pushHead(list_list_t * const list, void * const data)
 {
     /*** Push Head ***/
+    /* Variable */
+    list_node_t *node;
+    
     /* Error Check */
     if(list != NULL)
     {
         /* Memory Allocation */
-        list_node_t *node;
         if((node = list_createNode(data)) != NULL)
         {
             /* Push Head */
@@ -293,6 +328,9 @@ void list_pushHead(list_list_t * const list, void * const data)
 void list_pushSorted(list_list_t * const list, void * const data, const bool Ascending)
 {
     /*** Push Sorted ***/
+    /* Variable */
+    list_node_t *newNode, *oldNode;
+    
     /* Error Check */
     if((list != NULL) && (list->compareCallback != NULL))
     {
@@ -305,7 +343,7 @@ void list_pushSorted(list_list_t * const list, void * const data, const bool Asc
         else
         {
             /* Find */
-            list_node_t *oldNode = list->head;
+            oldNode = list->head;
             for(size_t i = 0; i < list->size; i++)
             {
                 if(list_pushSortedCompare(list, data, oldNode->data, Ascending))
@@ -321,8 +359,6 @@ void list_pushSorted(list_list_t * const list, void * const data, const bool Asc
             }
             else
             {
-                list_node_t *newNode;
-
                 /* Memory Allocation */
                 if((newNode = list_createNode(data)) != NULL)
                 {
@@ -344,11 +380,13 @@ void list_pushSorted(list_list_t * const list, void * const data, const bool Asc
 void list_pushTail(list_list_t * const list, void * const data)
 {
     /*** Push Tail ***/
+    /* Variable */
+    list_node_t *node;
+    
     /* Error Check */
     if(list != NULL)
     {
         /* Memory Allocation */
-        list_node_t *node;
         if((node = list_createNode(data)) != NULL)
         {
             /* Push Tail */
@@ -389,11 +427,11 @@ static bool list_pushSortedCompare(const list_list_t * const List, const void * 
 static list_node_t *list_createNode(void * const data)
 {
     /*** Create Node ***/
+    /* Variable */
+    list_node_t *node;
+    
     /* Allocate Memory */
-    list_node_t *node = memory_malloc(LIST_NODE_MEMORY_SIZE);
-
-    /* Error Check */
-    if(node != NULL)
+    if((node = memory_malloc(LIST_NODE_MEMORY_SIZE)) != NULL)
     {
         /* Initialize */
         node->data = data;

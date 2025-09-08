@@ -45,9 +45,13 @@ const size_t crc8_ConfigurationCount = sizeof(crc8_Configuration) / sizeof(crc8_
 /*** Calculate ***/
 uint8_t crc8_calculate(const crc8_configuration_t * const Configuration, const uint8_t *Data, const size_t DataLength)
 {
-    uint8_t crc = 0x00;
-
     /*** Calculate ***/
+    /* Variable */
+    uint8_t crc;
+    
+    /* Set Up */
+    crc = 0x00;
+    
     /* Error Check */
     if((Configuration != NULL) && (Data != NULL))
     {
@@ -59,17 +63,24 @@ uint8_t crc8_calculate(const crc8_configuration_t * const Configuration, const u
             crc = crc8_calculatePartial(Configuration, crc, Data[i], (i == (DataLength - 1)));
     }
 
+    /* Exit */
     return crc;
 }
 
 /*** Calculate And Append ***/
 void crc8_calculateAndAppend(const crc8_configuration_t * const Configuration, uint8_t *const buffer, const size_t BufferLength, const size_t DataLength)
 {
-    uint8_t crc = 0x00;
-
     /*** Calculate And Append ***/
+    /* Variable */
+    uint8_t crc;
+    
+    /* Set Up */
+    crc = 0x00;
+    
+    /* Error Check */
     if((Configuration != NULL) && (buffer != NULL) && (BufferLength >= (DataLength + sizeof(crc))))
     {
+        /* Calculate And Append */
         crc = crc8_calculate(Configuration, buffer, DataLength);
         buffer[DataLength] = crc;
     }
@@ -117,6 +128,7 @@ uint8_t crc8_calculatePartial(const crc8_configuration_t * const Configuration, 
         }
     }
 
+    /* Exit */
     return crc;
 }
 
@@ -137,17 +149,21 @@ void crc8_deinit(crc8_configuration_t * const configuration)
 void crc8_init(const char * const Name, crc8_configuration_t * const configuration, const bool CreateLookupTable)
 {
     /*** Initialize ***/
+    /* Variable */
+    bool found;
+    size_t i;
+    
+    /* Set Up */
+    found = false;
+    
     /* Error Check */
     if((Name != NULL) && (configuration != NULL))
     {
-        bool found = false;
-        size_t i;
-
         /* Algorithm */
         for(i = 0; i < crc8_ConfigurationCount; i++)
         {
             /* Name */
-            if(strcmp(Name, crc8_Configuration[i].name) == 0)
+            if(strcmp(Name, crc8_Configuration[i].Name) == 0)
             {
                 /* Found */
                 found = true;
@@ -158,7 +174,7 @@ void crc8_init(const char * const Name, crc8_configuration_t * const configurati
                 /* Alias */
                 for(size_t j = 0; j < crc8_Configuration[i].aliasCount; j++)
                 {
-                    if(strcmp(Name, crc8_Configuration[i].alias[j]) == 0)
+                    if(strcmp(Name, crc8_Configuration[i].Alias[j]) == 0)
                     {
                         /* Found */
                         found = true;
@@ -193,6 +209,7 @@ void crc8_init(const char * const Name, crc8_configuration_t * const configurati
         }
         else
         {
+            /* Not Found */
             memset(configuration, 0, sizeof(*configuration));
         }
     }
@@ -201,15 +218,22 @@ void crc8_init(const char * const Name, crc8_configuration_t * const configurati
 /*** Verify ***/
 bool crc8_verify(const crc8_configuration_t * const Configuration, const uint8_t *Buffer, const size_t BufferLength)
 {
-    bool verified = false;
-
     /*** Verify ***/
+    /* Variable */
+    uint8_t crc;
+    bool verified;
+    
+    /* Set Up */
+    verified = false;
+    
     /* Error Check */
     if((Configuration != NULL) && (Buffer != NULL))
     {
-        const uint8_t Crc = crc8_calculate(Configuration, Buffer, BufferLength);
-        verified = ((Crc ^ Configuration->xorOut) == Configuration->residue);
+        /* Verify */
+        crc = crc8_calculate(Configuration, Buffer, BufferLength);
+        verified = ((crc ^ Configuration->xorOut) == Configuration->residue);
     }
 
+    /* Exit */
     return verified;
 }

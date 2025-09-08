@@ -8,7 +8,6 @@
  * Define
  ****************************************************************************************************/
 
-/*** Project Specific ***/
 #ifdef CEEDLING
   #define PROJECT_STATIC(DECLARATION) extern DECLARATION; DECLARATION
 #else

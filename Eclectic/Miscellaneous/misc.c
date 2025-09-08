@@ -20,6 +20,7 @@ void misc_insert16(uint8_t * const Buffer, const size_t BufferLength, const uint
         /* Insert 16 */
         for(size_t i = 0; i < sizeof(uint16_t); i++)
         {
+            /* Insert 8 */
             if(BigEndian)
                 Buffer[i] = (uint8_t)(Data >> (8 - (i * 8)));
             else
@@ -38,6 +39,7 @@ void misc_insert32(uint8_t * const Buffer, const size_t BufferLength, const uint
         /* Insert 32 */
         for(size_t i = 0; i < sizeof(uint32_t); i++)
         {
+            /* Insert 8 */
             if(BigEndian)
                 Buffer[i] = (uint8_t)(Data >> (24 - (i * 8)));
             else
@@ -56,6 +58,7 @@ void misc_insert64(uint8_t * const Buffer, const size_t BufferLength, const uint
         /* Insert 64 */
         for(size_t i = 0; i < sizeof(uint64_t); i++)
         {
+            /* Insert 8 */
             if(BigEndian)
                 Buffer[i] = (uint8_t)(Data >> (56 - (i * 8)));
             else
@@ -67,47 +70,71 @@ void misc_insert64(uint8_t * const Buffer, const size_t BufferLength, const uint
 /*** Reflect 8 ***/
 uint8_t misc_reflect8(const uint8_t Data)
 {
-    uint8_t reflectedData = 0x00;
-
     /*** Reflect 8 ***/
+    /* Variable */
+    uint8_t reflectedData;
+    
+    /* Set Up */
+    reflectedData = 0x00;
+    
+    /* Reflect */
     for(size_t bit = 0; bit < 8; bit++)
         reflectedData |= ((Data & (1 << bit)) >> bit) << (7 - bit);
 
+    /* Exit */
     return reflectedData;
 }
 
 /*** Reflect 16 ***/
 uint16_t misc_reflect16(const uint16_t Data)
 {
-    uint16_t reflectedData = 0x0000;
-
     /*** Reflect 16 ***/
+    /* Variable */
+    uint16_t reflectedData;
+    
+    /* Set Up */
+    reflectedData = 0x0000;
+    
+    /* Reflect */
     for(size_t bit = 0; bit < 16; bit++)
         reflectedData |= ((Data & (1 << bit)) >> bit) << (15 - bit);
 
+    /* Exit */
     return reflectedData;
 }
 
 /*** Reflect 32 ***/
 uint32_t misc_reflect32(const uint32_t Data)
 {
-    uint32_t reflectedData = 0x00000000;
-
     /*** Reflect 32 ***/
+    /* Variable */
+    uint32_t reflectedData;
+    
+    /* Set Up */
+    reflectedData = 0x00000000;
+    
+    /* Reflect */
     for(size_t bit = 0; bit < 32; bit++)
         reflectedData |= ((Data & (1 << bit)) >> bit) << (31 - bit);
 
+    /* Exit */
     return reflectedData;
 }
 
 /*** Reflect 64 ***/
 uint64_t misc_reflect64(const uint64_t Data)
 {
-    uint64_t reflectedData = 0x0000000000000000;
-
     /*** Reflect 64 ***/
+    /* Variable */
+    uint64_t reflectedData;
+    
+    /* Set Up */
+    reflectedData = 0x0000000000000000;
+    
+    /* Reflect */
     for(size_t bit = 0; bit < 64; bit++)
         reflectedData |= ((Data & ((uint64_t)1 << bit)) >> bit) << (63 - bit);
 
+    /* Exit */
     return reflectedData;
 }

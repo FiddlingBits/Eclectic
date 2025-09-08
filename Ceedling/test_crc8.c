@@ -9,7 +9,6 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
 #include "unity.h"
 
 /****************************************************************************************************
@@ -19,22 +18,11 @@
 const uint8_t test_CheckData[9] = {'1', '2', '3', '4', '5', '6', '7', '8', '9'};
 
 /****************************************************************************************************
- * Helper
- ****************************************************************************************************/
-
-uint32_t test_U32Callback(void)
-{
-    return ((rand() & 0xFFFF) << 16) | (rand() & 0xFFFF);
-}
-
-/****************************************************************************************************
  * Set Up/Tear Down
  ****************************************************************************************************/
 
 void setUp(void)
 {
-    srand(time(NULL));
-    random_init(test_U32Callback);
 }
 
 void tearDown(void)
@@ -402,11 +390,11 @@ void test_init_4(void)
     /* Verify */
     TEST_ASSERT_EQUAL_UINT(ExpectedConfiguration.aliasCount, actualConfiguration.aliasCount);
     for(size_t j = 0; j < ExpectedConfiguration.aliasCount; j++)
-        TEST_ASSERT_EQUAL_STRING(ExpectedConfiguration.alias[j], actualConfiguration.alias[j]);
+        TEST_ASSERT_EQUAL_STRING(ExpectedConfiguration.Alias[j], actualConfiguration.Alias[j]);
     TEST_ASSERT_EQUAL_HEX8(ExpectedConfiguration.check, actualConfiguration.check);
     TEST_ASSERT_EQUAL_HEX8(ExpectedConfiguration.initial, actualConfiguration.initial);
     TEST_ASSERT_NULL(actualConfiguration.lookupTable);
-    TEST_ASSERT_EQUAL_STRING(ExpectedConfiguration.name, actualConfiguration.name);
+    TEST_ASSERT_EQUAL_STRING(ExpectedConfiguration.Name, actualConfiguration.Name);
     TEST_ASSERT_EQUAL_HEX8(ExpectedConfiguration.polynomial, actualConfiguration.polynomial);
     TEST_ASSERT_EQUAL_INT(ExpectedConfiguration.reflectIn, actualConfiguration.reflectIn);
     TEST_ASSERT_EQUAL_INT(ExpectedConfiguration.reflectOut, actualConfiguration.reflectOut);
@@ -420,7 +408,7 @@ void test_init_5(void)
     /* Structure */
     typedef struct testData_s
     {
-        char *name;
+        const char *Name;
         crc8_configuration_t expectedConfiguration;
     } testData_t;
 
@@ -463,16 +451,16 @@ void test_init_5(void)
     for(size_t i = 0; i < TestDataCount; i++)
     {
         /* Initialize */
-        crc8_init(TestData[i].name, &actualConfiguration, false); // false (Loop)
+        crc8_init(TestData[i].Name, &actualConfiguration, false); // false (Loop)
 
         /* Verify */
         TEST_ASSERT_EQUAL_UINT(TestData[i].expectedConfiguration.aliasCount, actualConfiguration.aliasCount);
         for(size_t j = 0; j < TestData[i].expectedConfiguration.aliasCount; j++)
-        	TEST_ASSERT_EQUAL_STRING(TestData[i].expectedConfiguration.alias[j], actualConfiguration.alias[j]);
+        	TEST_ASSERT_EQUAL_STRING(TestData[i].expectedConfiguration.Alias[j], actualConfiguration.Alias[j]);
         TEST_ASSERT_EQUAL_HEX8(TestData[i].expectedConfiguration.check, actualConfiguration.check);
         TEST_ASSERT_EQUAL_HEX8(TestData[i].expectedConfiguration.initial, actualConfiguration.initial);
         TEST_ASSERT_NULL(actualConfiguration.lookupTable);
-        TEST_ASSERT_EQUAL_STRING(TestData[i].expectedConfiguration.name, actualConfiguration.name);
+        TEST_ASSERT_EQUAL_STRING(TestData[i].expectedConfiguration.Name, actualConfiguration.Name);
         TEST_ASSERT_EQUAL_HEX8(TestData[i].expectedConfiguration.polynomial, actualConfiguration.polynomial);
         TEST_ASSERT_EQUAL_INT(TestData[i].expectedConfiguration.reflectIn, actualConfiguration.reflectIn);
         TEST_ASSERT_EQUAL_INT(TestData[i].expectedConfiguration.reflectOut, actualConfiguration.reflectOut);
@@ -487,7 +475,7 @@ void test_init_6(void)
     /* Structure */
     typedef struct testData_s
     {
-        char *name;
+        const char *Name;
         crc8_configuration_t expectedConfiguration;
     } testData_t;
 
@@ -537,17 +525,17 @@ void test_init_6(void)
     	memory_malloc_ExpectAndReturn(CRC8_LOOKUP_TABLE_MEMORY_SIZE, memory);
 
         /* Initialize */
-        crc8_init(TestData[i].name, &actualConfiguration, true); // true (Lookup Table)
+        crc8_init(TestData[i].Name, &actualConfiguration, true); // true (Lookup Table)
 
         /* Verify */
         TEST_ASSERT_EQUAL_UINT(TestData[i].expectedConfiguration.aliasCount, actualConfiguration.aliasCount);
         for(size_t j = 0; j < TestData[i].expectedConfiguration.aliasCount; j++)
-        	TEST_ASSERT_EQUAL_STRING(TestData[i].expectedConfiguration.alias[j], actualConfiguration.alias[j]);
+        	TEST_ASSERT_EQUAL_STRING(TestData[i].expectedConfiguration.Alias[j], actualConfiguration.Alias[j]);
         TEST_ASSERT_EQUAL_HEX8(TestData[i].expectedConfiguration.check, actualConfiguration.check);
         TEST_ASSERT_EQUAL_HEX8(TestData[i].expectedConfiguration.initial, actualConfiguration.initial);
         TEST_ASSERT_NOT_NULL(actualConfiguration.lookupTable);
         TEST_ASSERT_EQUAL_HEX8_ARRAY(TestData[i].expectedConfiguration.lookupTable, actualConfiguration.lookupTable, CRC8_LOOKUP_TABLE_COUNT);
-        TEST_ASSERT_EQUAL_STRING(TestData[i].expectedConfiguration.name, actualConfiguration.name);
+        TEST_ASSERT_EQUAL_STRING(TestData[i].expectedConfiguration.Name, actualConfiguration.Name);
         TEST_ASSERT_EQUAL_HEX8(TestData[i].expectedConfiguration.polynomial, actualConfiguration.polynomial);
         TEST_ASSERT_EQUAL_INT(TestData[i].expectedConfiguration.reflectIn, actualConfiguration.reflectIn);
         TEST_ASSERT_EQUAL_INT(TestData[i].expectedConfiguration.reflectOut, actualConfiguration.reflectOut);
@@ -597,7 +585,7 @@ void test_verify_3(void)
     {
         /* Set Up */
         crc8_init(CrcName[i], &configuration, false); // false (Loop)
-        random_setBuffer(buffer, sizeof(buffer) - sizeof(uint8_t));
+        random_buffer(buffer, sizeof(buffer) - sizeof(uint8_t));
         crc8_calculateAndAppend(&configuration, buffer, sizeof(buffer), sizeof(buffer) - sizeof(uint8_t));
 
         /* Verify */
@@ -628,7 +616,7 @@ void test_verify_4(void)
 
         /* Set Up */
         crc8_init(CrcName[i], &configuration, true); // true (Lookup Table)
-        random_setBuffer(buffer, sizeof(buffer) - sizeof(uint8_t));
+        random_buffer(buffer, sizeof(buffer) - sizeof(uint8_t));
         crc8_calculateAndAppend(&configuration, buffer, sizeof(buffer), sizeof(buffer) - sizeof(uint8_t));
 
         /* Verify */

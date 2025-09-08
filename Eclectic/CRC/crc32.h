@@ -27,12 +27,12 @@
 /*** Structure ***/
 typedef struct crc32_configuration_s
 {
-    char *alias[CRC32_MAXIMUM_ALIAS_COUNT];
+    char *Alias[CRC32_MAXIMUM_ALIAS_COUNT];
     size_t aliasCount;
     uint32_t check;
     uint32_t initial;
     uint32_t *lookupTable;
-    char *name;
+    char *Name;
     uint32_t polynomial;
     bool reflectIn;
     bool reflectOut;
