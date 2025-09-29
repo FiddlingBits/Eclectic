@@ -2,7 +2,7 @@
 
 # Ceedling
 clear
-ceedling clean clobber gcov:all
+ceedling gcov:all
 
 # Valgrind
 mkdir -p ./Build/artifacts/valgrind/

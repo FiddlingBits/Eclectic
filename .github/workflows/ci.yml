@@ -18,17 +18,18 @@ jobs:
           sudo gem install ceedling
           pip install gcovr
           chmod +x ceedling
+          rm -fr Build
           ./ceedling
-        working-directory: ./Ceedling/
+        working-directory: ./Project/Ceedling/
       - name: Test Report
         if: always()
         uses: mikepenz/action-junit-report@v4
         with:
           include_passed: true
-          report_paths: ./Ceedling/Build/artifacts/gcov/junit_tests_report.xml
+          report_paths: ./Project/Ceedling/Build/artifacts/gcov/junit_tests_report.xml
       - name: Coverage
         uses: 5monkeys/cobertura-action@master
         with:
           minimum_coverage: 90
-          path: ./Ceedling/Build/artifacts/gcov/gcovr/GcovCoverageCobertura.xml
+          path: ./Project/Ceedling/Build/artifacts/gcov/gcovr/GcovCoverageCobertura.xml
           skip_covered: false

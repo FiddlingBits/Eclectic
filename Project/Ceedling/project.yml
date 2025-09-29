@@ -19,10 +19,10 @@
   :gcovr:
     :report_root: ./
     :report_include:
-      - ../Eclectic/CLI/
-      - ../Eclectic/CRC/
-      - ../Eclectic/Data/
-      - ../Eclectic/Miscellaneous/
+      - ../../Eclectic/CLI/
+      - ../../Eclectic/CRC/
+      - ../../Eclectic/Data/
+      - ../../Eclectic/Miscellaneous/
   :html_report_type: detailed
   :reports:
     - Cobertura
@@ -38,16 +38,16 @@
   :test:
     - +:./**
   :source:
-    - ../Eclectic/CLI/
-    - ../Eclectic/CRC/
-    - ../Eclectic/Data/
-    - ../Eclectic/Miscellaneous/
+    - ../../Eclectic/CLI/
+    - ../../Eclectic/CRC/
+    - ../../Eclectic/Data/
+    - ../../Eclectic/Miscellaneous/
   :include:
-    - ../
-    - ../Eclectic/CLI/
-    - ../Eclectic/CRC/
-    - ../Eclectic/Data/
-    - ../Eclectic/Miscellaneous/
+    - ../../
+    - ../../Eclectic/CLI/
+    - ../../Eclectic/CRC/
+    - ../../Eclectic/Data/
+    - ../../Eclectic/Miscellaneous/
 
 :plugins:
   :enabled:
