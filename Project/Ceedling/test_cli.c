@@ -39,7 +39,6 @@ static bool helper_processInput;
  * Function Prototype
  ****************************************************************************************************/
 
-extern int cli_compareCallback(const void * const Data1, const void * const Data2);
 extern bool cli_getCommandAndArgumentList(char * const input, char **command, size_t * const argc, char *argv[]);
 extern void cli_printCommandPrompt(void);
 extern void cli_printAncestry(void);
@@ -64,10 +63,13 @@ void helper_commandHandlerCallback(size_t argc, char *argv[])
 }
 
 /*** Memory Free Stub ***/
-void helper_memoryFreeStub(void **memory, int cmock_num_calls)
+static void helper_memoryFreeStub(void **memory, int cmock_num_calls)
 {
     /*** Memory Free Stub ***/
+    /* Free */
     free(*memory);
+    
+    /* Clean Up */
     *memory = NULL;
 }
 
@@ -78,12 +80,12 @@ void *helper_memoryMallocStub(const size_t Size, int cmock_num_calls)
     /* Variable */
     void *memory;
     
-    /* Memory Malloc */
+    /* Malloc */
     if(helper_memoryMallocStubFail)
         memory = NULL;
     else
-        memory = malloc(Size); 
-
+        memory = malloc(Size);
+    
     /* Exit */
     return memory;
 }
@@ -118,11 +120,10 @@ void setUp(void)
     /* Variable */
     size_t i;
     
-    /* Mock */
+    /* Function */
     memory_free_Stub(helper_memoryFreeStub);
     memory_malloc_Stub(helper_memoryMallocStub);
-    
-    /* Function*/
+    helper_memoryMallocStubFail = false;
     (void)cli_init(helper_printCallback, helper_processInputCallback);
     
     /* Set Up */
@@ -131,15 +132,11 @@ void setUp(void)
         helper_expectedArgv[i] = NULL;
     (void)memset(helper_output, 0, sizeof(helper_output)); // Must Come After cli_init, So Print Buffer Doesn't Have Command Prompt In It
     helper_outputIndex = 0;
-    helper_memoryMallocStubFail = false;
     helper_processInput = false;
 }
 
 void tearDown(void)
 {
-    /*** Tear Down ***/
-    /* Function */
-    cli_deinit();
 }
 
 /****************************************************************************************************
@@ -212,6 +209,9 @@ void test_addReceiveCharacter_2(void)
             TEST_ASSERT_EQUAL_UINT32(strlen(cli_receiveBuffer), cli_receiveBufferIndex);
         TEST_ASSERT_EQUAL(TestData[i].processInput, helper_processInput);
     }
+    
+    /* Clean Up */
+    cli_deinit(); // Called Here Instead Of In tearDown Because Some Tests Register Commands/Directories With Record Variables On Stack And To Be Consistent
 }
 
 /*** Deinitialize ***/
@@ -238,6 +238,9 @@ void test_getArgumentOptionPair_1(void)
     /* Get Argument/Option Pair */
     TEST_ASSERT_FALSE(cli_getArgumentOptionPair(NULL, &argumentOptionPair));
     TEST_ASSERT_FALSE(cli_getArgumentOptionPair("-i", NULL));
+    
+    /* Clean Up */
+    cli_deinit(); // Called Here Instead Of In tearDown Because Some Tests Register Commands/Directories With Record Variables On Stack And To Be Consistent
 }
 
 void test_getArgumentOptionPair_2(void)
@@ -276,6 +279,9 @@ void test_getArgumentOptionPair_2(void)
         /* Get Argument/Option Pair */
         TEST_ASSERT_FALSE(cli_getArgumentOptionPair(input, &argumentOptionPair));
     }
+    
+    /* Clean Up */
+    cli_deinit(); // Called Here Instead Of In tearDown Because Some Tests Register Commands/Directories With Record Variables On Stack And To Be Consistent
 }
 
 void test_getArgumentOptionPair_3(void)
@@ -318,6 +324,9 @@ void test_getArgumentOptionPair_3(void)
         TEST_ASSERT_EQUAL_STRING(TestData[i].argumentOptionPair.argument, argumentOptionPair.argument);
         TEST_ASSERT_EQUAL_STRING(TestData[i].argumentOptionPair.option, argumentOptionPair.option);
     }
+    
+    /* Clean Up */
+    cli_deinit(); // Called Here Instead Of In tearDown Because Some Tests Register Commands/Directories With Record Variables On Stack And To Be Consistent
 }
 
 /*** Get Signed 32-Bit Integer ***/
@@ -330,6 +339,9 @@ void test_getS32_1(void)
     /* Get Argument/Option Pair */
     TEST_ASSERT_FALSE(cli_getS32(NULL, &s32));
     TEST_ASSERT_FALSE(cli_getS32("123", NULL));
+    
+    /* Clean Up */
+    cli_deinit(); // Called Here Instead Of In tearDown Because Some Tests Register Commands/Directories With Record Variables On Stack And To Be Consistent
 }
 
 void test_getS32_2(void)
@@ -340,6 +352,9 @@ void test_getS32_2(void)
     
     /* Get Argument/Option Pair */
     TEST_ASSERT_FALSE(cli_getS32("", &s32));
+    
+    /* Clean Up */
+    cli_deinit(); // Called Here Instead Of In tearDown Because Some Tests Register Commands/Directories With Record Variables On Stack And To Be Consistent
 }
 
 void test_getS32_3(void)
@@ -351,6 +366,9 @@ void test_getS32_3(void)
     /* Get Argument/Option Pair */
     TEST_ASSERT_FALSE(cli_getS32("123xyz", &s32));
     TEST_ASSERT_FALSE(cli_getS32("xyz", &s32));
+    
+    /* Clean Up */
+    cli_deinit(); // Called Here Instead Of In tearDown Because Some Tests Register Commands/Directories With Record Variables On Stack And To Be Consistent
 }
 
 void test_getS32_4(void)
@@ -389,6 +407,9 @@ void test_getS32_4(void)
         /* Verify */
         TEST_ASSERT_EQUAL_INT32(TestData[i].s32, s32);
     }
+    
+    /* Clean Up */
+    cli_deinit(); // Called Here Instead Of In tearDown Because Some Tests Register Commands/Directories With Record Variables On Stack And To Be Consistent
 }
 
 /*** Get Unsigned 32-Bit Integer ***/
@@ -401,6 +422,9 @@ void test_getU32_1(void)
     /* Get Argument/Option Pair */
     TEST_ASSERT_FALSE(cli_getU32(NULL, &u32));
     TEST_ASSERT_FALSE(cli_getU32("123", NULL));
+    
+    /* Clean Up */
+    cli_deinit(); // Called Here Instead Of In tearDown Because Some Tests Register Commands/Directories With Record Variables On Stack And To Be Consistent
 }
 
 void test_getU32_2(void)
@@ -411,6 +435,9 @@ void test_getU32_2(void)
     
     /* Get Argument/Option Pair */
     TEST_ASSERT_FALSE(cli_getU32("", &u32));
+    
+    /* Clean Up */
+    cli_deinit(); // Called Here Instead Of In tearDown Because Some Tests Register Commands/Directories With Record Variables On Stack And To Be Consistent
 }
 
 void test_getU32_3(void)
@@ -422,6 +449,9 @@ void test_getU32_3(void)
     /* Get Argument/Option Pair */
     TEST_ASSERT_FALSE(cli_getU32("123xyz", &u32));
     TEST_ASSERT_FALSE(cli_getU32("xyz", &u32));
+    
+    /* Clean Up */
+    cli_deinit(); // Called Here Instead Of In tearDown Because Some Tests Register Commands/Directories With Record Variables On Stack And To Be Consistent
 }
 
 void test_getU32_4(void)
@@ -457,6 +487,9 @@ void test_getU32_4(void)
         /* Verify */
         TEST_ASSERT_EQUAL_UINT32(TestData[i].u32, u32);
     }
+    
+    /* Clean Up */
+    cli_deinit(); // Called Here Instead Of In tearDown Because Some Tests Register Commands/Directories With Record Variables On Stack And To Be Consistent
 }
 
 /*** Initialize ***/
@@ -465,6 +498,9 @@ void test_init_1(void)
     /*** Initialize (NULL Pointer) ***/    
     TEST_ASSERT_FALSE(cli_init(helper_printCallback, NULL));
     TEST_ASSERT_FALSE(cli_init(NULL, helper_processInputCallback));
+    
+    /* Clean Up */
+    cli_deinit(); // Called Here Instead Of In tearDown Because Some Tests Register Commands/Directories With Record Variables On Stack And To Be Consistent
 }
 
 void test_init_2(void)
@@ -492,6 +528,9 @@ void test_init_2(void)
     TEST_ASSERT_TRUE(list_find(&(cli_rootDirectoryRecord.entries), &key) != LIST_FIND_NOT_FOUND_INDEX);
     TEST_ASSERT_EQUAL_UINT32(0, cli_receiveBufferIndex);
     TEST_ASSERT_EQUAL_STRING(expectedCommandPrompt, helper_output);
+    
+    /* Clean Up */
+    cli_deinit(); // Called Here Instead Of In tearDown Because Some Tests Register Commands/Directories With Record Variables On Stack And To Be Consistent
 }
 
 /*** Process Input ***/
@@ -503,6 +542,9 @@ void test_processInput_1(void)
 
     /* Process Input */
     TEST_ASSERT_FALSE(cli_processInput());
+    
+    /* Clean Up */
+    cli_deinit(); // Called Here Instead Of In tearDown Because Some Tests Register Commands/Directories With Record Variables On Stack And To Be Consistent
 }
 
 void test_processInput_2(void)
@@ -520,6 +562,9 @@ void test_processInput_2(void)
     
     /* Verify */
     TEST_ASSERT_EQUAL_STRING(expectedCommandPrompt, helper_output);
+    
+    /* Clean Up */
+    cli_deinit(); // Called Here Instead Of In tearDown Because Some Tests Register Commands/Directories With Record Variables On Stack And To Be Consistent
 }
 
 void test_processInput_3(void)
@@ -544,6 +589,9 @@ void test_processInput_3(void)
     
     /* Verify */
     TEST_ASSERT_EQUAL_STRING(expectedCommandPrompt, helper_output);
+    
+    /* Clean Up */
+    cli_deinit(); // Called Here Instead Of In tearDown Because Some Tests Register Commands/Directories With Record Variables On Stack And To Be Consistent
 }
 
 /*** Register Command ***/
@@ -557,6 +605,9 @@ void test_registerCommand_1(void)
     TEST_ASSERT_FALSE(cli_registerCommand(NULL, "help", CLI_PARENT_DIRECTORY_ROOT, helper_commandHandlerCallback));
     TEST_ASSERT_FALSE(cli_registerCommand(&commandRecord, NULL, CLI_PARENT_DIRECTORY_ROOT, helper_commandHandlerCallback));
     TEST_ASSERT_FALSE(cli_registerCommand(&commandRecord, "help", CLI_PARENT_DIRECTORY_ROOT, NULL));
+    
+    /* Clean Up */
+    cli_deinit(); // Called Here Instead Of In tearDown Because Some Tests Register Commands/Directories With Record Variables On Stack And To Be Consistent
 }
 
 void test_registerCommand_2(void)
@@ -567,6 +618,9 @@ void test_registerCommand_2(void)
     
     /* Register Command */
     TEST_ASSERT_FALSE(cli_registerCommand(&commandRecord, "this and that", CLI_PARENT_DIRECTORY_ROOT, helper_commandHandlerCallback));
+    
+    /* Clean Up */
+    cli_deinit(); // Called Here Instead Of In tearDown Because Some Tests Register Commands/Directories With Record Variables On Stack And To Be Consistent
 }
 
 void test_registerCommand_3(void)
@@ -580,6 +634,9 @@ void test_registerCommand_3(void)
     
     /* Register Command */
     TEST_ASSERT_FALSE(cli_registerCommand(&commandRecord[1], "that", &commandRecord[0], helper_commandHandlerCallback));
+    
+    /* Clean Up */
+    cli_deinit(); // Called Here Instead Of In tearDown Because Some Tests Register Commands/Directories With Record Variables On Stack And To Be Consistent
 }
 
 void test_registerCommand_4(void)
@@ -598,6 +655,9 @@ void test_registerCommand_4(void)
     TEST_ASSERT_EQUAL_INT(CLI_RECORD_TYPE_COMMAND, commandRecord.type);
     key.Name = CommandName; // Compare Callback Expects Name Within Record
     TEST_ASSERT_TRUE(list_find(&(cli_rootDirectoryRecord.entries), &key) != LIST_FIND_NOT_FOUND_INDEX);
+    
+    /* Clean Up */
+    cli_deinit(); // Called Here Instead Of In tearDown Because Some Tests Register Commands/Directories With Record Variables On Stack And To Be Consistent
 }
 
 void test_registerCommand_5(void)
@@ -622,6 +682,9 @@ void test_registerCommand_5(void)
     TEST_ASSERT_EQUAL_INT(CLI_RECORD_TYPE_COMMAND, commandRecord.type);
     key.Name = CommandName;
     TEST_ASSERT_TRUE(list_find(&(directoryRecord.entries), &key) != LIST_FIND_NOT_FOUND_INDEX);
+    
+    /* Clean Up */
+    cli_deinit(); // Called Here Instead Of In tearDown Because Some Tests Register Commands/Directories With Record Variables On Stack And To Be Consistent
 }
 
 /*** Register Directory ***/
@@ -634,6 +697,9 @@ void test_registerDirectory_1(void)
     /* Register Command */
     TEST_ASSERT_FALSE(cli_registerDirectory(NULL, "folder", CLI_PARENT_DIRECTORY_ROOT));
     TEST_ASSERT_FALSE(cli_registerDirectory(&directoryRecord, NULL, CLI_PARENT_DIRECTORY_ROOT));
+    
+    /* Clean Up */
+    cli_deinit(); // Called Here Instead Of In tearDown Because Some Tests Register Commands/Directories With Record Variables On Stack And To Be Consistent
 }
 
 void test_registerDirectory_2(void)
@@ -644,6 +710,9 @@ void test_registerDirectory_2(void)
     
     /* Register Directory */
     TEST_ASSERT_FALSE(cli_registerDirectory(&directoryRecord, "this and that", CLI_PARENT_DIRECTORY_ROOT));
+    
+    /* Clean Up */
+    cli_deinit(); // Called Here Instead Of In tearDown Because Some Tests Register Commands/Directories With Record Variables On Stack And To Be Consistent
 }
 
 void test_registerDirectory_3(void)
@@ -657,6 +726,9 @@ void test_registerDirectory_3(void)
     
     /* Register Directory */
     TEST_ASSERT_FALSE(cli_registerDirectory(&directoryRecord, "that", &commandRecord));
+    
+    /* Clean Up */
+    cli_deinit(); // Called Here Instead Of In tearDown Because Some Tests Register Commands/Directories With Record Variables On Stack And To Be Consistent
 }
 
 void test_registerDirectory_4(void)
@@ -674,6 +746,9 @@ void test_registerDirectory_4(void)
     /* Verify */
     key.Name = DirectoryName; // Compare Callback Expects Name Within Record
     TEST_ASSERT_TRUE(list_find(&(cli_rootDirectoryRecord.entries), &key) != LIST_FIND_NOT_FOUND_INDEX);
+    
+    /* Clean Up */
+    cli_deinit(); // Called Here Instead Of In tearDown Because Some Tests Register Commands/Directories With Record Variables On Stack And To Be Consistent
 }
 
 void test_registerDirectory_5(void)
@@ -697,6 +772,9 @@ void test_registerDirectory_5(void)
     TEST_ASSERT_TRUE(list_find(&(cli_rootDirectoryRecord.entries), &key) != LIST_FIND_NOT_FOUND_INDEX);
     key.Name = DirectoryName;
     TEST_ASSERT_TRUE(list_find(&(directoryRecord[0].entries), &key) != LIST_FIND_NOT_FOUND_INDEX);
+    
+    /* Clean Up */
+    cli_deinit(); // Called Here Instead Of In tearDown Because Some Tests Register Commands/Directories With Record Variables On Stack And To Be Consistent
 }
 
 /****************************************************************************************************
@@ -723,6 +801,9 @@ void test_changeDirectoryCommandHandlerCallback_1(void)
     
     /* Verify */
     TEST_ASSERT_EQUAL_STRING(expectedOutput, helper_output);
+    
+    /* Clean Up */
+    cli_deinit(); // Called Here Instead Of In tearDown Because Some Tests Register Commands/Directories With Record Variables On Stack And To Be Consistent
 }
 
 void test_changeDirectoryCommandHandlerCallback_2(void)
@@ -744,6 +825,9 @@ void test_changeDirectoryCommandHandlerCallback_2(void)
     
     /* Verify */
     TEST_ASSERT_EQUAL_STRING(expectedOutput, helper_output);
+    
+    /* Clean Up */
+    cli_deinit(); // Called Here Instead Of In tearDown Because Some Tests Register Commands/Directories With Record Variables On Stack And To Be Consistent
 }
 
 void test_changeDirectoryCommandHandlerCallback_3(void)
@@ -778,6 +862,9 @@ void test_changeDirectoryCommandHandlerCallback_3(void)
         /* Verify */
         TEST_ASSERT_EQUAL_STRING(expectedOutput, helper_output);
     }
+    
+    /* Clean Up */
+    cli_deinit(); // Called Here Instead Of In tearDown Because Some Tests Register Commands/Directories With Record Variables On Stack And To Be Consistent
 }
 
 void test_changeDirectoryCommandHandlerCallback_4(void)
@@ -809,6 +896,9 @@ void test_changeDirectoryCommandHandlerCallback_4(void)
     /* Verify */
     TEST_ASSERT_EQUAL_PTR(&cli_rootDirectoryRecord, cli_ActiveDirectoryRecord);
     TEST_ASSERT_EQUAL_STRING(expectedOutput, helper_output);
+    
+    /* Clean Up */
+    cli_deinit(); // Called Here Instead Of In tearDown Because Some Tests Register Commands/Directories With Record Variables On Stack And To Be Consistent
 }
 
 void test_changeDirectoryCommandHandlerCallback_5(void)
@@ -833,6 +923,9 @@ void test_changeDirectoryCommandHandlerCallback_5(void)
     /* Verify */
     TEST_ASSERT_EQUAL_PTR(&cli_rootDirectoryRecord, cli_ActiveDirectoryRecord);
     TEST_ASSERT_EQUAL_STRING(expectedOutput, helper_output);
+    
+    /* Clean Up */
+    cli_deinit(); // Called Here Instead Of In tearDown Because Some Tests Register Commands/Directories With Record Variables On Stack And To Be Consistent
 }
 
 void test_changeDirectoryCommandHandlerCallback_6(void)
@@ -851,6 +944,9 @@ void test_changeDirectoryCommandHandlerCallback_6(void)
     /* Verify */
     TEST_ASSERT_EQUAL_PTR(&cli_rootDirectoryRecord, cli_ActiveDirectoryRecord);
     TEST_ASSERT_EQUAL_STRING(expectedOutput, helper_output);
+    
+    /* Clean Up */
+    cli_deinit(); // Called Here Instead Of In tearDown Because Some Tests Register Commands/Directories With Record Variables On Stack And To Be Consistent
 }
 
 void test_changeDirectoryCommandHandlerCallback_7(void)
@@ -874,6 +970,9 @@ void test_changeDirectoryCommandHandlerCallback_7(void)
     /* Verify */
     TEST_ASSERT_EQUAL_PTR(&directoryRecord, cli_ActiveDirectoryRecord);
     TEST_ASSERT_EQUAL_STRING(expectedOutput, helper_output);
+    
+    /* Clean Up */
+    cli_deinit(); // Called Here Instead Of In tearDown Because Some Tests Register Commands/Directories With Record Variables On Stack And To Be Consistent
 }
 
 void test_changeDirectoryCommandHandlerCallback_8(void)
@@ -895,6 +994,9 @@ void test_changeDirectoryCommandHandlerCallback_8(void)
     /* Verify */
     TEST_ASSERT_EQUAL_PTR(&cli_rootDirectoryRecord, cli_ActiveDirectoryRecord);
     TEST_ASSERT_EQUAL_STRING(expectedOutput, helper_output);
+    
+    /* Clean Up */
+    cli_deinit(); // Called Here Instead Of In tearDown Because Some Tests Register Commands/Directories With Record Variables On Stack And To Be Consistent
 }
 
 void test_changeDirectoryCommandHandlerCallback_9(void)
@@ -918,42 +1020,9 @@ void test_changeDirectoryCommandHandlerCallback_9(void)
     /* Verify */
     TEST_ASSERT_EQUAL_PTR(&cli_rootDirectoryRecord, cli_ActiveDirectoryRecord);
     TEST_ASSERT_EQUAL_STRING(expectedOutput, helper_output);
-}
-
-/*** Compare Callback ***/
-void test_compareCallback_1(void)
-{
-    /*** Compare Callback ***/
-    /* Structure */
-    typedef struct
-    {
-        cli_record_t Data1;
-        cli_record_t Data2;
-        int result;
-    } testData_t;
     
-    /* Test Data */
-    const testData_t TestData[] =
-    {
-        {{.Name = "this"}, {.Name = "that"}, 8},
-        {{.Name = "this"}, {.Name = "this"}, 0},
-        {{.Name = "that"}, {.Name = "this"}, -8},
-    };
-    const size_t TestDataCount = sizeof(TestData) / sizeof(TestData[0]);
-    
-    /* Variable */
-    size_t i;
-    int result;
-    
-    /* Test */
-    for(i = 0; i < TestDataCount; i++)
-    {                
-        /* Compare */
-        result = cli_compareCallback(&TestData[i].Data1, &TestData[i].Data2);
-        
-        /* Verify */
-        TEST_ASSERT_EQUAL_INT32(TestData[i].result, result);
-    }
+    /* Clean Up */
+    cli_deinit(); // Called Here Instead Of In tearDown Because Some Tests Register Commands/Directories With Record Variables On Stack And To Be Consistent
 }
 
 /*** Get Command And Argument List ***/
@@ -973,6 +1042,9 @@ void test_getCommandAndArgumentList_1(void)
     /* Verify */
     TEST_ASSERT_EQUAL_UINT32(0, argc);
     TEST_ASSERT_NULL(command);
+    
+    /* Clean Up */
+    cli_deinit(); // Called Here Instead Of In tearDown Because Some Tests Register Commands/Directories With Record Variables On Stack And To Be Consistent
 }
 
 void test_getCommandAndArgumentList_2(void)
@@ -1018,6 +1090,9 @@ void test_getCommandAndArgumentList_2(void)
             TEST_ASSERT_EQUAL_STRING(TestData[i].Argv[j], argv[j]);
         TEST_ASSERT_EQUAL_STRING(TestData[i].Command, command);
     }
+    
+    /* Clean Up */
+    cli_deinit(); // Called Here Instead Of In tearDown Because Some Tests Register Commands/Directories With Record Variables On Stack And To Be Consistent
 }
 
 /*** List Command Handler ***/
@@ -1041,6 +1116,9 @@ void test_listCommandHandlerCallback_1(void)
     
     /* Verify */
     TEST_ASSERT_EQUAL_STRING(expectedOutput, helper_output);
+    
+    /* Clean Up */
+    cli_deinit(); // Called Here Instead Of In tearDown Because Some Tests Register Commands/Directories With Record Variables On Stack And To Be Consistent
 }
 
 void test_listCommandHandlerCallback_2(void)
@@ -1063,6 +1141,9 @@ void test_listCommandHandlerCallback_2(void)
     
     /* Verify */
     TEST_ASSERT_EQUAL_STRING(expectedOutput, helper_output);
+    
+    /* Clean Up */
+    cli_deinit(); // Called Here Instead Of In tearDown Because Some Tests Register Commands/Directories With Record Variables On Stack And To Be Consistent
 }
 
 void test_listCommandHandlerCallback_3(void)
@@ -1099,6 +1180,9 @@ void test_listCommandHandlerCallback_3(void)
         /* Verify */
         TEST_ASSERT_EQUAL_STRING(expectedOutput, helper_output);
     }
+    
+    /* Clean Up */
+    cli_deinit(); // Called Here Instead Of In tearDown Because Some Tests Register Commands/Directories With Record Variables On Stack And To Be Consistent
 }
 
 void test_listCommandHandlerCallback_4(void)
@@ -1142,6 +1226,9 @@ void test_listCommandHandlerCallback_4(void)
     
     /* Verify */
     TEST_ASSERT_EQUAL_STRING(expectedOutput, helper_output);
+    
+    /* Clean Up */
+    cli_deinit(); // Called Here Instead Of In tearDown Because Some Tests Register Commands/Directories With Record Variables On Stack And To Be Consistent
 }
 
 void test_listCommandHandlerCallback_5(void)
@@ -1192,6 +1279,9 @@ void test_listCommandHandlerCallback_5(void)
     
     /* Verify */
     TEST_ASSERT_EQUAL_STRING(expectedOutput, helper_output);
+    
+    /* Clean Up */
+    cli_deinit(); // Called Here Instead Of In tearDown Because Some Tests Register Commands/Directories With Record Variables On Stack And To Be Consistent
 }
 
 void test_listCommandHandlerCallback_6(void)
@@ -1242,11 +1332,14 @@ void test_listCommandHandlerCallback_6(void)
     
     /* Verify */
     TEST_ASSERT_EQUAL_STRING(expectedOutput, helper_output);
+    
+    /* Clean Up */
+    cli_deinit(); // Called Here Instead Of In tearDown Because Some Tests Register Commands/Directories With Record Variables On Stack And To Be Consistent
 }
 
 void test_listCommandHandlerCallback_7(void)
 {
-    /*** List Command Handler (Recursive, Long Option, Memory Malloc Failure) ***/
+    /*** List Command Handler (Recursive, Long Option, Malloc Failure) ***/
     /* Constant */
     const char *CommandName[CLI_OUTPUT_ANCESTRY_MAXIMUM_DEPTH] = {"oneone", "twotwo", "threethree", "fourfour", "fivefive"};
     const char *DirectoryName[CLI_OUTPUT_ANCESTRY_MAXIMUM_DEPTH - 1] = {"one", "two", "three", "four"};
@@ -1293,6 +1386,9 @@ void test_listCommandHandlerCallback_7(void)
     
     /* Verify */
     TEST_ASSERT_EQUAL_STRING(expectedOutput, helper_output);
+    
+    /* Clean Up */
+    cli_deinit(); // Called Here Instead Of In tearDown Because Some Tests Register Commands/Directories With Record Variables On Stack And To Be Consistent
 }
 
 /*** Print Command Prompt ***/
@@ -1326,6 +1422,7 @@ void test_printCommandPrompt_1(void)
         if(i == CLI_OUTPUT_ANCESTRY_MAXIMUM_DEPTH)
         {
             /* Beyond Maximum Ancestry Depth (e.g. one/two/three/) */
+            index = 0;
             index = sprintf(&expectedCommandPrompt[index], "[");
             for(j = 0; j < i; j++)
                 index += sprintf(&expectedCommandPrompt[index], "%s/", DirectoryName[j]);
@@ -1334,6 +1431,7 @@ void test_printCommandPrompt_1(void)
         else
         {
             /* Up To Maximum Ancestry Depth (e.g. root/one/two/) */
+            index = 0;
             index = sprintf(&expectedCommandPrompt[index], "[%s/", CLI_DIRECTORY_ROOT_NAME);
             for(j = 0; j < i; j++)
                 index += sprintf(&expectedCommandPrompt[index], "%s/", DirectoryName[j]);
@@ -1348,6 +1446,9 @@ void test_printCommandPrompt_1(void)
         /* Verify */
         TEST_ASSERT_EQUAL_STRING(expectedCommandPrompt, helper_output);
     }
+    
+    /* Clean Up */
+    cli_deinit(); // Called Here Instead Of In tearDown Because Some Tests Register Commands/Directories With Record Variables On Stack And To Be Consistent
 }
 
 /*** Print Ancestry ***/
@@ -1391,6 +1492,9 @@ void test_printAncestry_1(void)
         /* Verify */
         TEST_ASSERT_EQUAL_STRING(expectedAncestry, helper_output);
     }
+    
+    /* Clean Up */
+    cli_deinit(); // Called Here Instead Of In tearDown Because Some Tests Register Commands/Directories With Record Variables On Stack And To Be Consistent
 }
 
 /*** Process Command ***/
@@ -1408,6 +1512,9 @@ void test_processCommand_1(void)
     
     /* Verify */
     TEST_ASSERT_EQUAL_STRING(expectedOutput, helper_output);
+    
+    /* Clean Up */
+    cli_deinit(); // Called Here Instead Of In tearDown Because Some Tests Register Commands/Directories With Record Variables On Stack And To Be Consistent
 }
 
 void test_processCommand_2(void)
@@ -1429,6 +1536,9 @@ void test_processCommand_2(void)
     
     /* Verify */
     TEST_ASSERT_EQUAL_STRING(expectedOutput, helper_output);
+    
+    /* Clean Up */
+    cli_deinit(); // Called Here Instead Of In tearDown Because Some Tests Register Commands/Directories With Record Variables On Stack And To Be Consistent
 }
 
 void test_processCommand_3(void)
@@ -1453,6 +1563,9 @@ void test_processCommand_3(void)
     
     /* Verify */
     TEST_ASSERT_EQUAL_PTR(&directoryRecord, cli_ActiveDirectoryRecord);
+    
+    /* Clean Up */
+    cli_deinit(); // Called Here Instead Of In tearDown Because Some Tests Register Commands/Directories With Record Variables On Stack And To Be Consistent
 }
 
 void test_processCommand_4(void)
@@ -1469,6 +1582,9 @@ void test_processCommand_4(void)
     
     /* Verify */
     TEST_ASSERT_EQUAL_STRING(expectedOutput, helper_output);
+    
+    /* Clean Up */
+    cli_deinit(); // Called Here Instead Of In tearDown Because Some Tests Register Commands/Directories With Record Variables On Stack And To Be Consistent
 }
 
 void test_processCommand_5(void)
@@ -1501,6 +1617,9 @@ void test_processCommand_5(void)
     
     /* Process Command */
     cli_processCommand(CommandName, argc, argv);
+    
+    /* Clean Up */
+    cli_deinit(); // Called Here Instead Of In tearDown Because Some Tests Register Commands/Directories With Record Variables On Stack And To Be Consistent
 }
 
 /*** Verify Name Acceptable ***/
@@ -1547,4 +1666,7 @@ void test_verifyNameAcceptable_1(void)
         /* Verify Name Acceptable */
         TEST_ASSERT_EQUAL(TestData[i].acceptable, cli_verifyNameAcceptable(TestData[i].Name, &directoryRecord));
     }
+    
+    /* Clean Up */
+    cli_deinit(); // Called Here Instead Of In tearDown Because Some Tests Register Commands/Directories With Record Variables On Stack And To Be Consistent
 }

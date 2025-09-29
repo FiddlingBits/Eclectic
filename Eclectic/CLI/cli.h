@@ -49,14 +49,14 @@ typedef enum cli_recordType_e
 
 typedef struct cli_record_s
 {
+    const char *Name;
+    const struct cli_record_s *Parent;
+    cli_recordType_t type;
     union
     {
         list_list_t entries;
         cli_commandHandlerCallback_t handler;
     };
-    const char *Name;
-    const struct cli_record_s *Parent;
-    cli_recordType_t type;
 } cli_record_t;
 
 /****************************************************************************************************

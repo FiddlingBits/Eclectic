@@ -32,7 +32,8 @@ PROJECT_STATIC(cli_record_t cli_rootDirectoryRecord);
  ****************************************************************************************************/
 
 static void cli_changeDirectoryCommandHandlerCallback(size_t argc, char *argv[]);
-PROJECT_STATIC(int cli_compareCallback(const void * const Data1, const void * const Data2));
+static int cli_compareCallback(const void * const Data1, const void * const Data2);
+static void cli_deinitDirectory(cli_record_t * const directoryRecord);
 PROJECT_STATIC(bool cli_getCommandAndArgumentList(char * const input, char **command, size_t * const argc, char *argv[]));
 static void cli_listCommandHandlerCallback(size_t argc, char *argv[]);
 static void cli_listCommandHandlerCallbackHelper(const cli_record_t * const Directory, const size_t IndentSize, const bool Recursive);
@@ -100,7 +101,7 @@ void cli_deinit(void)
     cli_ActiveDirectoryRecord = NULL;
     cli_printCallback = NULL;
     cli_processInputCallback = NULL;
-    list_deinit(&(cli_rootDirectoryRecord.entries));
+    cli_deinitDirectory(&cli_rootDirectoryRecord);
 }
 
 /*** Get Argument/Option Pair ***/
@@ -432,11 +433,32 @@ static void cli_changeDirectoryCommandHandlerCallback(size_t argc, char *argv[])
 }
 
 /*** Compare Callback ***/
-PROJECT_STATIC(int cli_compareCallback(const void * const Data1, const void * const Data2))
+static int cli_compareCallback(const void * const Data1, const void * const Data2)
 {
     /*** Compare Callback ***/
     /* Exit */
     return strcmp(((const cli_record_t *)Data1)->Name, ((const cli_record_t *)Data2)->Name);
+}
+
+/*** Deinitialize Directory ***/
+static void cli_deinitDirectory(cli_record_t * const directoryRecord)
+{
+    /*** Deinitialize Directory ***/
+    /* Variable */
+    size_t i;
+    cli_record_t *record;
+
+    /* Deinitialize Children Directories */
+    for(i = 0; i < directoryRecord->entries.size; i++)
+    {
+        /* Peek */
+        record = list_peekAt(&(directoryRecord->entries), i);
+        if(record->type == CLI_RECORD_TYPE_DIRECTORY)
+            cli_deinitDirectory(record);
+    }
+
+    /* Deinitialize Current Directory */
+    list_deinit(&directoryRecord->entries);
 }
 
 /*** Get Command And Argument List ***/
@@ -580,7 +602,7 @@ static void cli_listCommandHandlerCallbackHelper(const cli_record_t * const Dire
     /*** List Command Handler Callback ***/
     /* Variable */
     size_t i;
-    char *indent;
+    char *indent = NULL;
     cli_record_t *record;
     
     /* Set Up */
@@ -590,17 +612,16 @@ static void cli_listCommandHandlerCallbackHelper(const cli_record_t * const Dire
             indent[i] = ' ';
         indent[i] = '\0';
     }
-    else
-    {
-        indent = "";
-    }
 
     /* List */
     for(i = 0; i < Directory->entries.size; i++)
     {
         /* Print Record */
         record = list_peekAt(&(Directory->entries), i);
-        cli_printCallback("%s%s%s\n", indent, record->Name, (record->type == CLI_RECORD_TYPE_DIRECTORY) ? "/" : "");
+        if(indent != NULL)
+            cli_printCallback("%s%s%s\n", indent, record->Name, (record->type == CLI_RECORD_TYPE_DIRECTORY) ? "/" : "");
+        else
+            cli_printCallback("%s%s\n", record->Name, (record->type == CLI_RECORD_TYPE_DIRECTORY) ? "/" : "");
         
         /* Recursive */
         if(Recursive && (record->type == CLI_RECORD_TYPE_DIRECTORY))
@@ -608,7 +629,7 @@ static void cli_listCommandHandlerCallbackHelper(const cli_record_t * const Dire
     }
     
     /* Clean Up */
-    if(indent != "")
+    if(indent != NULL)
         memory_free((void **)&indent);
 }
 
