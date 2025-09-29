@@ -18,10 +18,10 @@
  * Helper
  ****************************************************************************************************/
 
-/*** S32 Buffer Standard Deviation ***/
-double helper_S32BufferStandardDeviation(const int32_t * const S32Buffer, const size_t S32BufferSize)
+/*** Signed 32-Bit Integer Buffer Standard Deviation ***/
+static double helper_S32BufferStandardDeviation(const int32_t * const S32Buffer, const size_t S32BufferSize)
 {
-    /*** S32 Buffer Standard Deviation ***/
+    /*** Signed 32-Bit Integer Buffer Standard Deviation ***/
     /* Variable */
     double mean = 0.0;
     double variance;
@@ -43,10 +43,10 @@ double helper_S32BufferStandardDeviation(const int32_t * const S32Buffer, const 
     return sqrt(variance); // Standard Deviation
 }
 
-/*** U8 Buffer Standard Deviation ***/
-double helper_U8BufferStandardDeviation(const uint8_t * const U8Buffer, const size_t U8BufferSize)
+/*** Unsigned 8-Bit Integer Buffer Standard Deviation ***/
+static double helper_U8BufferStandardDeviation(const uint8_t * const U8Buffer, const size_t U8BufferSize)
 {
-    /*** U8 Buffer Standard Deviation ***/
+    /*** Unsigned 8-Bit Integer Buffer Standard Deviation ***/
     /* Variable */
     double mean = 0.0;
     double variance;
@@ -68,10 +68,10 @@ double helper_U8BufferStandardDeviation(const uint8_t * const U8Buffer, const si
     return sqrt(variance); // Standard Deviation
 }
 
-/*** U32 Buffer Standard Deviation ***/
-double helper_U32BufferStandardDeviation(const uint32_t * const U32Buffer, const size_t U32BufferSize)
+/*** Unsigned 32-Bit Integer Buffer Standard Deviation ***/
+static double helper_U32BufferStandardDeviation(const uint32_t * const U32Buffer, const size_t U32BufferSize)
 {
-    /*** U32 Buffer Standard Deviation ***/
+    /*** Unsigned 32-Bit Integer Buffer Standard Deviation ***/
     /* Variable */
     double mean = 0.0;
     double variance;
@@ -191,6 +191,7 @@ void test_S32WithinRange_2(void)
         {-123, 456},                    // Small Arbitrary Range
         {-5000, 500000},                // Medium Arbitrary Range
         {-100000, 2000000},             // Larger Arbitrary Range
+        {0, 2147483647},                // Largest 31-Bit Prime Number
         {INT32_MIN + 1, INT32_MAX - 1}, // Almost Full Range
         {INT32_MIN, INT32_MAX}          // Full Range
     };
@@ -272,6 +273,7 @@ void test_U32WithinRange_2(void)
         {123, 456},                       // Small Arbitrary Range
         {5000, 500000},                   // Medium Arbitrary Range
         {100000, 2000000},                // Larger Arbitrary Range
+        {0, 2147483647},                  // Largest 31-Bit Prime Number
         {1, UINT32_MAX - 1},              // Almost Full Range
         {0, UINT32_MAX}                   // Full Range
     };

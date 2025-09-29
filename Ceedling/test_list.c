@@ -14,7 +14,7 @@
  * Helper
  ****************************************************************************************************/
 
- /*** Compare ***/
+/*** Compare ***/
 static int test_compareCallback(const void * const Data1, const void * const Data2)
 {
     return strcmp((const char *)Data1, (const char *)Data2);

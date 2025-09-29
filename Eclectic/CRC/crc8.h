@@ -24,7 +24,6 @@
  * Type Definition
  ****************************************************************************************************/
 
-/*** Structure ***/
 typedef struct crc8_configuration_s
 {
     char *Alias[CRC8_MAXIMUM_ALIAS_COUNT];

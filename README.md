@@ -1,6 +1,7 @@
 # Eclectic
 Composed Of Elements Drawn From Various Sources
 ## Feature
+* CLI
 * CRC
     * CRC-8
     * CRC-16
