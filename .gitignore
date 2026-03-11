@@ -1,2 +1,5 @@
 # Directory
+*.code-workspace
+.clangd
+.vscode
 Build/

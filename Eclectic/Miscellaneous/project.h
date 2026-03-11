@@ -1,15 +1,17 @@
 /****************************************************************************************************
-* Pragma
+ * Pragma
  ****************************************************************************************************/
 
-#pragma once
+#pragma onces
 
 /****************************************************************************************************
- * Define
+ * Defines
  ****************************************************************************************************/
 
 #ifdef CEEDLING
-  #define PROJECT_STATIC(DECLARATION) extern DECLARATION; DECLARATION
+#define PROJECT_STATIC(DECLARATION) \
+    extern DECLARATION;             \
+    DECLARATION
 #else
-  #define PROJECT_STATIC(DECLARATION) static DECLARATION
+#define PROJECT_STATIC(DECLARATION) static DECLARATION
 #endif

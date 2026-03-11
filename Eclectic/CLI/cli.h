@@ -1,25 +1,25 @@
 /****************************************************************************************************
- * Pragma
+ * Pragmas
  ****************************************************************************************************/
 
 #pragma once
 
 /****************************************************************************************************
- * Define
+ * Defines
  ****************************************************************************************************/
 
 #define CLI_COMMAND_CHANGE_DIRECTORY_NAME ("cd")
-#define CLI_COMMAND_LIST_NAME             ("ls")
-#define CLI_DIRECTORY_ROOT_NAME           ("root")
-#define CLI_INPUT_MAXIMUM_ARGUMENTS       (10)
-#define CLI_INPUT_MAXIMUM_LENGTH          (256)
-#define CLI_LIST_INDENT_SIZE              (2)
+#define CLI_COMMAND_LIST_NAME ("ls")
+#define CLI_DIRECTORY_ROOT_NAME ("root")
+#define CLI_INPUT_MAXIMUM_ARGUMENTS (10)
+#define CLI_INPUT_MAXIMUM_LENGTH (256)
+#define CLI_LIST_INDENT_SIZE (2)
 #define CLI_OUTPUT_ANCESTRY_MAXIMUM_DEPTH (5)
-#define CLI_OUTPUT_COMMAND_PROMPT         ("$")
-#define CLI_PARENT_DIRECTORY_ROOT         (NULL)
+#define CLI_OUTPUT_COMMAND_PROMPT ("$")
+#define CLI_PARENT_DIRECTORY_ROOT (NULL)
 
 /****************************************************************************************************
- * Include
+ * Includes
  ****************************************************************************************************/
 
 #include "Eclectic/Data/list.h"
@@ -28,24 +28,27 @@
 #include <stdint.h>
 
 /****************************************************************************************************
- * Type Definition
+ * Type Definitions
  ****************************************************************************************************/
 
-typedef struct cli_argumentOptionPair_s
-{
-    char *argument;
-    char *option;
-} cli_argumentOptionPair_t;
-
+/*** Callbacks ***/
 typedef void (*cli_commandHandlerCallback_t)(size_t argc, char *argv[]);
 typedef void (*cli_printCallback_t)(const char * const Format, ...);
 typedef void (*cli_processInputCallback_t)(void);
 
+/*** Enumerations ***/
 typedef enum cli_recordType_e
 {
     CLI_RECORD_TYPE_COMMAND,
     CLI_RECORD_TYPE_DIRECTORY
 } cli_recordType_t;
+
+/*** Structures ***/
+typedef struct cli_argumentOptionPair_s
+{
+    char *argument;
+    char *option;
+} cli_argumentOptionPair_t;
 
 typedef struct cli_record_s
 {
@@ -60,7 +63,7 @@ typedef struct cli_record_s
 } cli_record_t;
 
 /****************************************************************************************************
- * Function Prototype
+ * Function Prototypes
  ****************************************************************************************************/
 
 extern bool cli_addReceiveCharacter(const char Character);

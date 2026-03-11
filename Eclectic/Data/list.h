@@ -1,18 +1,18 @@
 /****************************************************************************************************
- * Pragma
+ * Pragmas
  ****************************************************************************************************/
 
 #pragma once
 
 /****************************************************************************************************
- * Define
+ * Defines
  ****************************************************************************************************/
 
 #define LIST_FIND_NOT_FOUND_INDEX (UINT_MAX)
-#define LIST_NODE_MEMORY_SIZE     (sizeof(list_node_t))
+#define LIST_NODE_MEMORY_SIZE (sizeof(list_node_t))
 
 /****************************************************************************************************
- * Include
+ * Includes
  ****************************************************************************************************/
 
 #include <limits.h>
@@ -20,15 +20,17 @@
 #include <stddef.h>
 
 /****************************************************************************************************
- * Type Definition
+ * Type Definitions
  ****************************************************************************************************/
 
+/*** Callbacks ***/
 typedef int (*list_compareCallback_t)(const void * const Data1, const void * const Data2);
 typedef void (*list_destroyCallback_t)(void *data);
 
+/*** Structures ***/
 typedef struct list_node_s
 {
-	void *data;
+    void *data;
     struct list_node_s *next, *prev;
 } list_node_t;
 
@@ -41,7 +43,7 @@ typedef struct list_list_s
 } list_list_t;
 
 /****************************************************************************************************
- * Function Prototype
+ * Function Prototypes
  ****************************************************************************************************/
 
 extern void list_deinit(list_list_t * const list);

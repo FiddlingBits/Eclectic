@@ -1,0 +1,28 @@
+---
+BasedOnStyle: LLVM
+Language: Cpp
+
+# Allman: opening braces on new lines
+BreakBeforeBraces: Allman
+
+# Indentation
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never
+
+# Line length (0 = no limit)
+ColumnLimit: 0
+
+# No space after if/for/while/etc.
+SpaceBeforeParens: Never
+
+# Indent switch cases
+IndentCaseLabels: true
+
+# Align with project conventions
+AlignAfterOpenBracket: Align
+
+# Space between * and const (e.g. * const instead of *const)
+SpaceAroundPointerQualifiers: Before
+AllowShortBlocksOnASingleLine: Empty
+AllowShortFunctionsOnASingleLine: Empty

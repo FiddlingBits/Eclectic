@@ -1,19 +1,19 @@
 /****************************************************************************************************
- * Pragma
+ * Pragmas
  ****************************************************************************************************/
 
 #pragma once
 
 /****************************************************************************************************
- * Define
+ * Defines
  ****************************************************************************************************/
 
-#define CRC32_LOOKUP_TABLE_COUNT       (256)
+#define CRC32_LOOKUP_TABLE_COUNT (256)
 #define CRC32_LOOKUP_TABLE_MEMORY_SIZE (CRC32_LOOKUP_TABLE_COUNT * sizeof(uint32_t))
-#define CRC32_MAXIMUM_ALIAS_COUNT      (5)
+#define CRC32_MAXIMUM_ALIAS_COUNT (5)
 
 /****************************************************************************************************
- * Include
+ * Includes
  ****************************************************************************************************/
 
 #include <stdbool.h>
@@ -21,9 +21,10 @@
 #include <stdint.h>
 
 /****************************************************************************************************
- * Type Definition
+ * Type Definitions
  ****************************************************************************************************/
 
+/*** Structures ***/
 typedef struct crc32_configuration_s
 {
     char *Alias[CRC32_MAXIMUM_ALIAS_COUNT];
@@ -40,11 +41,11 @@ typedef struct crc32_configuration_s
 } crc32_configuration_t;
 
 /****************************************************************************************************
- * Function Prototype
+ * Function Prototypes
  ****************************************************************************************************/
 
 extern uint32_t crc32_calculate(const crc32_configuration_t * const Configuration, const uint8_t *Data, const size_t DataLength);
-extern void crc32_calculateAndAppend(const crc32_configuration_t * const Configuration, uint8_t *const buffer, const size_t BufferLength, const size_t DataLength);
+extern void crc32_calculateAndAppend(const crc32_configuration_t * const Configuration, uint8_t * const buffer, const size_t BufferLength, const size_t DataLength);
 extern uint32_t crc32_calculatePartial(const crc32_configuration_t * const Configuration, uint32_t crc, const uint8_t Data, const bool First, const bool Last);
 extern void crc32_deinit(crc32_configuration_t * const configuration);
 extern void crc32_init(const char * const Name, crc32_configuration_t * const configuration, const bool CreateLookupTable);

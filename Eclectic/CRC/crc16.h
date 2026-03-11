@@ -1,19 +1,19 @@
 /****************************************************************************************************
- * Pragma
+ * Pragmas
  ****************************************************************************************************/
 
 #pragma once
 
 /****************************************************************************************************
- * Define
+ * Defines
  ****************************************************************************************************/
 
-#define CRC16_LOOKUP_TABLE_COUNT       (256)
+#define CRC16_LOOKUP_TABLE_COUNT (256)
 #define CRC16_LOOKUP_TABLE_MEMORY_SIZE (CRC16_LOOKUP_TABLE_COUNT * sizeof(uint16_t))
-#define CRC16_MAXIMUM_ALIAS_COUNT      (6)
+#define CRC16_MAXIMUM_ALIAS_COUNT (6)
 
 /****************************************************************************************************
- * Include
+ * Includes
  ****************************************************************************************************/
 
 #include <stdbool.h>
@@ -21,9 +21,10 @@
 #include <stdint.h>
 
 /****************************************************************************************************
- * Type Definition
+ * Type Definitions
  ****************************************************************************************************/
 
+/*** Structures ***/
 typedef struct crc16_configuration_s
 {
     char *Alias[CRC16_MAXIMUM_ALIAS_COUNT];
@@ -40,11 +41,11 @@ typedef struct crc16_configuration_s
 } crc16_configuration_t;
 
 /****************************************************************************************************
- * Function Prototype
+ * Function Prototypes
  ****************************************************************************************************/
 
 extern uint16_t crc16_calculate(const crc16_configuration_t * const Configuration, const uint8_t *Data, const size_t DataLength);
-extern void crc16_calculateAndAppend(const crc16_configuration_t * const Configuration, uint8_t *const buffer, const size_t BufferLength, const size_t DataLength);
+extern void crc16_calculateAndAppend(const crc16_configuration_t * const Configuration, uint8_t * const buffer, const size_t BufferLength, const size_t DataLength);
 extern uint16_t crc16_calculatePartial(const crc16_configuration_t * const Configuration, uint16_t crc, const uint8_t Data, const bool First, const bool Last);
 extern void crc16_deinit(crc16_configuration_t * const configuration);
 extern void crc16_init(const char * const Name, crc16_configuration_t * const configuration, const bool CreateLookupTable);

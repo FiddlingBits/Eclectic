@@ -1,19 +1,20 @@
 /****************************************************************************************************
-* Include
+ * Includes
  ****************************************************************************************************/
 
-#include "Eclectic/Miscellaneous/project.h"
 #include "Eclectic/Miscellaneous/memory.h"
+#include "Eclectic/Miscellaneous/project.h"
+
 
 /****************************************************************************************************
- * Variable
+ * Variables
  ****************************************************************************************************/
 
 PROJECT_STATIC(memory_freeCallback_t memory_freeCallback);
 PROJECT_STATIC(memory_mallocCallback_t memory_mallocCallback);
 
 /****************************************************************************************************
- * Function Definition (Public)
+ * Function Definitions (Public)
  ****************************************************************************************************/
 
 /*** Free ***/

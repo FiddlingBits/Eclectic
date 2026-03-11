@@ -1,19 +1,19 @@
 /****************************************************************************************************
- * Pragma
+ * Pragmas
  ****************************************************************************************************/
 
 #pragma once
 
 /****************************************************************************************************
- * Define
+ * Defines
  ****************************************************************************************************/
 
-#define CRC8_LOOKUP_TABLE_COUNT       (256)
+#define CRC8_LOOKUP_TABLE_COUNT (256)
 #define CRC8_LOOKUP_TABLE_MEMORY_SIZE (CRC8_LOOKUP_TABLE_COUNT * sizeof(uint8_t))
-#define CRC8_MAXIMUM_ALIAS_COUNT      (2)
+#define CRC8_MAXIMUM_ALIAS_COUNT (2)
 
 /****************************************************************************************************
- * Include
+ * Includes
  ****************************************************************************************************/
 
 #include <stdbool.h>
@@ -21,9 +21,10 @@
 #include <stdint.h>
 
 /****************************************************************************************************
- * Type Definition
+ * Type Definitions
  ****************************************************************************************************/
 
+/*** Structures ***/
 typedef struct crc8_configuration_s
 {
     char *Alias[CRC8_MAXIMUM_ALIAS_COUNT];
@@ -40,11 +41,11 @@ typedef struct crc8_configuration_s
 } crc8_configuration_t;
 
 /****************************************************************************************************
- * Function Prototype
+ * Function Prototypes
  ****************************************************************************************************/
 
 extern uint8_t crc8_calculate(const crc8_configuration_t * const Configuration, const uint8_t *Data, const size_t DataLength);
-extern void crc8_calculateAndAppend(const crc8_configuration_t * const Configuration, uint8_t *const buffer, const size_t BufferLength, const size_t DataLength);
+extern void crc8_calculateAndAppend(const crc8_configuration_t * const Configuration, uint8_t * const buffer, const size_t BufferLength, const size_t DataLength);
 extern uint8_t crc8_calculatePartial(const crc8_configuration_t * const Configuration, uint8_t crc, const uint8_t Data, const bool Last);
 extern void crc8_deinit(crc8_configuration_t * const configuration);
 extern void crc8_init(const char * const Name, crc8_configuration_t * const configuration, const bool CreateLookupTable);

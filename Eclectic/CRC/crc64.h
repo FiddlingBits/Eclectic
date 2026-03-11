@@ -1,19 +1,19 @@
 /****************************************************************************************************
- * Pragma
+ * Pragmas
  ****************************************************************************************************/
 
 #pragma once
 
 /****************************************************************************************************
- * Define
+ * Defines
  ****************************************************************************************************/
 
-#define CRC64_LOOKUP_TABLE_COUNT       (256)
+#define CRC64_LOOKUP_TABLE_COUNT (256)
 #define CRC64_LOOKUP_TABLE_MEMORY_SIZE (CRC64_LOOKUP_TABLE_COUNT * sizeof(uint64_t))
-#define CRC64_MAXIMUM_ALIAS_COUNT      (1)
+#define CRC64_MAXIMUM_ALIAS_COUNT (1)
 
 /****************************************************************************************************
- * Include
+ * Includes
  ****************************************************************************************************/
 
 #include <stdbool.h>
@@ -21,9 +21,10 @@
 #include <stdint.h>
 
 /****************************************************************************************************
- * Type Definition
+ * Type Definitions
  ****************************************************************************************************/
 
+/*** Structures ***/
 typedef struct crc64_configuration_s
 {
     char *Alias[CRC64_MAXIMUM_ALIAS_COUNT];
@@ -40,11 +41,11 @@ typedef struct crc64_configuration_s
 } crc64_configuration_t;
 
 /****************************************************************************************************
- * Function Prototype
+ * Function Prototypes
  ****************************************************************************************************/
 
 extern uint64_t crc64_calculate(const crc64_configuration_t * const Configuration, const uint8_t *Data, const size_t DataLength);
-extern void crc64_calculateAndAppend(const crc64_configuration_t * const Configuration, uint8_t *const buffer, const size_t BufferLength, const size_t DataLength);
+extern void crc64_calculateAndAppend(const crc64_configuration_t * const Configuration, uint8_t * const buffer, const size_t BufferLength, const size_t DataLength);
 extern uint64_t crc64_calculatePartial(const crc64_configuration_t * const Configuration, uint64_t crc, const uint8_t Data, const bool First, const bool Last);
 extern void crc64_deinit(crc64_configuration_t * const configuration);
 extern void crc64_init(const char * const Name, crc64_configuration_t * const configuration, const bool CreateLookupTable);

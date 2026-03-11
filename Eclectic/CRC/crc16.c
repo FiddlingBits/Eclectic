@@ -1,5 +1,5 @@
 /****************************************************************************************************
- * Include
+ * Includes
  ****************************************************************************************************/
 
 #include "Eclectic/CRC/crc16.h"
@@ -10,47 +10,46 @@
 #include <string.h>
 
 /****************************************************************************************************
- * Constant
+ * Constants
  ****************************************************************************************************/
 
 const crc16_configuration_t crc16_Configuration[] =
-{
-    {{"ARC", "CRC-16", "CRC-16/LHA", "CRC-IBM"}, 4, 0xBB3D, 0x0000, NULL, "CRC-16/ARC", 0x8005, true, true, 0x0000, 0x0000},
-    {{}, 0, 0x4C06, 0xFFFF, NULL, "CRC-16/CDMA2000", 0xC867, false, false, 0x0000, 0x0000},
-    {{}, 0, 0xAEE7, 0xFFFF, NULL, "CRC-16/CMS", 0x8005, false, false, 0x0000, 0x0000},
-    {{}, 0, 0x9ECF, 0x800D, NULL, "CRC-16/DDS-110", 0x8005, false, false, 0x0000, 0x0000},
-    {{"R-CRC-16"}, 1, 0x007E, 0x0000, NULL, "CRC-16/DECT-R", 0x0589, false, false, 0x0589, 0x0001},
-    {{"X-CRC-16"}, 1, 0x007F, 0x0000, NULL, "CRC-16/DECT-X", 0x0589, false, false, 0x0000, 0x0000},
-    {{}, 0, 0xEA82, 0x0000, NULL, "CRC-16/DNP", 0x3D65, true, true, 0x66C5, 0xFFFF},
-    {{}, 0, 0xC2B7, 0x0000, NULL, "CRC-16/EN-13757", 0x3D65, false, false, 0xA366, 0xFFFF},
-    {{"CRC-16/DARC", "CRC-16/EPC", "CRC-16/EPC-C1G2", "CRC-16/I-CODE"}, 4, 0xD64E, 0xFFFF, NULL, "CRC-16/GENIBUS", 0x1021, false, false, 0x1D0F, 0xFFFF},
-    {{}, 0, 0xCE3C, 0x0000, NULL, "CRC-16/GSM", 0x1021, false, false, 0x1D0F, 0xFFFF},
-    {{"CRC-16/AUTOSAR", "CRC-16/CCITT-FALSE"}, 2, 0x29B1, 0xFFFF, NULL, "CRC-16/IBM-3740", 0x1021, false, false, 0x0000, 0x0000},
-    {{"CRC-16/ISO-HDLC", "CRC-16/ISO-IEC-14443-3-B", "CRC-16/X-25", "CRC-B", "X-25"}, 5, 0x906E, 0xFFFF, NULL, "CRC-16/IBM-SDLC", 0x1021, true, true, 0xF0B8, 0xFFFF},
-    {{"CRC-A"}, 1, 0xBF05, 0xC6C6, NULL, "CRC-16/ISO-IEC-14443-3-A", 0x1021, true, true, 0x0000, 0x0000},
-    {{"CRC-16/BLUETOOTH", "CRC-16/CCITT", "CRC-16/CCITT-TRUE", "CRC-16/V-41-LSB", "CRC-CCITT", "KERMIT"}, 6, 0x2189, 0x0000, NULL, "CRC-16/KERMIT", 0x1021, true, true, 0x0000, 0x0000},
-    {{}, 0, 0xBDF4, 0x0000, NULL, "CRC-16/LJ1200", 0x6F63, false, false, 0x0000, 0x0000},
-    {{}, 0, 0x772B, 0xFFFF, NULL, "CRC-16/M17", 0x5935, false, false, 0x0000, 0x0000},
-    {{"CRC-16/MAXIM"}, 1, 0x44C2, 0x0000, NULL, "CRC-16/MAXIM-DOW", 0x8005, true, true, 0xB001, 0xFFFF},
-    {{}, 0, 0x6F91, 0xFFFF, NULL, "CRC-16/MCRF4XX", 0x1021, true, true, 0x0000, 0x0000},
-    {{"MODBUS"}, 1, 0x4B37, 0xFFFF, NULL, "CRC-16/MODBUS", 0x8005, true, true, 0x0000, 0x0000},
-    {{}, 0, 0xA066, 0xFFFF, NULL, "CRC-16/NRSC-5", 0x080B, true, true, 0x0000, 0x0000},
-    {{}, 0, 0x5D38, 0x0000, NULL, "CRC-16/OPENSAFETY-A", 0x5935, false, false, 0x0000, 0x0000},
-    {{}, 0, 0x20FE, 0x0000, NULL, "CRC-16/OPENSAFETY-B", 0x755B, false, false, 0x0000, 0x0000},
-    {{"CRC-16/IEC-61158-2"}, 1, 0xA819, 0xFFFF, NULL, "CRC-16/PROFIBUS", 0x1DCF, false, false, 0xE394, 0xFFFF},
-    {{}, 0, 0x63D0, 0xB2AA, NULL, "CRC-16/RIELLO", 0x1021, true, true, 0x0000, 0x0000},
-    {{"CRC-16/AUG-CCITT"}, 1, 0xE5CC, 0x1D0F, NULL, "CRC-16/SPI-FUJITSU", 0x1021, false, false, 0x0000, 0x0000},
-    {{}, 0, 0xD0DB, 0x0000, NULL, "CRC-16/T10-DIF", 0x8BB7, false, false, 0x0000, 0x0000},
-    {{}, 0, 0x0FB3, 0x0000, NULL, "CRC-16/TELEDISK", 0xA097, false, false, 0x0000, 0x0000},
-    {{}, 0, 0x26B1, 0x89EC, NULL, "CRC-16/TMS37157", 0x1021, true, true, 0x0000, 0x0000},
-    {{"CRC-16/BUYPASS", "CRC-16/VERIFONE"}, 2, 0xFEE8, 0x0000, NULL, "CRC-16/UMTS", 0x8005, false, false, 0x0000, 0x0000},
-    {{}, 0, 0xB4C8, 0xFFFF, NULL, "CRC-16/USB", 0x8005, true, true, 0xB001, 0xFFFF},
-    {{"CRC-16/ACORN", "CRC-16/LTE", "CRC-16/V-41-MSB", "XMODEM", "ZMODEM"}, 5, 0x31C3, 0x0000, NULL, "CRC-16/XMODEM", 0x1021, false, false, 0x0000, 0x0000}
-};
+    {
+        {{"ARC", "CRC-16", "CRC-16/LHA", "CRC-IBM"}, 4, 0xBB3D, 0x0000, NULL, "CRC-16/ARC", 0x8005, true, true, 0x0000, 0x0000},
+        {{}, 0, 0x4C06, 0xFFFF, NULL, "CRC-16/CDMA2000", 0xC867, false, false, 0x0000, 0x0000},
+        {{}, 0, 0xAEE7, 0xFFFF, NULL, "CRC-16/CMS", 0x8005, false, false, 0x0000, 0x0000},
+        {{}, 0, 0x9ECF, 0x800D, NULL, "CRC-16/DDS-110", 0x8005, false, false, 0x0000, 0x0000},
+        {{"R-CRC-16"}, 1, 0x007E, 0x0000, NULL, "CRC-16/DECT-R", 0x0589, false, false, 0x0589, 0x0001},
+        {{"X-CRC-16"}, 1, 0x007F, 0x0000, NULL, "CRC-16/DECT-X", 0x0589, false, false, 0x0000, 0x0000},
+        {{}, 0, 0xEA82, 0x0000, NULL, "CRC-16/DNP", 0x3D65, true, true, 0x66C5, 0xFFFF},
+        {{}, 0, 0xC2B7, 0x0000, NULL, "CRC-16/EN-13757", 0x3D65, false, false, 0xA366, 0xFFFF},
+        {{"CRC-16/DARC", "CRC-16/EPC", "CRC-16/EPC-C1G2", "CRC-16/I-CODE"}, 4, 0xD64E, 0xFFFF, NULL, "CRC-16/GENIBUS", 0x1021, false, false, 0x1D0F, 0xFFFF},
+        {{}, 0, 0xCE3C, 0x0000, NULL, "CRC-16/GSM", 0x1021, false, false, 0x1D0F, 0xFFFF},
+        {{"CRC-16/AUTOSAR", "CRC-16/CCITT-FALSE"}, 2, 0x29B1, 0xFFFF, NULL, "CRC-16/IBM-3740", 0x1021, false, false, 0x0000, 0x0000},
+        {{"CRC-16/ISO-HDLC", "CRC-16/ISO-IEC-14443-3-B", "CRC-16/X-25", "CRC-B", "X-25"}, 5, 0x906E, 0xFFFF, NULL, "CRC-16/IBM-SDLC", 0x1021, true, true, 0xF0B8, 0xFFFF},
+        {{"CRC-A"}, 1, 0xBF05, 0xC6C6, NULL, "CRC-16/ISO-IEC-14443-3-A", 0x1021, true, true, 0x0000, 0x0000},
+        {{"CRC-16/BLUETOOTH", "CRC-16/CCITT", "CRC-16/CCITT-TRUE", "CRC-16/V-41-LSB", "CRC-CCITT", "KERMIT"}, 6, 0x2189, 0x0000, NULL, "CRC-16/KERMIT", 0x1021, true, true, 0x0000, 0x0000},
+        {{}, 0, 0xBDF4, 0x0000, NULL, "CRC-16/LJ1200", 0x6F63, false, false, 0x0000, 0x0000},
+        {{}, 0, 0x772B, 0xFFFF, NULL, "CRC-16/M17", 0x5935, false, false, 0x0000, 0x0000},
+        {{"CRC-16/MAXIM"}, 1, 0x44C2, 0x0000, NULL, "CRC-16/MAXIM-DOW", 0x8005, true, true, 0xB001, 0xFFFF},
+        {{}, 0, 0x6F91, 0xFFFF, NULL, "CRC-16/MCRF4XX", 0x1021, true, true, 0x0000, 0x0000},
+        {{"MODBUS"}, 1, 0x4B37, 0xFFFF, NULL, "CRC-16/MODBUS", 0x8005, true, true, 0x0000, 0x0000},
+        {{}, 0, 0xA066, 0xFFFF, NULL, "CRC-16/NRSC-5", 0x080B, true, true, 0x0000, 0x0000},
+        {{}, 0, 0x5D38, 0x0000, NULL, "CRC-16/OPENSAFETY-A", 0x5935, false, false, 0x0000, 0x0000},
+        {{}, 0, 0x20FE, 0x0000, NULL, "CRC-16/OPENSAFETY-B", 0x755B, false, false, 0x0000, 0x0000},
+        {{"CRC-16/IEC-61158-2"}, 1, 0xA819, 0xFFFF, NULL, "CRC-16/PROFIBUS", 0x1DCF, false, false, 0xE394, 0xFFFF},
+        {{}, 0, 0x63D0, 0xB2AA, NULL, "CRC-16/RIELLO", 0x1021, true, true, 0x0000, 0x0000},
+        {{"CRC-16/AUG-CCITT"}, 1, 0xE5CC, 0x1D0F, NULL, "CRC-16/SPI-FUJITSU", 0x1021, false, false, 0x0000, 0x0000},
+        {{}, 0, 0xD0DB, 0x0000, NULL, "CRC-16/T10-DIF", 0x8BB7, false, false, 0x0000, 0x0000},
+        {{}, 0, 0x0FB3, 0x0000, NULL, "CRC-16/TELEDISK", 0xA097, false, false, 0x0000, 0x0000},
+        {{}, 0, 0x26B1, 0x89EC, NULL, "CRC-16/TMS37157", 0x1021, true, true, 0x0000, 0x0000},
+        {{"CRC-16/BUYPASS", "CRC-16/VERIFONE"}, 2, 0xFEE8, 0x0000, NULL, "CRC-16/UMTS", 0x8005, false, false, 0x0000, 0x0000},
+        {{}, 0, 0xB4C8, 0xFFFF, NULL, "CRC-16/USB", 0x8005, true, true, 0xB001, 0xFFFF},
+        {{"CRC-16/ACORN", "CRC-16/LTE", "CRC-16/V-41-MSB", "XMODEM", "ZMODEM"}, 5, 0x31C3, 0x0000, NULL, "CRC-16/XMODEM", 0x1021, false, false, 0x0000, 0x0000}};
 const size_t crc16_ConfigurationCount = sizeof(crc16_Configuration) / sizeof(crc16_Configuration[0]);
 
 /****************************************************************************************************
- * Function Definition (Public)
+ * Function Definitions (Public)
  ****************************************************************************************************/
 
 /*** Calculate ***/
@@ -59,10 +58,11 @@ uint16_t crc16_calculate(const crc16_configuration_t * const Configuration, cons
     /*** Calculate ***/
     /* Variable */
     uint16_t crc;
-    
+    size_t i;
+
     /* Set Up */
     crc = 0x0000;
-    
+
     /* Error Check */
     if((Configuration != NULL) && (Data != NULL))
     {
@@ -70,7 +70,7 @@ uint16_t crc16_calculate(const crc16_configuration_t * const Configuration, cons
         crc = Configuration->initial;
 
         /* Calculate */
-        for(size_t i = 0; i < DataLength; i++)
+        for(i = 0; i < DataLength; i++)
             crc = crc16_calculatePartial(Configuration, crc, Data[i], (i == 0), (i == (DataLength - 1)));
     }
 
@@ -79,15 +79,15 @@ uint16_t crc16_calculate(const crc16_configuration_t * const Configuration, cons
 }
 
 /*** Calculate And Append ***/
-void crc16_calculateAndAppend(const crc16_configuration_t * const Configuration, uint8_t *const buffer, const size_t BufferLength, const size_t DataLength)
+void crc16_calculateAndAppend(const crc16_configuration_t * const Configuration, uint8_t * const buffer, const size_t BufferLength, const size_t DataLength)
 {
     /*** Calculate And Append ***/
     /* Variable */
     uint16_t crc;
-    
+
     /* Set Up */
     crc = 0x0000;
-    
+
     /* Error Check */
     if((Configuration != NULL) && (buffer != NULL) && (BufferLength >= (DataLength + sizeof(crc))))
     {
@@ -101,6 +101,9 @@ void crc16_calculateAndAppend(const crc16_configuration_t * const Configuration,
 uint16_t crc16_calculatePartial(const crc16_configuration_t * const Configuration, uint16_t crc, const uint8_t Data, const bool First, const bool Last)
 {
     /*** Calculate Partial ***/
+    /* Variable */
+    size_t bit;
+
     /* Error Check */
     if(Configuration != NULL)
     {
@@ -114,7 +117,7 @@ uint16_t crc16_calculatePartial(const crc16_configuration_t * const Configuratio
                 crc ^= (Data << 8);
 
             /* Calculate */
-            for(size_t bit = 0; bit < 8; bit++)
+            for(bit = 0; bit < 8; bit++)
             {
                 if((crc & 0x8000) == 0x8000)
                     crc = (crc << 1) ^ Configuration->polynomial;
@@ -166,7 +169,7 @@ void crc16_deinit(crc16_configuration_t * const configuration)
     if(configuration != NULL)
     {
         /* Deinitialize */
-        memory_free((void**)&(configuration->lookupTable));
+        memory_free((void **)&(configuration->lookupTable));
         memset(configuration, 0, sizeof(*configuration));
     }
 }
@@ -177,11 +180,12 @@ void crc16_init(const char * const Name, crc16_configuration_t * const configura
     /*** Initialize ***/
     /* Variable */
     bool found;
-    size_t i;
-    
+    size_t i, j;
+    uint16_t *lookupTable;
+
     /* Set Up */
     found = false;
-    
+
     /* Error Check */
     if((Name != NULL) && (configuration != NULL))
     {
@@ -198,7 +202,7 @@ void crc16_init(const char * const Name, crc16_configuration_t * const configura
             else
             {
                 /* Alias */
-                for(size_t j = 0; j < crc16_Configuration[i].aliasCount; j++)
+                for(j = 0; j < crc16_Configuration[i].aliasCount; j++)
                 {
                     if(strcmp(Name, crc16_Configuration[i].Alias[j]) == 0)
                     {
@@ -223,8 +227,6 @@ void crc16_init(const char * const Name, crc16_configuration_t * const configura
             /* Generate Lookup Table */
             if(CreateLookupTable)
             {
-                uint16_t *lookupTable;
-
                 if((lookupTable = memory_malloc(CRC16_LOOKUP_TABLE_MEMORY_SIZE)) != NULL)
                 {
                     for(i = 0; i < 256; i++)
@@ -248,10 +250,10 @@ bool crc16_verify(const crc16_configuration_t * const Configuration, const uint8
     /* Variable */
     uint16_t crc;
     bool verified;
-    
+
     /* Set Up */
     verified = false;
-    
+
     /* Error Check */
     if((Configuration != NULL) && (Buffer != NULL))
     {

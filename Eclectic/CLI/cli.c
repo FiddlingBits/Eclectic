@@ -1,20 +1,21 @@
 /****************************************************************************************************
- * Include
+ * Includes
  ****************************************************************************************************/
 
-#include <ctype.h>
 #include "Eclectic/CLI/cli.h"
 #include "Eclectic/Data/list.h"
 #include "Eclectic/Miscellaneous/memory.h"
 #include "Eclectic/Miscellaneous/project.h"
+#include <ctype.h>
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 
+
 /****************************************************************************************************
- * Variable
+ * Variables
  ****************************************************************************************************/
 
 PROJECT_STATIC(const cli_record_t *cli_ActiveDirectoryRecord);
@@ -28,7 +29,7 @@ PROJECT_STATIC(size_t cli_receiveBufferIndex);
 PROJECT_STATIC(cli_record_t cli_rootDirectoryRecord);
 
 /****************************************************************************************************
- * Function Prototype
+ * Function Prototypes
  ****************************************************************************************************/
 
 static void cli_changeDirectoryCommandHandlerCallback(size_t argc, char *argv[]);
@@ -44,7 +45,7 @@ PROJECT_STATIC(void cli_processCommand(const char * const Command, const size_t 
 PROJECT_STATIC(bool cli_verifyNameAcceptable(const char * const Name, const cli_record_t * const ParentDirectory));
 
 /****************************************************************************************************
- * Function Definition (Public)
+ * Function Definitions (Public)
  ****************************************************************************************************/
 
 /*** Add Receive Character ***/
@@ -53,10 +54,10 @@ bool cli_addReceiveCharacter(const char Character)
     /*** Add Receive Character ***/
     /* Variable */
     bool success;
-    
+
     /* Set Up */
     success = false;
-    
+
     /* Error Check */
     if(cli_processInputCallback != NULL)
     {
@@ -72,7 +73,7 @@ bool cli_addReceiveCharacter(const char Character)
             /* Other Character */
             cli_receiveBuffer[cli_receiveBufferIndex++] = Character;
         }
-        
+
         /* Process Input */
         if((Character == '\n') || (cli_receiveBufferIndex == CLI_INPUT_MAXIMUM_LENGTH))
         {
@@ -81,15 +82,15 @@ bool cli_addReceiveCharacter(const char Character)
             (void)memcpy(cli_inputBuffer, cli_receiveBuffer, sizeof(cli_receiveBuffer));
             (void)memset(cli_receiveBuffer, 0, sizeof(cli_receiveBuffer));
             cli_receiveBufferIndex = 0;
-            
+
             /* Process Input */
             cli_processInputCallback();
         }
-        
+
         /* Success */
         success = true;
     }
-    
+
     /* Exit */
     return success;
 }
@@ -111,28 +112,28 @@ bool cli_getArgumentOptionPair(char * const input, cli_argumentOptionPair_t * co
     /* Variable */
     size_t i;
     bool success;
-    
+
     /* Set Up */
     success = false;
-    
+
     /* Error Check */
     if((input != NULL) && (strlen(input) >= 2) && (argumentOptionPair != NULL))
     {
         /* Set Up */
         argumentOptionPair->argument = NULL; // May Not Be Present
-        
+
         /* Parse (Structured Like The Following To Pass GCOV) */
         if(input[0] == '-')
         {
             /* Parse */
             if(input[1] == '-')
             {
-                /* Error Check */      
+                /* Error Check */
                 if(input[2] != '\0')
                 {
                     /* Set Up */
                     i = 2;
-                    
+
                     /* Long Option */
                     argumentOptionPair->option = &input[2];
                     while(input[i] != '\0')
@@ -146,7 +147,7 @@ bool cli_getArgumentOptionPair(char * const input, cli_argumentOptionPair_t * co
                         }
                         i++;
                     }
-                    
+
                     /* Success */
                     success = true;
                 }
@@ -156,18 +157,18 @@ bool cli_getArgumentOptionPair(char * const input, cli_argumentOptionPair_t * co
                 /* Replace '-' With Option And '\0' Terminate */
                 input[0] = input[1];
                 input[1] = '\0';
-                
+
                 /* Short Option */
                 argumentOptionPair->option = &input[0];
                 if(input[2] != '\0')
                     argumentOptionPair->argument = &input[2];
-                
+
                 /* Success */
                 success = true;
             }
         }
     }
-    
+
     /* Exit */
     return success;
 }
@@ -179,11 +180,11 @@ bool cli_getS32(const char * const Input, int32_t * const s32)
     /* Variable */
     char *end;
     bool success;
-    
+
     /* Set Up */
     end = NULL;
     success = false;
-    
+
     /* Error Check */
     if((Input != NULL) && (strlen(Input) > 0) && (s32 != NULL))
     {
@@ -192,7 +193,7 @@ bool cli_getS32(const char * const Input, int32_t * const s32)
         if(*end == '\0')
             success = true;
     }
-    
+
     /* Exit */
     return success;
 }
@@ -204,11 +205,11 @@ bool cli_getU32(const char * const Input, uint32_t * const u32)
     /* Variable */
     char *end;
     bool success;
-    
+
     /* Set Up */
     end = NULL;
     success = false;
-    
+
     /* Error Check */
     if((Input != NULL) && (strlen(Input) > 0) && (u32 != NULL))
     {
@@ -217,7 +218,7 @@ bool cli_getU32(const char * const Input, uint32_t * const u32)
         if(*end == '\0')
             success = true;
     }
-    
+
     /* Exit */
     return success;
 }
@@ -228,10 +229,10 @@ bool cli_init(const cli_printCallback_t PrintCallback, const cli_processInputCal
     /*** Initialize ***/
     /* Variable */
     bool success;
-    
+
     /* Set Up */
     success = false;
-    
+
     /* Error Check */
     if((PrintCallback != NULL) && (ProcessInputCallback != NULL))
     {
@@ -239,25 +240,25 @@ bool cli_init(const cli_printCallback_t PrintCallback, const cli_processInputCal
         cli_ActiveDirectoryRecord = &cli_rootDirectoryRecord;
         cli_printCallback = PrintCallback;
         cli_processInputCallback = ProcessInputCallback;
-        
+
         /* Root Directory */
         cli_presetRecord(&cli_rootDirectoryRecord, CLI_RECORD_TYPE_DIRECTORY, CLI_DIRECTORY_ROOT_NAME, NULL);
-        
+
         /* Built-In Commands */
         (void)cli_registerCommand(&cli_changeDirectoryCommandRecord, CLI_COMMAND_CHANGE_DIRECTORY_NAME, &cli_rootDirectoryRecord, cli_changeDirectoryCommandHandlerCallback);
         (void)cli_registerCommand(&cli_listCommandRecord, CLI_COMMAND_LIST_NAME, &cli_rootDirectoryRecord, cli_listCommandHandlerCallback);
-        
+
         /* Receive Buffer */
         (void)memset(cli_receiveBuffer, 0, sizeof(cli_receiveBuffer));
         cli_receiveBufferIndex = 0;
-        
+
         /* Print Command Prompt */
         cli_printCommandPrompt();
-        
+
         /* Success */
         success = true;
     }
-    
+
     /* Exit */
     return success;
 }
@@ -267,33 +268,33 @@ bool cli_processInput(void)
 {
     /*** Process Input ***/
     /* Variable */
-    char *argv[CLI_INPUT_MAXIMUM_ARGUMENTS], *command;
     size_t argc = 0;
+    char *argv[CLI_INPUT_MAXIMUM_ARGUMENTS], *command;
     bool success;
-    
+
     /* Set Up */
     success = false;
-    
+
     /* Error Check */
     if(cli_printCallback != NULL)
-    {        
+    {
         /* Parse */
         if(cli_getCommandAndArgumentList(cli_inputBuffer, &command, &argc, argv))
         {
             /* Process */
             cli_processCommand(command, argc, argv);
-            
+
             /* Success */
             success = true;
         }
-        
+
         /* Print Command Prompt */
         cli_printCommandPrompt();
     }
-    
+
     /* Reset */
     (void)memset(cli_inputBuffer, 0, sizeof(cli_inputBuffer));
-    
+
     /* Exit */
     return success;
 }
@@ -304,17 +305,17 @@ bool cli_registerCommand(cli_record_t * const record, const char * const Name, c
     /*** Register Command ***/
     /* Variable */
     bool success;
-    
+
     /* Set Up */
     success = false;
-    
+
     /* Error Check */
     if((record != NULL) && (Name != NULL) && (CommandHandlerCallback != NULL))
     {
         /* Set Up */
         if(parentDirectory == CLI_PARENT_DIRECTORY_ROOT)
             parentDirectory = &cli_rootDirectoryRecord;
-        
+
         /* Name */
         if((parentDirectory->type == CLI_RECORD_TYPE_DIRECTORY) && (success = cli_verifyNameAcceptable(Name, parentDirectory)))
         {
@@ -326,7 +327,7 @@ bool cli_registerCommand(cli_record_t * const record, const char * const Name, c
             list_pushSorted(&(parentDirectory->entries), record, true); // Ascending
         }
     }
-    
+
     /* Exit */
     return success;
 }
@@ -337,17 +338,17 @@ bool cli_registerDirectory(cli_record_t * const record, const char * const Name,
     /*** Register Directory ***/
     /* Variable */
     bool success;
-    
+
     /* Set Up */
     success = false;
-    
+
     /* Error Check */
     if((record != NULL) && (Name != NULL))
     {
         /* Set Up */
         if(parentDirectory == CLI_PARENT_DIRECTORY_ROOT)
             parentDirectory = &cli_rootDirectoryRecord;
-        
+
         /* Name */
         if((parentDirectory->type == CLI_RECORD_TYPE_DIRECTORY) && (success = cli_verifyNameAcceptable(Name, parentDirectory)))
         {
@@ -358,13 +359,13 @@ bool cli_registerDirectory(cli_record_t * const record, const char * const Name,
             list_pushSorted(&(parentDirectory->entries), record, true); // Ascending
         }
     }
-    
+
     /* Exit */
     return success;
 }
 
 /****************************************************************************************************
- * Function Definition (Private)
+ * Function Definitions (Private)
  ****************************************************************************************************/
 
 /*** Change Directory Command Handler **/
@@ -372,11 +373,11 @@ static void cli_changeDirectoryCommandHandlerCallback(size_t argc, char *argv[])
 {
     /*** Change Directory Command Handler **/
     /* Variable */
+    cli_argumentOptionPair_t argumentOptionPair;
     bool help;
     size_t index;
-    cli_argumentOptionPair_t argumentOptionPair;
     cli_record_t key, *record;
-    
+
     /* Set Up */
     help = false;
     record = NULL;
@@ -407,7 +408,7 @@ static void cli_changeDirectoryCommandHandlerCallback(size_t argc, char *argv[])
                 key.Name = argv[0]; // Compare Callback Expects Name Within Record
                 if((index = list_find(&(cli_ActiveDirectoryRecord->entries), &key)) != LIST_FIND_NOT_FOUND_INDEX)
                     record = list_peekAt(&(cli_ActiveDirectoryRecord->entries), index);
-                
+
                 /* Switch To Directory */
                 if(record == NULL)
                     cli_printCallback("Directory Not Found\n");
@@ -422,7 +423,7 @@ static void cli_changeDirectoryCommandHandlerCallback(size_t argc, char *argv[])
             help = true;
             break;
     }
-    
+
     /* Help */
     if(help)
     {
@@ -436,7 +437,6 @@ static void cli_changeDirectoryCommandHandlerCallback(size_t argc, char *argv[])
 static int cli_compareCallback(const void * const Data1, const void * const Data2)
 {
     /*** Compare Callback ***/
-    /* Exit */
     return strcmp(((const cli_record_t *)Data1)->Name, ((const cli_record_t *)Data2)->Name);
 }
 
@@ -469,13 +469,13 @@ PROJECT_STATIC(bool cli_getCommandAndArgumentList(char * const input, char **com
     bool argumentFound;
     size_t i;
     bool success;
-    
+
     /* Set Up */
     *argc = 0;
     argumentFound = false;
     *command = NULL;
     success = false;
-    
+
     /* Get Command */
     for(i = 0; i < strlen(input); i++)
     {
@@ -512,7 +512,7 @@ PROJECT_STATIC(bool cli_getCommandAndArgumentList(char * const input, char **com
             /* Increment */
             i++;
         }
-        
+
         /* Termination */
         while(input[i] != '\0')
         {
@@ -522,15 +522,15 @@ PROJECT_STATIC(bool cli_getCommandAndArgumentList(char * const input, char **com
                 input[i] = '\0';
                 break;
             }
-            
+
             /* Increment */
             i++;
         }
-        
+
         /* Success */
         success = true;
     }
-    
+
     /* Exit */
     return success;
 }
@@ -542,10 +542,10 @@ static void cli_listCommandHandlerCallback(size_t argc, char *argv[])
     /* Variable */
     bool help;
     cli_argumentOptionPair_t argumentOptionPair;
-    
+
     /* Set Up */
     help = false;
-    
+
     /*** Handle Arguments ***/
     switch(argc)
     {
@@ -585,7 +585,7 @@ static void cli_listCommandHandlerCallback(size_t argc, char *argv[])
             help = true;
             break;
     }
-    
+
     /* Help */
     if(help)
     {
@@ -604,7 +604,7 @@ static void cli_listCommandHandlerCallbackHelper(const cli_record_t * const Dire
     size_t i;
     char *indent = NULL;
     cli_record_t *record;
-    
+
     /* Set Up */
     if((indent = memory_malloc(IndentSize + 1)) != NULL)
     {
@@ -622,12 +622,12 @@ static void cli_listCommandHandlerCallbackHelper(const cli_record_t * const Dire
             cli_printCallback("%s%s%s\n", indent, record->Name, (record->type == CLI_RECORD_TYPE_DIRECTORY) ? "/" : "");
         else
             cli_printCallback("%s%s\n", record->Name, (record->type == CLI_RECORD_TYPE_DIRECTORY) ? "/" : "");
-        
+
         /* Recursive */
         if(Recursive && (record->type == CLI_RECORD_TYPE_DIRECTORY))
             cli_listCommandHandlerCallbackHelper(record, IndentSize + CLI_LIST_INDENT_SIZE, true);
     }
-    
+
     /* Clean Up */
     if(indent != NULL)
         memory_free((void **)&indent);
@@ -681,10 +681,10 @@ PROJECT_STATIC(void cli_processCommand(const char * const Command, const size_t 
     /* Variable */
     size_t index;
     cli_record_t key, *record;
-    
+
     /* Set Up */
     record = NULL;
-    
+
     /*** Process Command ***/
     /* Find */
     if((strcmp(Command, CLI_COMMAND_CHANGE_DIRECTORY_NAME) == 0) || (strcmp(Command, CLI_COMMAND_LIST_NAME) == 0))
@@ -701,10 +701,10 @@ PROJECT_STATIC(void cli_processCommand(const char * const Command, const size_t 
         if((index = list_find(&(cli_ActiveDirectoryRecord->entries), &key)) != LIST_FIND_NOT_FOUND_INDEX)
             record = list_peekAt(&(cli_ActiveDirectoryRecord->entries), index);
     }
-    
+
     /* Process */
     if(record != NULL)
-    {    
+    {
         if(record->type == CLI_RECORD_TYPE_COMMAND)
             record->handler(Argc, argv);
         else
@@ -724,10 +724,10 @@ PROJECT_STATIC(bool cli_verifyNameAcceptable(const char * const Name, const cli_
     size_t i;
     cli_record_t key;
     bool success;
-    
+
     /* Set Up */
     success = true;
-    
+
     /* Illegal Characters In Name */
     for(i = 0; i < strlen(Name); i++)
     {
@@ -737,20 +737,20 @@ PROJECT_STATIC(bool cli_verifyNameAcceptable(const char * const Name, const cli_
             break;
         }
     }
-    
+
     /* Not Unique Name (Root Directory Name) */
     if(success && (strcmp(cli_rootDirectoryRecord.Name, Name) == 0))
         success = false;
-    
+
     /* Not Unique Name (Parent Directory Name) */
     if(success && (strcmp(ParentDirectory->Name, Name) == 0))
         success = false;
-    
+
     /* Not Unique Name (Peer Names) */
     key.Name = Name; // Compare Callback Expects Name Within Record
     if(success && (list_find(&(ParentDirectory->entries), &key) != LIST_FIND_NOT_FOUND_INDEX))
         success = false;
-    
+
     /* Exit */
     return success;
 }

@@ -1,5 +1,5 @@
 /****************************************************************************************************
-* Include
+ * Includes
  ****************************************************************************************************/
 
 #include "Eclectic/Miscellaneous/misc.h"
@@ -7,18 +7,21 @@
 #include <stdint.h>
 
 /****************************************************************************************************
- * Function Definition (Public)
+ * Function Definitions (Public)
  ****************************************************************************************************/
 
 /*** Insert 16 ***/
 void misc_insert16(uint8_t * const Buffer, const size_t BufferLength, const uint16_t Data, const bool BigEndian)
 {
     /*** Insert 16 ***/
+    /* Variable */
+    size_t i;
+
     /* Error Check */
     if((Buffer != NULL) && (BufferLength >= sizeof(uint16_t)))
     {
         /* Insert 16 */
-        for(size_t i = 0; i < sizeof(uint16_t); i++)
+        for(i = 0; i < sizeof(uint16_t); i++)
         {
             /* Insert 8 */
             if(BigEndian)
@@ -33,11 +36,14 @@ void misc_insert16(uint8_t * const Buffer, const size_t BufferLength, const uint
 void misc_insert32(uint8_t * const Buffer, const size_t BufferLength, const uint32_t Data, const bool BigEndian)
 {
     /*** Insert 32 ***/
+    /* Variable */
+    size_t i;
+
     /* Error Check */
     if((Buffer != NULL) && (BufferLength >= sizeof(uint32_t)))
     {
         /* Insert 32 */
-        for(size_t i = 0; i < sizeof(uint32_t); i++)
+        for(i = 0; i < sizeof(uint32_t); i++)
         {
             /* Insert 8 */
             if(BigEndian)
@@ -52,11 +58,14 @@ void misc_insert32(uint8_t * const Buffer, const size_t BufferLength, const uint
 void misc_insert64(uint8_t * const Buffer, const size_t BufferLength, const uint64_t Data, const bool BigEndian)
 {
     /*** Insert 64 ***/
+    /* Variable */
+    size_t i;
+
     /* Error Check */
     if((Buffer != NULL) && (BufferLength >= sizeof(uint64_t)))
     {
         /* Insert 64 */
-        for(size_t i = 0; i < sizeof(uint64_t); i++)
+        for(i = 0; i < sizeof(uint64_t); i++)
         {
             /* Insert 8 */
             if(BigEndian)
@@ -72,13 +81,14 @@ uint8_t misc_reflect8(const uint8_t Data)
 {
     /*** Reflect 8 ***/
     /* Variable */
+    size_t bit;
     uint8_t reflectedData;
-    
+
     /* Set Up */
     reflectedData = 0x00;
-    
+
     /* Reflect */
-    for(size_t bit = 0; bit < 8; bit++)
+    for(bit = 0; bit < 8; bit++)
         reflectedData |= ((Data & (1 << bit)) >> bit) << (7 - bit);
 
     /* Exit */
@@ -90,13 +100,14 @@ uint16_t misc_reflect16(const uint16_t Data)
 {
     /*** Reflect 16 ***/
     /* Variable */
+    size_t bit;
     uint16_t reflectedData;
-    
+
     /* Set Up */
     reflectedData = 0x0000;
-    
+
     /* Reflect */
-    for(size_t bit = 0; bit < 16; bit++)
+    for(bit = 0; bit < 16; bit++)
         reflectedData |= ((Data & (1 << bit)) >> bit) << (15 - bit);
 
     /* Exit */
@@ -108,13 +119,14 @@ uint32_t misc_reflect32(const uint32_t Data)
 {
     /*** Reflect 32 ***/
     /* Variable */
+    size_t bit;
     uint32_t reflectedData;
-    
+
     /* Set Up */
     reflectedData = 0x00000000;
-    
+
     /* Reflect */
-    for(size_t bit = 0; bit < 32; bit++)
+    for(bit = 0; bit < 32; bit++)
         reflectedData |= ((Data & (1 << bit)) >> bit) << (31 - bit);
 
     /* Exit */
@@ -126,13 +138,14 @@ uint64_t misc_reflect64(const uint64_t Data)
 {
     /*** Reflect 64 ***/
     /* Variable */
+    size_t bit;
     uint64_t reflectedData;
-    
+
     /* Set Up */
     reflectedData = 0x0000000000000000;
-    
+
     /* Reflect */
-    for(size_t bit = 0; bit < 64; bit++)
+    for(bit = 0; bit < 64; bit++)
         reflectedData |= ((Data & ((uint64_t)1 << bit)) >> bit) << (63 - bit);
 
     /* Exit */

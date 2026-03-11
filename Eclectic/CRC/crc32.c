@@ -1,5 +1,5 @@
 /****************************************************************************************************
- * Include
+ * Includes
  ****************************************************************************************************/
 
 #include "Eclectic/CRC/crc32.h"
@@ -10,28 +10,27 @@
 #include <string.h>
 
 /****************************************************************************************************
- * Constant
+ * Constants
  ****************************************************************************************************/
 
 const crc32_configuration_t crc32_Configuration[] =
-{
-    {{"CRC-32Q"}, 1, 0x3010BF7F, 0x00000000, NULL, "CRC-32/AIXM", 0x814141AB, false, false, 0x00000000, 0x00000000},
-    {{}, 0, 0x1697D06A, 0xFFFFFFFF, NULL, "CRC-32/AUTOSAR", 0xF4ACFB13, true, true, 0x904CDDBF, 0xFFFFFFFF},
-    {{"CRC-32D"}, 1, 0x87315576, 0xFFFFFFFF, NULL, "CRC-32/BASE91-D", 0xA833982B, true, true, 0x45270551, 0xFFFFFFFF},
-    {{"CRC-32/AAL5", "CRC-32/DECT-B", "B-CRC-32"}, 3, 0xFC891918, 0xFFFFFFFF, NULL, "CRC-32/BZIP2", 0x04C11DB7, false, false, 0xC704DD7B, 0xFFFFFFFF},
-    {{}, 0, 0x6EC2EDC4, 0x00000000, NULL, "CRC-32/CD-ROM-EDC", 0x8001801B, true, true, 0x00000000, 0x00000000},
-    {{"CKSUM", "CRC-32/POSIX"}, 2, 0x765E7680, 0x00000000, NULL, "CRC-32/CKSUM", 0x04C11DB7, false, false, 0xC704DD7B, 0xFFFFFFFF},
-    {{"CRC-32/BASE91-C", "CRC-32/CASTAGNOLI", "CRC-32/INTERLAKEN", "CRC-32C", "CRC-32/NVME"}, 5, 0xE3069283, 0xFFFFFFFF, NULL, "CRC-32/ISCSI", 0x1EDC6F41, true, true, 0xB798B438, 0xFFFFFFFF},
-    {{"CRC-32", "CRC-32/ADCCP", "CRC-32/V-42", "CRC-32/XZ", "PKZIP"}, 5, 0xCBF43926, 0xFFFFFFFF, NULL, "CRC-32/ISO-HDLC", 0x04C11DB7, true, true, 0xDEBB20E3, 0xFFFFFFFF},
-    {{"JAMCRC"}, 1, 0x340BC6D9, 0xFFFFFFFF, NULL, "CRC-32/JAMCRC", 0x04C11DB7, true, true, 0x00000000, 0x00000000},
-    {{}, 0, 0xD2C22F51, 0xFFFFFFFF, NULL, "CRC-32/MEF", 0x741B8CD7, true, true, 0x00000000, 0x00000000},
-    {{}, 0, 0x0376E6E7, 0xFFFFFFFF, NULL, "CRC-32/MPEG-2", 0x04C11DB7, false, false, 0x00000000, 0x00000000},
-    {{"XFER"}, 1, 0xBD0BE338, 0x00000000, NULL, "CRC-32/XFER", 0x000000AF, false, false, 0x00000000, 0x00000000}
-};
+    {
+        {{"CRC-32Q"}, 1, 0x3010BF7F, 0x00000000, NULL, "CRC-32/AIXM", 0x814141AB, false, false, 0x00000000, 0x00000000},
+        {{}, 0, 0x1697D06A, 0xFFFFFFFF, NULL, "CRC-32/AUTOSAR", 0xF4ACFB13, true, true, 0x904CDDBF, 0xFFFFFFFF},
+        {{"CRC-32D"}, 1, 0x87315576, 0xFFFFFFFF, NULL, "CRC-32/BASE91-D", 0xA833982B, true, true, 0x45270551, 0xFFFFFFFF},
+        {{"CRC-32/AAL5", "CRC-32/DECT-B", "B-CRC-32"}, 3, 0xFC891918, 0xFFFFFFFF, NULL, "CRC-32/BZIP2", 0x04C11DB7, false, false, 0xC704DD7B, 0xFFFFFFFF},
+        {{}, 0, 0x6EC2EDC4, 0x00000000, NULL, "CRC-32/CD-ROM-EDC", 0x8001801B, true, true, 0x00000000, 0x00000000},
+        {{"CKSUM", "CRC-32/POSIX"}, 2, 0x765E7680, 0x00000000, NULL, "CRC-32/CKSUM", 0x04C11DB7, false, false, 0xC704DD7B, 0xFFFFFFFF},
+        {{"CRC-32/BASE91-C", "CRC-32/CASTAGNOLI", "CRC-32/INTERLAKEN", "CRC-32C", "CRC-32/NVME"}, 5, 0xE3069283, 0xFFFFFFFF, NULL, "CRC-32/ISCSI", 0x1EDC6F41, true, true, 0xB798B438, 0xFFFFFFFF},
+        {{"CRC-32", "CRC-32/ADCCP", "CRC-32/V-42", "CRC-32/XZ", "PKZIP"}, 5, 0xCBF43926, 0xFFFFFFFF, NULL, "CRC-32/ISO-HDLC", 0x04C11DB7, true, true, 0xDEBB20E3, 0xFFFFFFFF},
+        {{"JAMCRC"}, 1, 0x340BC6D9, 0xFFFFFFFF, NULL, "CRC-32/JAMCRC", 0x04C11DB7, true, true, 0x00000000, 0x00000000},
+        {{}, 0, 0xD2C22F51, 0xFFFFFFFF, NULL, "CRC-32/MEF", 0x741B8CD7, true, true, 0x00000000, 0x00000000},
+        {{}, 0, 0x0376E6E7, 0xFFFFFFFF, NULL, "CRC-32/MPEG-2", 0x04C11DB7, false, false, 0x00000000, 0x00000000},
+        {{"XFER"}, 1, 0xBD0BE338, 0x00000000, NULL, "CRC-32/XFER", 0x000000AF, false, false, 0x00000000, 0x00000000}};
 const size_t crc32_ConfigurationCount = sizeof(crc32_Configuration) / sizeof(crc32_Configuration[0]);
 
 /****************************************************************************************************
- * Function Definition (Public)
+ * Function Definitions (Public)
  ****************************************************************************************************/
 
 /*** Calculate ***/
@@ -40,10 +39,11 @@ uint32_t crc32_calculate(const crc32_configuration_t * const Configuration, cons
     /*** Calculate ***/
     /* Variable */
     uint32_t crc;
-    
+    size_t i;
+
     /* Set Up */
     crc = 0x00000000;
-    
+
     /* Error Check */
     if((Configuration != NULL) && (Data != NULL))
     {
@@ -51,7 +51,7 @@ uint32_t crc32_calculate(const crc32_configuration_t * const Configuration, cons
         crc = Configuration->initial;
 
         /* Calculate */
-        for(size_t i = 0; i < DataLength; i++)
+        for(i = 0; i < DataLength; i++)
             crc = crc32_calculatePartial(Configuration, crc, Data[i], (i == 0), (i == (DataLength - 1)));
     }
 
@@ -60,15 +60,15 @@ uint32_t crc32_calculate(const crc32_configuration_t * const Configuration, cons
 }
 
 /*** Calculate And Append ***/
-void crc32_calculateAndAppend(const crc32_configuration_t * const Configuration, uint8_t *const buffer, const size_t BufferLength, const size_t DataLength)
+void crc32_calculateAndAppend(const crc32_configuration_t * const Configuration, uint8_t * const buffer, const size_t BufferLength, const size_t DataLength)
 {
     /*** Calculate And Append ***/
     /* Variable */
     uint32_t crc;
-    
+
     /* Set Up */
     crc = 0x00000000;
-    
+
     /* Error Check */
     if((Configuration != NULL) && (buffer != NULL) && (BufferLength >= (DataLength + sizeof(crc))))
     {
@@ -82,6 +82,9 @@ void crc32_calculateAndAppend(const crc32_configuration_t * const Configuration,
 uint32_t crc32_calculatePartial(const crc32_configuration_t * const Configuration, uint32_t crc, const uint8_t Data, const bool First, const bool Last)
 {
     /*** Calculate Partial ***/
+    /* Variable */
+    size_t bit;
+
     /* Error Check */
     if(Configuration != NULL)
     {
@@ -95,7 +98,7 @@ uint32_t crc32_calculatePartial(const crc32_configuration_t * const Configuratio
                 crc ^= (Data << 24);
 
             /* Calculate */
-            for(size_t bit = 0; bit < 8; bit++)
+            for(bit = 0; bit < 8; bit++)
             {
                 if((crc & 0x80000000) == 0x80000000)
                     crc = (crc << 1) ^ Configuration->polynomial;
@@ -147,7 +150,7 @@ void crc32_deinit(crc32_configuration_t * const configuration)
     if(configuration != NULL)
     {
         /* Deinitialize */
-        memory_free((void**)&(configuration->lookupTable));
+        memory_free((void **)&(configuration->lookupTable));
         memset(configuration, 0, sizeof(*configuration));
     }
 }
@@ -158,11 +161,12 @@ void crc32_init(const char * const Name, crc32_configuration_t * const configura
     /*** Initialize ***/
     /* Variable */
     bool found;
-    size_t i;
-    
+    size_t i, j;
+    uint32_t *lookupTable;
+
     /* Set Up */
     found = false;
-    
+
     /* Error Check */
     if((Name != NULL) && (configuration != NULL))
     {
@@ -179,7 +183,7 @@ void crc32_init(const char * const Name, crc32_configuration_t * const configura
             else
             {
                 /* Alias */
-                for(size_t j = 0; j < crc32_Configuration[i].aliasCount; j++)
+                for(j = 0; j < crc32_Configuration[i].aliasCount; j++)
                 {
                     if(strcmp(Name, crc32_Configuration[i].Alias[j]) == 0)
                     {
@@ -204,8 +208,6 @@ void crc32_init(const char * const Name, crc32_configuration_t * const configura
             /* Generate Lookup Table */
             if(CreateLookupTable)
             {
-                uint32_t *lookupTable;
-
                 if((lookupTable = memory_malloc(CRC32_LOOKUP_TABLE_MEMORY_SIZE)) != NULL)
                 {
                     for(i = 0; i < 256; i++)
@@ -229,10 +231,10 @@ bool crc32_verify(const crc32_configuration_t * const Configuration, const uint8
     /* Variable */
     uint32_t crc;
     bool verified;
-    
+
     /* Set Up */
     verified = false;
-    
+
     /* Error Check */
     if((Configuration != NULL) && (Buffer != NULL))
     {
