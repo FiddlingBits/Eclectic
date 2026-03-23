@@ -9,5 +9,6 @@ Composed Of Elements Drawn From Various Sources
     * CRC-64
 * Data Structure
     * List
+* Finite State Machine
 * Miscellaneous
     * Random

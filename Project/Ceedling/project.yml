@@ -22,6 +22,7 @@
       - ../../Eclectic/CLI/
       - ../../Eclectic/CRC/
       - ../../Eclectic/Data/
+      - ../../Eclectic/FSM/
       - ../../Eclectic/Miscellaneous/
   :html_report_type: detailed
   :reports:
@@ -41,12 +42,14 @@
     - ../../Eclectic/CLI/
     - ../../Eclectic/CRC/
     - ../../Eclectic/Data/
+    - ../../Eclectic/FSM/
     - ../../Eclectic/Miscellaneous/
   :include:
     - ../../
     - ../../Eclectic/CLI/
     - ../../Eclectic/CRC/
     - ../../Eclectic/Data/
+    - ../../Eclectic/FSM/
     - ../../Eclectic/Miscellaneous/
 
 :plugins:
