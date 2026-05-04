@@ -3,6 +3,7 @@
  ****************************************************************************************************/
 
 #include "Eclectic/Miscellaneous/misc.h"
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
 
@@ -10,68 +11,155 @@
  * Function Definitions (Public)
  ****************************************************************************************************/
 
+/*** Extract 16 ***/
+uint16_t misc_extract16(const uint8_t * const Buffer, const size_t BufferLength, const bool BigEndian)
+{
+    /*** Extract 16 ***/
+    /* Variable */
+    size_t i;
+    uint16_t u16;
+
+    /* Set Up */
+    u16 = 0;
+
+    /* Error Check */
+    if((Buffer != NULL) && (BufferLength >= sizeof(uint16_t)))
+    {
+        /* Extract 16 */
+        for(i = 0; i < sizeof(uint16_t); i++)
+        {
+            /* Extract 8 */
+            if(BigEndian)
+                u16 |= ((uint16_t)Buffer[i] << (8 - (i * 8)));
+            else
+                u16 |= ((uint16_t)Buffer[i] << (i * 8));
+        }
+    }
+
+    /* Exit */
+    return u16;
+}
+
+/*** Extract 32 ***/
+uint32_t misc_extract32(const uint8_t * const Buffer, const size_t BufferLength, const bool BigEndian)
+{
+    /*** Extract 32 ***/
+    /* Variable */
+    size_t i;
+    uint32_t u32;
+
+    /* Set Up */
+    u32 = 0;
+
+    /* Error Check */
+    if((Buffer != NULL) && (BufferLength >= sizeof(uint32_t)))
+    {
+        /* Extract 16 */
+        for(i = 0; i < sizeof(uint32_t); i++)
+        {
+            /* Extract 8 */
+            if(BigEndian)
+                u32 |= ((uint32_t)Buffer[i] << (24 - (i * 8)));
+            else
+                u32 |= ((uint32_t)Buffer[i] << (i * 8));
+        }
+    }
+
+    /* Exit */
+    return u32;
+}
+
+/*** Extract 64 ***/
+uint64_t misc_extract64(const uint8_t * const Buffer, const size_t BufferLength, const bool BigEndian)
+{
+    /*** Extract 64 ***/
+    /* Variable */
+    size_t i;
+    uint64_t u64;
+
+    /* Set Up */
+    u64 = 0;
+
+    /* Error Check */
+    if((Buffer != NULL) && (BufferLength >= sizeof(uint64_t)))
+    {
+        /* Extract 16 */
+        for(i = 0; i < sizeof(uint64_t); i++)
+        {
+            /* Extract 8 */
+            if(BigEndian)
+                u64 |= ((uint64_t)Buffer[i] << (56 - (i * 8)));
+            else
+                u64 |= ((uint64_t)Buffer[i] << (i * 8));
+        }
+    }
+
+    /* Exit */
+    return u64;
+}
+
 /*** Insert 16 ***/
-void misc_insert16(uint8_t * const Buffer, const size_t BufferLength, const uint16_t Data, const bool BigEndian)
+void misc_insert16(uint8_t * const buffer, const size_t BufferLength, const uint16_t Data, const bool BigEndian)
 {
     /*** Insert 16 ***/
     /* Variable */
     size_t i;
 
     /* Error Check */
-    if((Buffer != NULL) && (BufferLength >= sizeof(uint16_t)))
+    if((buffer != NULL) && (BufferLength >= sizeof(uint16_t)))
     {
         /* Insert 16 */
         for(i = 0; i < sizeof(uint16_t); i++)
         {
             /* Insert 8 */
             if(BigEndian)
-                Buffer[i] = (uint8_t)(Data >> (8 - (i * 8)));
+                buffer[i] = (uint8_t)(Data >> (8 - (i * 8)));
             else
-                Buffer[i] = (uint8_t)(Data >> (i * 8));
+                buffer[i] = (uint8_t)(Data >> (i * 8));
         }
     }
 }
 
 /*** Insert 32 ***/
-void misc_insert32(uint8_t * const Buffer, const size_t BufferLength, const uint32_t Data, const bool BigEndian)
+void misc_insert32(uint8_t * const buffer, const size_t BufferLength, const uint32_t Data, const bool BigEndian)
 {
     /*** Insert 32 ***/
     /* Variable */
     size_t i;
 
     /* Error Check */
-    if((Buffer != NULL) && (BufferLength >= sizeof(uint32_t)))
+    if((buffer != NULL) && (BufferLength >= sizeof(uint32_t)))
     {
         /* Insert 32 */
         for(i = 0; i < sizeof(uint32_t); i++)
         {
             /* Insert 8 */
             if(BigEndian)
-                Buffer[i] = (uint8_t)(Data >> (24 - (i * 8)));
+                buffer[i] = (uint8_t)(Data >> (24 - (i * 8)));
             else
-                Buffer[i] = (uint8_t)(Data >> (i * 8));
+                buffer[i] = (uint8_t)(Data >> (i * 8));
         }
     }
 }
 
 /*** Insert 64 ***/
-void misc_insert64(uint8_t * const Buffer, const size_t BufferLength, const uint64_t Data, const bool BigEndian)
+void misc_insert64(uint8_t * const buffer, const size_t BufferLength, const uint64_t Data, const bool BigEndian)
 {
     /*** Insert 64 ***/
     /* Variable */
     size_t i;
 
     /* Error Check */
-    if((Buffer != NULL) && (BufferLength >= sizeof(uint64_t)))
+    if((buffer != NULL) && (BufferLength >= sizeof(uint64_t)))
     {
         /* Insert 64 */
         for(i = 0; i < sizeof(uint64_t); i++)
         {
             /* Insert 8 */
             if(BigEndian)
-                Buffer[i] = (uint8_t)(Data >> (56 - (i * 8)));
+                buffer[i] = (uint8_t)(Data >> (56 - (i * 8)));
             else
-                Buffer[i] = (uint8_t)(Data >> (i * 8));
+                buffer[i] = (uint8_t)(Data >> (i * 8));
         }
     }
 }

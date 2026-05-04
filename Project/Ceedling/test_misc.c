@@ -3,6 +3,7 @@
  ****************************************************************************************************/
 
 #include "misc.h"
+#include <stdint.h>
 #include "unity.h"
 
 /****************************************************************************************************
@@ -20,6 +21,308 @@ void tearDown(void)
 /****************************************************************************************************
  * Test (Public)
  ****************************************************************************************************/
+
+/*** Extract 16 ***/
+void test_extract16_1(void)
+{
+    /*** Extract 16 (Buffer NULL) ***/
+    /* Variable */
+    uint8_t buffer[sizeof(uint16_t)];
+    uint16_t u16;
+
+    /* Extract */
+    u16 = misc_extract16(NULL, sizeof(buffer), true); // true (Big Endian)
+
+    /* Verify */
+    TEST_ASSERT_EQUAL_HEX16(0, u16);
+}
+
+void test_extract16_2(void)
+{
+    /*** Extract 16 (Buffer Length Too Small) ***/
+    /* Variable */
+    uint8_t buffer[sizeof(uint8_t)];
+    uint16_t u16;
+
+    /* Extract */
+    u16 = misc_extract16(buffer, sizeof(buffer), true); // true (Big Endian)
+
+    /* Verify */
+    TEST_ASSERT_EQUAL_HEX16(0, u16);
+}
+
+void test_extract16_3(void)
+{
+    /*** Extract 16 (Big Endian) ***/
+    /* Structure */
+    typedef struct testData_s
+    {
+        uint8_t input[sizeof(uint16_t)];
+        uint16_t expectedOutput;
+    } testData_t;
+
+    /* Test Data */
+    const testData_t TestData[] =
+        {
+            {{0x00, 0x00}, 0x0000},
+            {{0x00, 0x01}, 0x0001},
+            {{0x00, 0xFF}, 0x00FF},
+            {{0x12, 0x34}, 0x1234},
+            {{0xBE, 0xEF}, 0xBEEF},
+            {{0xFF, 0x00}, 0xFF00},
+            {{0xFF, 0xFF}, 0xFFFF}};
+    const size_t TestDataCount = sizeof(TestData) / sizeof(TestData[0]);
+
+    /* Variable */
+    uint16_t actualOutput;
+
+    /* Extract */
+    for(size_t i = 0; i < TestDataCount; i++)
+    {
+        /* Extract */
+        actualOutput = misc_extract16(TestData[i].input, sizeof(TestData[i].input), true); // true (Big Endian)
+
+        /* Verify */
+        TEST_ASSERT_EQUAL_HEX8(TestData[i].expectedOutput, actualOutput);
+    }
+}
+
+void test_extract16_4(void)
+{
+    /*** Extract 16 (Little Endian) ***/
+    /* Structure */
+    typedef struct testData_s
+    {
+        uint8_t input[sizeof(uint16_t)];
+        uint16_t expectedOutput;
+    } testData_t;
+
+    /* Test Data */
+    const testData_t TestData[] =
+        {
+            {{0x00, 0x00}, 0x0000},
+            {{0x01, 0x00}, 0x0001},
+            {{0xFF, 0x00}, 0x00FF},
+            {{0x34, 0x12}, 0x1234},
+            {{0xEF, 0xBE}, 0xBEEF},
+            {{0x00, 0xFF}, 0xFF00},
+            {{0xFF, 0xFF}, 0xFFFF}};
+    const size_t TestDataCount = sizeof(TestData) / sizeof(TestData[0]);
+
+    /* Variable */
+    uint16_t actualOutput;
+
+    /* Extract */
+    for(size_t i = 0; i < TestDataCount; i++)
+    {
+        /* Extract */
+        actualOutput = misc_extract16(TestData[i].input, sizeof(TestData[i].input), false); // false (Little Endian)
+
+        /* Verify */
+        TEST_ASSERT_EQUAL_HEX8_ARRAY(TestData[i].expectedOutput, actualOutput, sizeof(TestData[i].expectedOutput));
+    }
+}
+
+/*** Extract 32 ***/
+void test_extract32_1(void)
+{
+    /*** Extract 32 (Buffer NULL) ***/
+    /* Variable */
+    uint8_t buffer[sizeof(uint32_t)];
+    uint32_t u32;
+
+    /* Extract */
+    u32 = misc_extract32(NULL, sizeof(buffer), true); // true (Big Endian)
+
+    /* Verify */
+    TEST_ASSERT_EQUAL_HEX32(0, u32);
+}
+
+void test_extract32_2(void)
+{
+    /*** Extract 32 (Buffer Length Too Small) ***/
+    /* Variable */
+    uint8_t buffer[sizeof(uint16_t)];
+    uint32_t u32;
+
+    /* Extract */
+    u32 = misc_extract32(buffer, sizeof(buffer), true); // true (Big Endian)
+
+    /* Verify */
+    TEST_ASSERT_EQUAL_HEX32(0, u32);
+}
+
+void test_extract32_3(void)
+{
+    /*** Extract 32 (Big Endian) ***/
+    /* Structure */
+    typedef struct testData_s
+    {
+        uint8_t input[sizeof(uint32_t)];
+        uint32_t expectedOutput;
+    } testData_t;
+
+    /* Test Data */
+    const testData_t TestData[] =
+        {
+            {{0x00, 0x00, 0x00, 0x00}, 0x00000000},
+            {{0x00, 0x00, 0x00, 0x01}, 0x00000001},
+            {{0x00, 0x00, 0x00, 0xFF}, 0x000000FF},
+            {{0x12, 0x34, 0x56, 0x78}, 0x12345678},
+            {{0xDE, 0xAD, 0xBE, 0xEF}, 0xDEADBEEF},
+            {{0xFF, 0x00, 0x00, 0x00}, 0xFF000000},
+            {{0xFF, 0xFF, 0xFF, 0xFF}, 0xFFFFFFFF}};
+    const size_t TestDataCount = sizeof(TestData) / sizeof(TestData[0]);
+
+    /* Variable */
+    uint32_t actualOutput;
+
+    /* Extract */
+    for(size_t i = 0; i < TestDataCount; i++)
+    {
+        /* Extract */
+        actualOutput = misc_extract32(TestData[i].input, sizeof(TestData[i].input), true); // true (Big Endian)
+
+        /* Verify */
+        TEST_ASSERT_EQUAL_HEX32(TestData[i].expectedOutput, actualOutput);
+    }
+}
+
+void test_extract32_4(void)
+{
+    /*** Extract 32 (Little Endian) ***/
+    /* Structure */
+    typedef struct testData_s
+    {
+        uint8_t input[sizeof(uint32_t)];
+        uint32_t expectedOutput;
+    } testData_t;
+
+    /* Test Data */
+    const testData_t TestData[] =
+        {
+            {{0x00, 0x00, 0x00, 0x00}, 0x00000000},
+            {{0x01, 0x00, 0x00, 0x00}, 0x00000001},
+            {{0xFF, 0x00, 0x00, 0x00}, 0x000000FF},
+            {{0x78, 0x56, 0x34, 0x12}, 0x12345678},
+            {{0xEF, 0xBE, 0xAD, 0xDE}, 0xDEADBEEF},
+            {{0x00, 0x00, 0x00, 0xFF}, 0xFF000000},
+            {{0xFF, 0xFF, 0xFF, 0xFF}, 0xFFFFFFFF}};
+    const size_t TestDataCount = sizeof(TestData) / sizeof(TestData[0]);
+
+    /* Variable */
+    uint32_t actualOutput;
+
+    /* Extract */
+    for(size_t i = 0; i < TestDataCount; i++)
+    {
+        /* Extract */
+        actualOutput = misc_extract32(TestData[i].input, sizeof(TestData[i].input), false); // true (Little Endian)
+
+        /* Verify */
+        TEST_ASSERT_EQUAL_HEX32(TestData[i].expectedOutput, actualOutput);
+    }
+}
+
+/*** Extract 64 ***/
+void test_extract64_1(void)
+{
+    /*** Extract 64 (Buffer NULL) ***/
+    /* Variable */
+    uint8_t buffer[sizeof(uint64_t)];
+    uint64_t u64;
+
+    /* Extract */
+    u64 = misc_extract64(NULL, sizeof(buffer), true); // true (Big Endian)
+
+    /* Verify */
+    TEST_ASSERT_EQUAL_HEX64(0, u64);
+}
+
+void test_extract64_2(void)
+{
+    /*** Extract 64 (Buffer Length Too Small) ***/
+    /* Variable */
+    uint8_t buffer[sizeof(uint32_t)];
+    uint64_t u64;
+
+    /* Extract */
+    u64 = misc_extract64(buffer, sizeof(buffer), true); // true (Big Endian)
+
+    /* Verify */
+    TEST_ASSERT_EQUAL_HEX64(0, u64);
+}
+
+void test_extract64_3(void)
+{
+    /*** Extract 64 (Big Endian) ***/
+    /* Structure */
+    typedef struct testData_s
+    {
+        uint8_t input[sizeof(uint64_t)];
+        uint64_t expectedOutput;
+    } testData_t;
+
+    /* Test Data */
+    const testData_t TestData[] =
+        {
+            {{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}, 0x0000000000000000},
+            {{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01}, 0x0000000000000001},
+            {{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF}, 0x00000000000000FF},
+            {{0x12, 0x34, 0x56, 0x78, 0x9A, 0xBC, 0xDE, 0xF0}, 0x123456789ABCDEF0},
+            {{0xD0, 0x0D, 0x8B, 0xAD, 0xDE, 0xAD, 0xBE, 0xEF}, 0xD00D8BADDEADBEEF},
+            {{0xFF, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}, 0xFF00000000000000},
+            {{0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF}, 0xFFFFFFFFFFFFFFFF}};
+    const size_t TestDataCount = sizeof(TestData) / sizeof(TestData[0]);
+
+    /* Variable */
+    uint64_t actualOutput;
+
+    /* Extract */
+    for(size_t i = 0; i < TestDataCount; i++)
+    {
+        /* Extract */
+        actualOutput = misc_extract64(TestData[i].input, sizeof(TestData[i].input), true); // true (Big Endian)
+
+        /* Verify */
+        TEST_ASSERT_EQUAL_HEX64(TestData[i].expectedOutput, actualOutput);
+    }
+}
+
+void test_extract64_4(void)
+{
+    /*** Extract 64 (Little Endian) ***/
+    /* Structure */
+    typedef struct testData_s
+    {
+        uint8_t input[sizeof(uint64_t)];
+        uint64_t expectedOutput;
+    } testData_t;
+
+    /* Test Data */
+    const testData_t TestData[] =
+        {{{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}, 0x0000000000000000},
+         {{0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}, 0x0000000000000001},
+         {{0xFF, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}, 0x00000000000000FF},
+         {{0xF0, 0xDE, 0xBC, 0x9A, 0x78, 0x56, 0x34, 0x12}, 0x123456789ABCDEF0},
+         {{0xEF, 0xBE, 0xAD, 0xDE, 0xAD, 0x8B, 0x0D, 0xD0}, 0xD00D8BADDEADBEEF},
+         {{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF}, 0xFF00000000000000},
+         {{0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF}, 0xFFFFFFFFFFFFFFFF}};
+    const size_t TestDataCount = sizeof(TestData) / sizeof(TestData[0]);
+
+    /* Variable */
+    uint64_t actualOutput;
+
+    /* Extract */
+    for(size_t i = 0; i < TestDataCount; i++)
+    {
+        /* Extract */
+        actualOutput = misc_extract64(TestData[i].input, sizeof(TestData[i].input), false); // true (Little Endian)
+
+        /* Verify */
+        TEST_ASSERT_EQUAL_HEX64(TestData[i].expectedOutput, actualOutput);
+    }
+}
 
 /*** Insert 16 ***/
 void test_insert16_1(void)
@@ -54,15 +357,14 @@ void test_insert16_3(void)
 
     /* Test Data */
     const testData_t TestData[] =
-    {
-        {0x0000, {0x00, 0x00}},
-        {0x0001, {0x00, 0x01}},
-        {0x00FF, {0x00, 0xFF}},
-        {0x1234, {0x12, 0x34}},
-        {0xBEEF, {0xBE, 0xEF}},
-        {0xFF00, {0xFF, 0x00}},
-        {0xFFFF, {0xFF, 0xFF}}
-    };
+        {
+            {0x0000, {0x00, 0x00}},
+            {0x0001, {0x00, 0x01}},
+            {0x00FF, {0x00, 0xFF}},
+            {0x1234, {0x12, 0x34}},
+            {0xBEEF, {0xBE, 0xEF}},
+            {0xFF00, {0xFF, 0x00}},
+            {0xFFFF, {0xFF, 0xFF}}};
     const size_t TestDataCount = sizeof(TestData) / sizeof(TestData[0]);
 
     /* Variable */
@@ -71,7 +373,7 @@ void test_insert16_3(void)
     /* Insert */
     for(size_t i = 0; i < TestDataCount; i++)
     {
-        /* Extract */
+        /* Insert */
         misc_insert16(actualOutput, sizeof(actualOutput), TestData[i].input, true); // true (Big Endian)
 
         /* Verify */
@@ -91,15 +393,14 @@ void test_insert16_4(void)
 
     /* Test Data */
     const testData_t TestData[] =
-    {
-		{0x0000, {0x00, 0x00}},
-        {0x0001, {0x01, 0x00}},
-        {0x00FF, {0xFF, 0x00}},
-        {0x1234, {0x34, 0x12}},
-        {0xBEEF, {0xEF, 0xBE}},
-        {0xFF00, {0x00, 0xFF}},
-        {0xFFFF, {0xFF, 0xFF}}
-    };
+        {
+            {0x0000, {0x00, 0x00}},
+            {0x0001, {0x01, 0x00}},
+            {0x00FF, {0xFF, 0x00}},
+            {0x1234, {0x34, 0x12}},
+            {0xBEEF, {0xEF, 0xBE}},
+            {0xFF00, {0x00, 0xFF}},
+            {0xFFFF, {0xFF, 0xFF}}};
     const size_t TestDataCount = sizeof(TestData) / sizeof(TestData[0]);
 
     /* Variable */
@@ -108,7 +409,7 @@ void test_insert16_4(void)
     /* Insert */
     for(size_t i = 0; i < TestDataCount; i++)
     {
-        /* Extract */
+        /* Insert */
         misc_insert16(actualOutput, sizeof(actualOutput), TestData[i].input, false); // true (Little Endian)
 
         /* Verify */
@@ -149,15 +450,14 @@ void test_insert32_3(void)
 
     /* Test Data */
     const testData_t TestData[] =
-    {
-        {0x00000000, {0x00, 0x00, 0x00, 0x00}},
-        {0x00000001, {0x00, 0x00, 0x00, 0x01}},
-        {0x000000FF, {0x00, 0x00, 0x00, 0xFF}},
-        {0x12345678, {0x12, 0x34, 0x56, 0x78}},
-        {0xDEADBEEF, {0xDE, 0xAD, 0xBE, 0xEF}},
-        {0xFF000000, {0xFF, 0x00, 0x00, 0x00}},
-        {0xFFFFFFFF, {0xFF, 0xFF, 0xFF, 0xFF}}
-    };
+        {
+            {0x00000000, {0x00, 0x00, 0x00, 0x00}},
+            {0x00000001, {0x00, 0x00, 0x00, 0x01}},
+            {0x000000FF, {0x00, 0x00, 0x00, 0xFF}},
+            {0x12345678, {0x12, 0x34, 0x56, 0x78}},
+            {0xDEADBEEF, {0xDE, 0xAD, 0xBE, 0xEF}},
+            {0xFF000000, {0xFF, 0x00, 0x00, 0x00}},
+            {0xFFFFFFFF, {0xFF, 0xFF, 0xFF, 0xFF}}};
     const size_t TestDataCount = sizeof(TestData) / sizeof(TestData[0]);
 
     /* Variable */
@@ -166,7 +466,7 @@ void test_insert32_3(void)
     /* Insert */
     for(size_t i = 0; i < TestDataCount; i++)
     {
-        /* Extract */
+        /* Insert */
         misc_insert32(actualOutput, sizeof(actualOutput), TestData[i].input, true); // true (Big Endian)
 
         /* Verify */
@@ -186,15 +486,14 @@ void test_insert32_4(void)
 
     /* Test Data */
     const testData_t TestData[] =
-    {
-		{0x00000000, {0x00, 0x00, 0x00, 0x00}},
-        {0x00000001, {0x01, 0x00, 0x00, 0x00}},
-        {0x000000FF, {0xFF, 0x00, 0x00, 0x00}},
-        {0x12345678, {0x78, 0x56, 0x34, 0x12}},
-        {0xDEADBEEF, {0xEF, 0xBE, 0xAD, 0xDE}},
-        {0xFF000000, {0x00, 0x00, 0x00, 0xFF}},
-        {0xFFFFFFFF, {0xFF, 0xFF, 0xFF, 0xFF}}
-    };
+        {
+            {0x00000000, {0x00, 0x00, 0x00, 0x00}},
+            {0x00000001, {0x01, 0x00, 0x00, 0x00}},
+            {0x000000FF, {0xFF, 0x00, 0x00, 0x00}},
+            {0x12345678, {0x78, 0x56, 0x34, 0x12}},
+            {0xDEADBEEF, {0xEF, 0xBE, 0xAD, 0xDE}},
+            {0xFF000000, {0x00, 0x00, 0x00, 0xFF}},
+            {0xFFFFFFFF, {0xFF, 0xFF, 0xFF, 0xFF}}};
     const size_t TestDataCount = sizeof(TestData) / sizeof(TestData[0]);
 
     /* Variable */
@@ -203,7 +502,7 @@ void test_insert32_4(void)
     /* Insert */
     for(size_t i = 0; i < TestDataCount; i++)
     {
-        /* Extract */
+        /* Insert */
         misc_insert32(actualOutput, sizeof(actualOutput), TestData[i].input, false); // true (Little Endian)
 
         /* Verify */
@@ -226,7 +525,7 @@ void test_insert64_2(void)
 {
     /*** Insert 64 (Buffer Length Too Small) ***/
     /* Variable */
-    uint8_t buffer[sizeof(uint16_t)];
+    uint8_t buffer[sizeof(uint32_t)];
 
     /* Insert */
     misc_insert64(buffer, sizeof(buffer), 0x5CA1AB1ECAFED00D, true); // true (Big Endian)
@@ -244,15 +543,14 @@ void test_insert64_3(void)
 
     /* Test Data */
     const testData_t TestData[] =
-    {
-        {0x0000000000000000, {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}},
-        {0x0000000000000001, {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01}},
-        {0x00000000000000FF, {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF}},
-        {0x123456789ABCDEF0, {0x12, 0x34, 0x56, 0x78, 0x9A, 0xBC, 0xDE, 0xF0}},
-        {0xD00D8BADDEADBEEF, {0xD0, 0x0D, 0x8B, 0xAD, 0xDE, 0xAD, 0xBE, 0xEF}},
-        {0xFF00000000000000, {0xFF, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}},
-        {0xFFFFFFFFFFFFFFFF, {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF}}
-    };
+        {
+            {0x0000000000000000, {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}},
+            {0x0000000000000001, {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01}},
+            {0x00000000000000FF, {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF}},
+            {0x123456789ABCDEF0, {0x12, 0x34, 0x56, 0x78, 0x9A, 0xBC, 0xDE, 0xF0}},
+            {0xD00D8BADDEADBEEF, {0xD0, 0x0D, 0x8B, 0xAD, 0xDE, 0xAD, 0xBE, 0xEF}},
+            {0xFF00000000000000, {0xFF, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}},
+            {0xFFFFFFFFFFFFFFFF, {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF}}};
     const size_t TestDataCount = sizeof(TestData) / sizeof(TestData[0]);
 
     /* Variable */
@@ -261,7 +559,7 @@ void test_insert64_3(void)
     /* Insert */
     for(size_t i = 0; i < TestDataCount; i++)
     {
-        /* Extract */
+        /* Insert */
         misc_insert64(actualOutput, sizeof(actualOutput), TestData[i].input, true); // true (Big Endian)
 
         /* Verify */
@@ -281,15 +579,14 @@ void test_insert64_4(void)
 
     /* Test Data */
     const testData_t TestData[] =
-    {
-		{0x0000000000000000, {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}},
-        {0x0000000000000001, {0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}},
-        {0x00000000000000FF, {0xFF, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}},
-        {0x123456789ABCDEF0, {0xF0, 0xDE, 0xBC, 0x9A, 0x78, 0x56, 0x34, 0x12}},
-        {0xD00D8BADDEADBEEF, {0xEF, 0xBE, 0xAD, 0xDE, 0xAD, 0x8B, 0x0D, 0xD0}},
-        {0xFF00000000000000, {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF}},
-        {0xFFFFFFFFFFFFFFFF, {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF}}
-    };
+        {
+            {0x0000000000000000, {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}},
+            {0x0000000000000001, {0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}},
+            {0x00000000000000FF, {0xFF, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}},
+            {0x123456789ABCDEF0, {0xF0, 0xDE, 0xBC, 0x9A, 0x78, 0x56, 0x34, 0x12}},
+            {0xD00D8BADDEADBEEF, {0xEF, 0xBE, 0xAD, 0xDE, 0xAD, 0x8B, 0x0D, 0xD0}},
+            {0xFF00000000000000, {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF}},
+            {0xFFFFFFFFFFFFFFFF, {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF}}};
     const size_t TestDataCount = sizeof(TestData) / sizeof(TestData[0]);
 
     /* Variable */
@@ -298,7 +595,7 @@ void test_insert64_4(void)
     /* Insert */
     for(size_t i = 0; i < TestDataCount; i++)
     {
-        /* Extract */
+        /* Insert */
         misc_insert64(actualOutput, sizeof(actualOutput), TestData[i].input, false); // true (Little Endian)
 
         /* Verify */
@@ -319,14 +616,13 @@ void test_reflect8(void)
 
     /* Test Data */
     const testData_t TestData[] =
-    {
-        {0x00, 0x00},
-        {0x01, 0x80},
-        {0xA5, 0xA5},
-        {0xAA, 0x55},
-        {0xFE, 0x7F},
-        {0xFF, 0xFF}
-    };
+        {
+            {0x00, 0x00},
+            {0x01, 0x80},
+            {0xA5, 0xA5},
+            {0xAA, 0x55},
+            {0xFE, 0x7F},
+            {0xFF, 0xFF}};
     const size_t TestDataCount = sizeof(TestData) / sizeof(TestData[0]);
 
     /* Variable */
@@ -356,14 +652,13 @@ void test_reflect16(void)
 
     /* Test Data */
     const testData_t TestData[] =
-    {
-        {0x0000, 0x0000},
-        {0x0001, 0x8000},
-        {0xAA55, 0xAA55},
-        {0xAAAA, 0x5555},
-        {0xFFFE, 0x7FFF},
-        {0xFFFF, 0xFFFF}
-    };
+        {
+            {0x0000, 0x0000},
+            {0x0001, 0x8000},
+            {0xAA55, 0xAA55},
+            {0xAAAA, 0x5555},
+            {0xFFFE, 0x7FFF},
+            {0xFFFF, 0xFFFF}};
     const size_t TestDataCount = sizeof(TestData) / sizeof(TestData[0]);
 
     /* Variable */
@@ -393,14 +688,13 @@ void test_reflect32(void)
 
     /* Test Data */
     const testData_t TestData[] =
-    {
-        {0x00000000, 0x00000000},
-        {0x00000001, 0x80000000},
-        {0xAAAA5555, 0xAAAA5555},
-        {0xAAAAAAAA, 0x55555555},
-        {0xFFFFFFFE, 0x7FFFFFFF},
-        {0xFFFFFFFF, 0xFFFFFFFF}
-    };
+        {
+            {0x00000000, 0x00000000},
+            {0x00000001, 0x80000000},
+            {0xAAAA5555, 0xAAAA5555},
+            {0xAAAAAAAA, 0x55555555},
+            {0xFFFFFFFE, 0x7FFFFFFF},
+            {0xFFFFFFFF, 0xFFFFFFFF}};
     const size_t TestDataCount = sizeof(TestData) / sizeof(TestData[0]);
 
     /* Variable */
@@ -430,14 +724,13 @@ void test_reflect64(void)
 
     /* Test Data */
     const testData_t TestData[] =
-    {
-        {0x0000000000000000, 0x0000000000000000},
-        {0x0000000000000001, 0x8000000000000000},
-        {0xAAAAAAAA55555555, 0xAAAAAAAA55555555},
-        {0xAAAAAAAAAAAAAAAA, 0x5555555555555555},
-        {0xFFFFFFFFFFFFFFFE, 0x7FFFFFFFFFFFFFFF},
-        {0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF}
-    };
+        {
+            {0x0000000000000000, 0x0000000000000000},
+            {0x0000000000000001, 0x8000000000000000},
+            {0xAAAAAAAA55555555, 0xAAAAAAAA55555555},
+            {0xAAAAAAAAAAAAAAAA, 0x5555555555555555},
+            {0xFFFFFFFFFFFFFFFE, 0x7FFFFFFFFFFFFFFF},
+            {0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF}};
     const size_t TestDataCount = sizeof(TestData) / sizeof(TestData[0]);
 
     /* Variable */
